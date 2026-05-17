@@ -7,21 +7,41 @@ TermaType is a free, open-source, offline-first word processor designed for bili
 ## Features
 
 ### Editor
-- Rich text editing (headings, bold, italic, lists, blockquotes, tables, code blocks)
+- Rich text editing (headings, bold, italic, underline, strikethrough, lists, blockquotes, tables, code blocks, images, footnotes, page breaks)
+- Font family and font size selection
+- Text color and highlight color
+- Text alignment (left, center, right, justify)
+- Indent and outdent (Tab / Shift+Tab)
+- Line spacing control (1.0 to 3.0)
 - DOCX and plain text file support with native file dialogs
 - Auto-save (30-second interval when file has a path)
+- Document templates (Blank, Tibetan Prayer, Translation Project, Glossary, Essay)
+- Find and replace (Ctrl+F / Ctrl+H)
+- Version history with snapshot restore
+- Special characters insertion grid
+
+### Export
 - PDF export via html2pdf
-- Zoom in/out (Ctrl++/-, Ctrl+0 to reset) with proper content reflow
-- Focus mode (Ctrl+\\) — fades UI chrome, dims non-active paragraphs
-- Typewriter scrolling — keeps cursor vertically centered
-- Word count, character count, and reading time estimate in status bar
+- EPUB export with automatic chapter splitting at H1/H2 headings
 - Print support (Ctrl+P)
+
+### Writing Modes
+- Focus mode (Ctrl+\\) — fades UI chrome, dims non-active paragraphs
+- Reading mode — hides all toolbars for distraction-free reading
+- Typewriter scrolling — keeps cursor vertically centered
+- Zoom in/out (Ctrl++/-, Ctrl+0 to reset) with content reflow
 - Light and dark themes
+
+### Status Bar
+- Word count, character count, reading time, and page estimate
+- Click for detailed statistics (sentences, paragraphs, Tibetan syllables, characters without spaces)
+- Save status indicator with auto-save error reporting
+- Language toggle (EN / བོད)
 
 ### Tibetan Input (EWTS)
 - Full EWTS 2.0 (Extended Wylie Transliteration Scheme) compliant input
 - Real-time Wylie-to-Tibetan Unicode conversion as you type
-- Toggle between English and Tibetan with Ctrl+Space or click the status bar indicator
+- Toggle between English and Tibetan with Ctrl+Space
 - Automatic consonant stacking, vowel placement, and syllable validation
 - Sanskrit extensions (retroflex, sibilants, bindu, visarga, anusvara)
 - On-screen EWTS keyboard reference
@@ -34,14 +54,22 @@ TermaType is a free, open-source, offline-first word processor designed for bili
 - Non-blocking inference — UI stays responsive during processing
 
 ### Tibetan Dictionary
-- Offline Tibetan-English dictionary lookup
-- In-memory caching for fast repeated queries
-- Installable as a plugin (~5 MB)
+- Offline Tibetan-English dictionary with 239,000+ entries
+- Sources: Rangjung Yeshe and Monlam dictionaries
+- SQLite-backed with three-tier search (exact, prefix, full-text)
+- Installable as a plugin (~48 MB)
 
 ### Tools Panel
-- Tabbed sidebar: Assistant, Dictionary, EWTS Reference
-- Full EWTS reference documentation with consonant/vowel grids, stacking rules, punctuation table
+- Tabbed sidebar: Assistant, Dictionary, Wylie Reference, Document Outline
+- Document outline with click-to-navigate heading list
+- Full EWTS reference with consonant/vowel grids, stacking rules, punctuation table
 - Keyboard shortcuts panel (Ctrl+/)
+
+### Desktop
+- Native splash screen during app startup
+- Drag and drop file opening
+- Native save/open dialogs
+- Unsaved changes warning on close
 
 ## Development
 
@@ -54,7 +82,6 @@ TermaType is a free, open-source, offline-first word processor designed for bili
 ### Setup
 
 ```bash
-cd termatype
 npm install
 cargo tauri dev
 ```
@@ -67,10 +94,11 @@ cargo tauri build
 
 ### Architecture
 
-- **Frontend**: React + TipTap 3 + ProseMirror plugins
+- **Frontend**: React 19 + TipTap 3 + ProseMirror extensions
 - **Backend**: Tauri 2 (Rust) for file I/O, plugin management, and AI inference
 - **AI**: llama.cpp via llama-cpp-2 Rust bindings (Gemma 3 1B Q4_K_M)
 - **IME**: Custom stateful Wylie engine with multi-character lookahead
+- **Dictionary**: SQLite via rusqlite with bundled build
 
 ## License
 
