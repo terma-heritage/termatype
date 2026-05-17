@@ -38,7 +38,8 @@ export function StatusBar({
   const [docStats, setDocStats] = useState({ words: 0, chars: 0, charsNoSpaces: 0, sentences: 0, paragraphs: 0, tibetanSyllables: 0 })
   useEffect(() => {
     if (!editor) return
-    const update = () => {
+    let timer: ReturnType<typeof setTimeout> | null = null
+    const computeStats = () => {
       const text = editor.state.doc.textContent
       const charsNoSpaces = text.replace(/\s/g, '').length
       const sentences = text.split(/[.!?།]+/).filter(s => s.trim()).length
@@ -49,9 +50,13 @@ export function StatusBar({
         : 0
       setDocStats({ words: countWords(text), chars: text.length, charsNoSpaces, sentences, paragraphs, tibetanSyllables })
     }
-    update()
+    const update = () => {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(computeStats, 300)
+    }
+    computeStats()
     editor.on('update', update)
-    return () => { editor.off('update', update) }
+    return () => { editor.off('update', update); if (timer) clearTimeout(timer) }
   }, [editor])
 
   const { words, chars, charsNoSpaces, sentences, paragraphs, tibetanSyllables } = docStats

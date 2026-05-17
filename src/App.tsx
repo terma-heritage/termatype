@@ -338,7 +338,7 @@ export default function App() {
     editor.setEditable(!readingMode)
   }, [editor, readingMode])
 
-  const { state: docState, handleNew, handleOpen, handleOpenPath, handleSave, handleSaveAs } = useDocument(editor)
+  const { state: docState, handleNew, handleOpen, handleOpenPath, handleSave, handleSaveAs, clearFileError } = useDocument(editor)
 
   const handlePrint = useCallback(() => { printDocument() }, [])
   const handleExportPDF = useCallback(() => { exportPDF(docState.fileName) }, [docState.fileName])
@@ -566,6 +566,13 @@ export default function App() {
           }}
           onClose={() => setShowHistory(false)}
         />
+      )}
+
+      {docState.fileError && (
+        <div className="file-error-toast" onClick={clearFileError}>
+          {docState.fileError}
+          <button onClick={clearFileError}>✕</button>
+        </div>
       )}
 
       {showAbout && (

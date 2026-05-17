@@ -64,12 +64,18 @@ const MAX_INPUT_CHARS: usize = 2000;
 
 fn truncate_input(text: &str) -> &str {
     if text.len() <= MAX_INPUT_CHARS {
-        text
-    } else {
-        match text[..MAX_INPUT_CHARS].rfind(|c: char| c.is_whitespace()) {
-            Some(pos) => &text[..pos],
-            None => &text[..MAX_INPUT_CHARS],
-        }
+        return text;
+    }
+    let boundary = text
+        .char_indices()
+        .take_while(|(i, _)| *i <= MAX_INPUT_CHARS)
+        .last()
+        .map(|(i, c)| i + c.len_utf8())
+        .unwrap_or(text.len());
+    let slice = &text[..boundary];
+    match slice.rfind(|c: char| c.is_whitespace()) {
+        Some(pos) => &text[..pos],
+        None => slice,
     }
 }
 

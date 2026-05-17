@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'termatype-snapshots'
 const MAX_SNAPSHOTS = 50
+const MAX_CONTENT_SIZE = 500_000
 
 export interface Snapshot {
   id: string
@@ -19,10 +20,24 @@ function getSnapshots(): Snapshot[] {
 }
 
 function saveSnapshots(snapshots: Snapshot[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots))
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots))
+  } catch {
+    while (snapshots.length > 1) {
+      snapshots.pop()
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots))
+        return
+      } catch {
+        // keep removing until it fits
+      }
+    }
+  }
 }
 
-export function createSnapshot(fileName: string, content: string, label?: string): Snapshot {
+export function createSnapshot(fileName: string, content: string, label?: string): Snapshot | null {
+  if (content.length > MAX_CONTENT_SIZE) return null
+
   const snapshots = getSnapshots()
   const snapshot: Snapshot = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,

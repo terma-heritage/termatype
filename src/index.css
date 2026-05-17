@@ -3235,3 +3235,36 @@ html, body {
   background: var(--tt-gray-dark-a-100, rgba(255, 255, 255, 0.06));
 }
 
+.file-error-toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #dc3545;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-family: var(--tt-font-ui);
+  font-size: 13px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.file-error-toast button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.8;
+}
+
+.file-error-toast button:hover {
+  opacity: 1;
+}
+

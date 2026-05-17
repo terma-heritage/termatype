@@ -161,7 +161,11 @@ export function FindReplace({
     const { tr } = editor.view.state
     for (let i = state.results.length - 1; i >= 0; i--) {
       const match = state.results[i]
-      tr.replaceWith(match.from, match.to, editor.schema.text(replaceTerm))
+      if (replaceTerm) {
+        tr.replaceWith(match.from, match.to, editor.schema.text(replaceTerm))
+      } else {
+        tr.delete(match.from, match.to)
+      }
     }
     editor.view.dispatch(tr)
   }, [editor, getState, replaceTerm])

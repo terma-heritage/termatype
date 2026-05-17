@@ -4,10 +4,57 @@ use std::path::PathBuf;
 
 use crate::docx;
 
+const MAX_FILE_SIZE: u64 = 100 * 1024 * 1024; // 100 MB
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DocumentContent {
     pub content: serde_json::Value,
     pub path: Option<String>,
+}
+
+fn validate_file_path(path: &str) -> Result<PathBuf, String> {
+    let path_buf = PathBuf::from(path);
+
+    let canonical = path_buf
+        .canonicalize()
+        .map_err(|e| format!("Invalid path: {}", e))?;
+
+    if canonical.components().any(|c| c.as_os_str() == "..") {
+        return Err("Path traversal not allowed".to_string());
+    }
+
+    Ok(canonical)
+}
+
+fn validate_write_path(path: &str) -> Result<PathBuf, String> {
+    let path_buf = PathBuf::from(path);
+
+    if let Some(parent) = path_buf.parent() {
+        let canonical_parent = parent
+            .canonicalize()
+            .map_err(|e| format!("Invalid parent path: {}", e))?;
+
+        if canonical_parent.components().any(|c| c.as_os_str() == "..") {
+            return Err("Path traversal not allowed".to_string());
+        }
+    }
+
+    Ok(path_buf)
+}
+
+fn check_file_size(path: &PathBuf) -> Result<(), String> {
+    let metadata = fs::metadata(path)
+        .map_err(|e| format!("Failed to read file metadata: {}", e))?;
+
+    if metadata.len() > MAX_FILE_SIZE {
+        return Err(format!(
+            "File too large ({:.1} MB). Maximum supported size is {:.0} MB.",
+            metadata.len() as f64 / 1024.0 / 1024.0,
+            MAX_FILE_SIZE as f64 / 1024.0 / 1024.0
+        ));
+    }
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -26,7 +73,9 @@ pub fn new_document() -> Result<serde_json::Value, String> {
 
 #[tauri::command]
 pub fn read_file(path: String) -> Result<DocumentContent, String> {
-    let path_buf = PathBuf::from(&path);
+    let path_buf = validate_file_path(&path)?;
+    check_file_size(&path_buf)?;
+
     let ext = path_buf
         .extension()
         .and_then(|e| e.to_str())
@@ -42,7 +91,7 @@ pub fn read_file(path: String) -> Result<DocumentContent, String> {
             })
         }
         "txt" | "md" | "html" => {
-            let text = fs::read_to_string(&path)
+            let text = fs::read_to_string(&path_buf)
                 .map_err(|e| format!("Failed to read file: {}", e))?;
 
             let paragraphs: Vec<serde_json::Value> = text
@@ -87,7 +136,8 @@ pub fn read_file(path: String) -> Result<DocumentContent, String> {
 
 #[tauri::command]
 pub fn write_file(path: String, content: serde_json::Value) -> Result<(), String> {
-    let path_buf = PathBuf::from(&path);
+    let path_buf = validate_write_path(&path)?;
+
     let ext = path_buf
         .extension()
         .and_then(|e| e.to_str())
@@ -98,15 +148,15 @@ pub fn write_file(path: String, content: serde_json::Value) -> Result<(), String
         "docx" => docx::write_docx(&path, &content),
         "txt" => {
             let text = extract_plain_text(&content);
-            fs::write(&path, text).map_err(|e| format!("Failed to write file: {}", e))
+            fs::write(&path_buf, text).map_err(|e| format!("Failed to write file: {}", e))
         }
         "md" => {
             let text = extract_plain_text(&content);
-            fs::write(&path, text).map_err(|e| format!("Failed to write file: {}", e))
+            fs::write(&path_buf, text).map_err(|e| format!("Failed to write file: {}", e))
         }
         "html" => {
             let text = extract_plain_text(&content);
-            fs::write(&path, text).map_err(|e| format!("Failed to write file: {}", e))
+            fs::write(&path_buf, text).map_err(|e| format!("Failed to write file: {}", e))
         }
         _ => Err(format!("Unsupported file format: .{}", ext)),
     }
@@ -115,7 +165,10 @@ pub fn write_file(path: String, content: serde_json::Value) -> Result<(), String
 #[cfg(debug_assertions)]
 #[tauri::command]
 pub fn debug_docx(path: String) -> Result<String, String> {
-    let mut file = fs::File::open(&path).map_err(|e| format!("Failed to open: {}", e))?;
+    let path_buf = validate_file_path(&path)?;
+    check_file_size(&path_buf)?;
+
+    let mut file = fs::File::open(&path_buf).map_err(|e| format!("Failed to open: {}", e))?;
     let mut buf = Vec::new();
     use std::io::Read;
     file.read_to_end(&mut buf)

@@ -47,7 +47,12 @@ fn get_plugins_dir(app: &AppHandle) -> Result<PathBuf, String> {
     Ok(plugins_dir)
 }
 
+const VALID_PLUGIN_IDS: &[&str] = &["terma-dictionary", "terma-assistant"];
+
 fn get_plugin_data_path(app: &AppHandle, plugin_id: &str) -> Result<PathBuf, String> {
+    if !VALID_PLUGIN_IDS.contains(&plugin_id) {
+        return Err(format!("Unknown plugin: {}", plugin_id));
+    }
     let plugins_dir = get_plugins_dir(app)?;
     let plugin_dir = plugins_dir.join(plugin_id);
     fs::create_dir_all(&plugin_dir)
@@ -185,35 +190,44 @@ pub async fn install_plugin(
         .await
         .map_err(|e| format!("Failed to create file: {}", e))?;
 
-    while let Some(chunk) = stream.next().await {
-        let chunk = chunk.map_err(|e| format!("Stream error: {}", e))?;
-        file.write_all(&chunk)
-            .await
-            .map_err(|e| format!("Write error: {}", e))?;
-        downloaded += chunk.len() as u64;
+    let download_result: Result<(), String> = async {
+        while let Some(chunk) = stream.next().await {
+            let chunk = chunk.map_err(|e| format!("Stream error: {}", e))?;
+            file.write_all(&chunk)
+                .await
+                .map_err(|e| format!("Write error: {}", e))?;
+            downloaded += chunk.len() as u64;
 
-        if total_size > 0 {
-            let progress = (downloaded as f64 / total_size as f64 * 100.0) as u32;
-            let _ = window.emit(
-                "plugin-download-progress",
-                serde_json::json!({
-                    "pluginId": plugin.id,
-                    "progress": progress,
-                    "downloaded": downloaded,
-                    "total": total_size,
-                }),
-            );
+            if total_size > 0 {
+                let progress = (downloaded as f64 / total_size as f64 * 100.0) as u32;
+                let _ = window.emit(
+                    "plugin-download-progress",
+                    serde_json::json!({
+                        "pluginId": plugin.id,
+                        "progress": progress,
+                        "downloaded": downloaded,
+                        "total": total_size,
+                    }),
+                );
+            }
         }
+
+        file.flush()
+            .await
+            .map_err(|e| format!("Flush error: {}", e))?;
+        drop(file);
+
+        tokio::fs::rename(&tmp_file, &data_file)
+            .await
+            .map_err(|e| format!("Failed to finalize download: {}", e))?;
+
+        Ok(())
+    }.await;
+
+    if let Err(e) = &download_result {
+        let _ = tokio::fs::remove_file(&tmp_file).await;
+        return Err(e.clone());
     }
-
-    file.flush()
-        .await
-        .map_err(|e| format!("Flush error: {}", e))?;
-    drop(file);
-
-    tokio::fs::rename(&tmp_file, &data_file)
-        .await
-        .map_err(|e| format!("Failed to finalize download: {}", e))?;
 
     let _ = window.emit(
         "plugin-installed",
@@ -361,9 +375,7 @@ fn fts_lookup(conn: &Connection, query: &str) -> Result<Vec<DictResult>, String>
 
     let mut results = Vec::new();
     for row in rows {
-        if let Ok(r) = row {
-            results.push(r);
-        }
+        results.push(row.map_err(|e| format!("FTS row error: {}", e))?);
     }
     Ok(results)
 }

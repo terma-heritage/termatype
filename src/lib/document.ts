@@ -10,6 +10,7 @@ export interface DocumentState {
   lastSaved: Date | null
   fileName: string
   autoSaveError: string | null
+  fileError: string | null
 }
 
 export function useDocument(editor: Editor | null) {
@@ -19,6 +20,7 @@ export function useDocument(editor: Editor | null) {
     lastSaved: null,
     fileName: 'Untitled',
     autoSaveError: null,
+    fileError: null,
   })
   const stateRef = useRef(state)
   stateRef.current = state
@@ -36,6 +38,10 @@ export function useDocument(editor: Editor | null) {
     }
   }, [editor])
 
+  const clearFileError = useCallback(() => {
+    setState((prev) => ({ ...prev, fileError: null }))
+  }, [])
+
   const handleNew = useCallback(async () => {
     if (!editor) return
     const current = stateRef.current
@@ -51,6 +57,7 @@ export function useDocument(editor: Editor | null) {
       lastSaved: null,
       fileName: 'Untitled',
       autoSaveError: null,
+      fileError: null,
     })
   }, [editor])
 
@@ -69,10 +76,13 @@ export function useDocument(editor: Editor | null) {
         isDirty: false,
         lastSaved: new Date(),
         fileName,
+        autoSaveError: null,
+        fileError: null,
       })
       if (result.path) addRecentFile(result.path)
     } catch (err) {
       console.error('Failed to open file:', err)
+      setState((prev) => ({ ...prev, fileError: `Failed to open file: ${err}` }))
     }
   }, [editor])
 
@@ -87,10 +97,13 @@ export function useDocument(editor: Editor | null) {
         isDirty: false,
         lastSaved: new Date(),
         fileName,
+        autoSaveError: null,
+        fileError: null,
       })
       addRecentFile(path)
     } catch (err) {
       console.error('Failed to open file:', err)
+      setState((prev) => ({ ...prev, fileError: `Failed to open file: ${err}` }))
     }
   }, [editor])
 
@@ -108,10 +121,13 @@ export function useDocument(editor: Editor | null) {
         isDirty: false,
         lastSaved: new Date(),
         fileName,
+        autoSaveError: null,
+        fileError: null,
       })
       addRecentFile(path)
     } catch (err) {
       console.error('Failed to save file:', err)
+      setState((prev) => ({ ...prev, fileError: `Failed to save file: ${err}` }))
     }
   }, [editor])
 
@@ -129,9 +145,11 @@ export function useDocument(editor: Editor | null) {
           ...prev,
           isDirty: false,
           lastSaved: new Date(),
+          fileError: null,
         }))
       } catch (err) {
         console.error('Failed to save file:', err)
+        setState((prev) => ({ ...prev, fileError: `Failed to save: ${err}` }))
       }
     } else {
       await handleSaveAs()
@@ -183,5 +201,6 @@ export function useDocument(editor: Editor | null) {
     handleOpenPath,
     handleSave,
     handleSaveAs,
+    clearFileError,
   }
 }

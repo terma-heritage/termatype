@@ -90,12 +90,15 @@ export function printDocument() {
     container.appendChild(clonedContent.firstChild)
   }
 
+  const cleanup = () => {
+    container?.remove()
+    styleEl?.remove()
+    window.removeEventListener('afterprint', cleanup)
+  }
+  window.addEventListener('afterprint', cleanup)
+
   requestAnimationFrame(() => {
     window.print()
-    setTimeout(() => {
-      container?.remove()
-      styleEl?.remove()
-    }, 1000)
   })
 }
 
