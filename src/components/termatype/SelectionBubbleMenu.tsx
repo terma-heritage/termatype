@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { type Editor } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
 import { MarkButton } from '@/components/tiptap-ui/mark-button'

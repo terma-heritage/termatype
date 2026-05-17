@@ -35,7 +35,7 @@ function getDisplayName(fontFamily: string | null): string {
   if (!fontFamily) return "Font"
   const match = FONT_FAMILIES.find((f) => f.value === fontFamily)
   if (match) return match.label
-  const first = fontFamily.split(",")[0].trim().replace(/['"]/g, "")
+  const first = (fontFamily.split(",")[0] ?? fontFamily).trim().replace(/['"]/g, "")
   return first
 }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import type { Editor } from '@tiptap/react'
 
 const KEYBOARD_ROWS = [

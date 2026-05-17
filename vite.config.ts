@@ -12,14 +12,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          tiptap: [
-            '@tiptap/core',
-            '@tiptap/react',
-            '@tiptap/pm',
-            '@tiptap/starter-kit',
-          ],
+        manualChunks(id: string) {
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
+            return 'vendor'
+          }
+          if (id.includes('node_modules/@tiptap')) {
+            return 'tiptap'
+          }
         },
       },
     },

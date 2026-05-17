@@ -207,9 +207,10 @@ export async function exportEPUB(fileName: string) {
     hr { border: none; border-top: 1px solid #ddd; margin: 12pt 0; }
   `
 
-  const { EPub } = await import('epub-gen-memory')
+  const epubMod = await import('epub-gen-memory')
+  const epub = epubMod.default
 
-  const epubBuffer = await EPub(
+  const epubBuffer = await epub(
     {
       title: epubName,
       author: 'TermaType',
@@ -222,7 +223,7 @@ export async function exportEPUB(fileName: string) {
     }))
   )
 
-  const blob = new Blob([epubBuffer], { type: 'application/epub+zip' })
+  const blob = new Blob([new Uint8Array(epubBuffer)], { type: 'application/epub+zip' })
 
   try {
     const { save } = await import('@tauri-apps/plugin-dialog')

@@ -9,8 +9,8 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-import('@tauri-apps/api/window').then(({ getCurrentWebviewWindow, WebviewWindow }) => {
-  getCurrentWebviewWindow().show()
-  const splash = WebviewWindow.getByLabel('splashscreen')
+import('@tauri-apps/api/window').then((mod: any) => {
+  mod.getCurrentWebviewWindow().show()
+  const splash = mod.WebviewWindow.getByLabel('splashscreen')
   splash?.close()
 }).catch(() => {})

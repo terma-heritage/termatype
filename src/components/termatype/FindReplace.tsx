@@ -115,7 +115,7 @@ export function FindReplace({
         results,
         currentIndex,
       })
-      if (results.length > 0) {
+      if (results.length > 0 && results[0]) {
         scrollToMatch(results[0])
       }
     },
@@ -136,22 +136,25 @@ export function FindReplace({
     const state = getState()
     if (state.results.length === 0) return
     const next = (state.currentIndex + 1) % state.results.length
+    const match = state.results[next]
     dispatchFindState(editor, { ...state, currentIndex: next })
-    scrollToMatch(state.results[next])
+    if (match) scrollToMatch(match)
   }, [editor, getState, scrollToMatch])
 
   const goToPrev = useCallback(() => {
     const state = getState()
     if (state.results.length === 0) return
     const prev = (state.currentIndex - 1 + state.results.length) % state.results.length
+    const match = state.results[prev]
     dispatchFindState(editor, { ...state, currentIndex: prev })
-    scrollToMatch(state.results[prev])
+    if (match) scrollToMatch(match)
   }, [editor, getState, scrollToMatch])
 
   const replaceOne = useCallback(() => {
     const state = getState()
     if (state.currentIndex < 0 || state.results.length === 0) return
     const match = state.results[state.currentIndex]
+    if (!match) return
     editor.chain().focus().setTextSelection(match).insertContent(replaceTerm).run()
   }, [editor, getState, replaceTerm])
 
@@ -161,6 +164,7 @@ export function FindReplace({
     const { tr } = editor.view.state
     for (let i = state.results.length - 1; i >= 0; i--) {
       const match = state.results[i]
+      if (!match) continue
       if (replaceTerm) {
         tr.replaceWith(match.from, match.to, editor.schema.text(replaceTerm))
       } else {

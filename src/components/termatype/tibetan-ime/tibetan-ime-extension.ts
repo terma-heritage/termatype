@@ -12,7 +12,7 @@ interface IMEState {
 
 export function createTibetanIMEExtension(
   getLang: () => Lang,
-  onToggle: () => void
+  _onToggle: () => void
 ) {
   return Extension.create({
     name: 'tibetanIME',
