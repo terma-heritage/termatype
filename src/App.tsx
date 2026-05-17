@@ -52,7 +52,6 @@ import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindRe
 import { PluginSettings } from '@/components/termatype/PluginSettings'
 import { StatusBar } from '@/components/termatype/StatusBar'
 import { KeyboardShortcutsPanel } from '@/components/termatype/KeyboardShortcutsPanel'
-import { DocumentOutline } from '@/components/termatype/DocumentOutline'
 import { VersionHistoryPanel } from '@/components/termatype/VersionHistoryPanel'
 import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype/ToolbarContent'
 
@@ -94,9 +93,7 @@ const WELCOME_CONTENT = {
         { type: 'text', text: ' Tibetan. Free and open source, forever.' },
       ],
     },
-    { type: 'paragraph', content: [] },
     { type: 'horizontalRule' },
-    { type: 'paragraph', content: [] },
     {
       type: 'heading',
       attrs: { level: 2 },
@@ -230,7 +227,7 @@ export default function App() {
   const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link'>('main')
   const [showFindReplace, setShowFindReplace] = useState(false)
   const [showPluginSettings, setShowPluginSettings] = useState(false)
-  const [sidePanel, setSidePanel] = useState<{ open: boolean; tab: 'assistant' | 'dictionary' | 'wylie' | 'outline' }>({ open: false, tab: 'assistant' })
+  const [sidePanel, setSidePanel] = useState<{ open: boolean; tab: 'assistant' | 'dictionary' | 'wylie' }>({ open: false, tab: 'assistant' })
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [zoom, setZoom] = useState(100)
   const [lang, setLang] = useState<Lang>('en')
@@ -428,6 +425,7 @@ export default function App() {
           onExtensions={() => setShowPluginSettings(true)}
           onDictionary={() => setSidePanel((s) => s.open && s.tab === 'dictionary' ? { ...s, open: false } : { open: true, tab: 'dictionary' })}
           onAssistant={() => setSidePanel((s) => s.open && s.tab === 'assistant' ? { ...s, open: false } : { open: true, tab: 'assistant' })}
+          onWylie={() => setSidePanel((s) => s.open && s.tab === 'wylie' ? { ...s, open: false } : { open: true, tab: 'wylie' })}
           onFocusMode={() => setFocusMode((v) => !v)}
           onTypewriterMode={() => setTypewriterMode((v) => !v)}
           onReadingMode={() => setReadingMode((v) => !v)}
@@ -483,7 +481,6 @@ export default function App() {
                 <button type="button" className={`side-panel-tab${sidePanel.tab === 'assistant' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'assistant' }))}>Assistant</button>
                 <button type="button" className={`side-panel-tab${sidePanel.tab === 'dictionary' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'dictionary' }))}>Dictionary</button>
                 <button type="button" className={`side-panel-tab${sidePanel.tab === 'wylie' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'wylie' }))}>Wylie</button>
-                <button type="button" className={`side-panel-tab${sidePanel.tab === 'outline' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'outline' }))}>Outline</button>
                 <button type="button" className="side-panel-close" onClick={() => setSidePanel((s) => ({ ...s, open: false }))} aria-label="Close panel">×</button>
               </div>
               <div className="side-panel-content">
@@ -491,7 +488,6 @@ export default function App() {
                   {sidePanel.tab === 'dictionary' && <DictionarySidebar editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
                   {sidePanel.tab === 'assistant' && <TermaAssistant editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
                   {sidePanel.tab === 'wylie' && <WylieReference />}
-                  {sidePanel.tab === 'outline' && <DocumentOutline editor={editor} />}
                 </Suspense>
               </div>
             </aside>
