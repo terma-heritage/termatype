@@ -43,13 +43,30 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "dmg"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "category": "Productivity",
+    "shortDescription": "Beautiful bilingual writing for English and Tibetan",
+    "longDescription": "TermaType is a modern desktop writing application designed for bilingual English-Tibetan documents. Features include EWTS Tibetan input, an integrated Tibetan-English dictionary, local AI writing assistance, and export to DOCX, PDF, and EPUB.",
+    "copyright": "© 2024-2026 TermaType contributors",
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": false,
+        "installerIcon": "icons/icon.ico",
+        "headerImage": null,
+        "sidebarImage": null
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "signingIdentity": null,
+      "entitlements": null
+    }
   }
 }

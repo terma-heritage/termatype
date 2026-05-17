@@ -83,6 +83,12 @@ const WELCOME_CONTENT = {
     {
       type: 'paragraph',
       content: [
+        { type: 'text', text: 'གཏེར་མ་ཡིག་སྦྱོར་' },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
         { type: 'text', text: 'A beautiful writing app for English and ' },
         { type: 'text', text: 'བོད་ཡིག' },
         { type: 'text', text: ' Tibetan. Free and open source, forever.' },
@@ -579,6 +585,7 @@ export default function App() {
         <div className="about-overlay" onClick={() => setShowAbout(false)}>
           <div className="about-dialog" onClick={(e) => e.stopPropagation()}>
             <h2>TermaType</h2>
+            <p className="about-tibetan">གཏེར་མ་ཡིག་སྦྱོར་</p>
             <p className="about-version">Version 0.1.0</p>
             <p className="about-tagline">Beautiful bilingual writing. Free forever.</p>
             <p className="about-license">MIT License</p>
