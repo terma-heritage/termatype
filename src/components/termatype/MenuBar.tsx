@@ -139,6 +139,7 @@ export function MenuBar({
   onFocusMode,
   onTypewriterMode,
   onShortcuts,
+  onWyliePractice,
   onAbout,
   focusMode,
   typewriterMode,
@@ -168,6 +169,7 @@ export function MenuBar({
   onFocusMode: () => void
   onTypewriterMode: () => void
   onShortcuts: () => void
+  onWyliePractice: () => void
   onAbout: () => void
   focusMode: boolean
   typewriterMode: boolean
@@ -447,13 +449,15 @@ export function MenuBar({
     {
       label: 'Help',
       items: [
+        { label: 'Typing Tibetan (Practice)', action: onWyliePractice },
+        { separator: true },
         { label: 'About TermaType', action: onAbout },
       ],
     },
   ], [editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
       onNew, onNewFromTemplate, onOpen, onOpenRecent, onSave, onSaveAs, onHistory, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
-      onExtensions, onDictionary, onAssistant, onWylie, onShortcuts, onAbout])
+      onExtensions, onDictionary, onAssistant, onWylie, onShortcuts, onWyliePractice, onAbout])
 
   return (
     <div className="menubar">

@@ -58,6 +58,7 @@ import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype
 const DictionarySidebar = lazy(() => import('@/components/termatype/DictionarySidebar').then(m => ({ default: m.DictionarySidebar })))
 const TermaAssistant = lazy(() => import('@/components/termatype/TermaAssistant').then(m => ({ default: m.TermaAssistant })))
 const WylieReference = lazy(() => import('@/components/termatype/WylieReference').then(m => ({ default: m.WylieReference })))
+const WyliePractice = lazy(() => import('@/components/termatype/WyliePractice').then(m => ({ default: m.WyliePractice })))
 
 import { handleImageUpload, MAX_FILE_SIZE } from '@/lib/tiptap-utils'
 import { useDocument } from '@/lib/document'
@@ -237,6 +238,7 @@ export default function App() {
   const [readingMode, setReadingMode] = useState(false)
   const [showLinkInput, setShowLinkInput] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
+  const [showWyliePractice, setShowWyliePractice] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
   const toolbarRef = useRef<HTMLDivElement>(null)
 
@@ -431,6 +433,7 @@ export default function App() {
           onReadingMode={() => setReadingMode((v) => !v)}
           readingMode={readingMode}
           onShortcuts={() => setShowShortcuts((v) => !v)}
+          onWyliePractice={() => setShowWyliePractice(true)}
           onAbout={() => setShowAbout(true)}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
@@ -575,6 +578,12 @@ export default function App() {
           {docState.fileError}
           <button onClick={clearFileError}>✕</button>
         </div>
+      )}
+
+      {showWyliePractice && (
+        <Suspense fallback={null}>
+          <WyliePractice onClose={() => setShowWyliePractice(false)} />
+        </Suspense>
       )}
 
       {showAbout && (
