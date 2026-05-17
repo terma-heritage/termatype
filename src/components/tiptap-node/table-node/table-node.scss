@@ -1,0 +1,82 @@
+.tiptap.ProseMirror {
+  --tt-table-border: var(--tt-gray-light-a-200);
+  --tt-table-header-bg: var(--tt-gray-light-a-50);
+  --tt-table-selected-bg: rgba(184, 92, 63, 0.08);
+  --tt-table-grip: var(--tt-gray-light-a-300);
+  --tt-table-grip-hover: var(--tt-brand-color-500);
+
+  .dark & {
+    --tt-table-border: var(--tt-gray-dark-a-200);
+    --tt-table-header-bg: var(--tt-gray-dark-a-50);
+    --tt-table-selected-bg: rgba(216, 136, 101, 0.1);
+    --tt-table-grip: var(--tt-gray-dark-a-300);
+    --tt-table-grip-hover: var(--tt-brand-color-400);
+  }
+
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin: 1em 0;
+    overflow: hidden;
+
+    td,
+    th {
+      min-width: 1em;
+      border: 1px solid var(--tt-table-border);
+      padding: 0.5em 0.75em;
+      vertical-align: top;
+      box-sizing: border-box;
+      position: relative;
+
+      > * {
+        margin-bottom: 0;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+
+    th {
+      font-weight: 600;
+      text-align: left;
+      background: var(--tt-table-header-bg);
+    }
+
+    .selectedCell::after {
+      z-index: 2;
+      position: absolute;
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: var(--tt-table-selected-bg);
+      pointer-events: none;
+    }
+
+    .column-resize-handle {
+      position: absolute;
+      right: -2px;
+      top: 0;
+      bottom: -2px;
+      width: 4px;
+      background-color: var(--tt-table-grip-hover);
+      pointer-events: none;
+    }
+  }
+
+  &.resize-cursor {
+    cursor: col-resize;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+    margin: 1em 0;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+  }
+}

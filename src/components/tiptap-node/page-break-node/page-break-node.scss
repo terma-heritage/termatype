@@ -1,0 +1,41 @@
+div[data-type="pageBreak"] {
+  position: relative;
+  height: 2px;
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 2px dashed var(--border-color, #ccc);
+  cursor: pointer;
+  user-select: none;
+
+  &::after {
+    content: "Page Break";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--editor-bg, #fff);
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted, #999);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &.ProseMirror-selectednode {
+    border-top-color: var(--accent-color, #B85C3F);
+
+    &::after {
+      color: var(--accent-color, #B85C3F);
+    }
+  }
+}
+
+@media print {
+  div[data-type="pageBreak"] {
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    border: none;
+    page-break-after: always;
+  }
+}

@@ -1,0 +1,66 @@
+.tiptap.ProseMirror {
+  sup .footnote-ref {
+    font-size: 0.75em;
+    font-weight: 600;
+    color: var(--accent-color, #B85C3F);
+    text-decoration: none;
+    cursor: pointer;
+    vertical-align: super;
+    line-height: 0;
+    padding: 0 1px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  sup {
+    &.ProseMirror-selectednode .footnote-ref {
+      background: var(--accent-color, #B85C3F);
+      color: white;
+      border-radius: 2px;
+      padding: 0 3px;
+    }
+  }
+
+  ol.footnotes {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color, #ddd);
+    font-size: 0.875em;
+    color: var(--text-muted, #666);
+    counter-reset: footnote-counter;
+    list-style: none;
+    padding-left: 0;
+
+    > li {
+      counter-increment: footnote-counter;
+      padding-left: 1.5em;
+      position: relative;
+      margin-bottom: 0.5em;
+
+      &::before {
+        content: counter(footnote-counter) ".";
+        position: absolute;
+        left: 0;
+        font-weight: 600;
+        color: var(--accent-color, #B85C3F);
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+@media print {
+  .tiptap.ProseMirror ol.footnotes,
+  #termatype-print-container ol.footnotes {
+    margin-top: 1.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #ccc;
+    font-size: 9pt;
+  }
+}
