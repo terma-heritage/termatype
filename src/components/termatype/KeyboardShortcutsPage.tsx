@@ -1,6 +1,3 @@
-import { useEffect, useRef } from 'react'
-import { useFocusTrap } from '@/hooks/use-focus-trap'
-
 const SHORTCUTS = [
   { category: 'File', items: [
     { keys: 'Ctrl+N', desc: 'New document' },
@@ -42,31 +39,17 @@ const SHORTCUTS = [
   ]},
 ]
 
-export function KeyboardShortcutsPanel({ onClose }: { onClose: () => void }) {
-  const panelRef = useRef<HTMLDivElement>(null)
-  useFocusTrap(panelRef)
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
-
+export function KeyboardShortcutsPage() {
   return (
-    <div className="shortcuts-overlay" onClick={onClose}>
-      <div className="shortcuts-panel" ref={panelRef} onClick={(e) => e.stopPropagation()}>
-        <div className="shortcuts-header">
-          <h3>Keyboard Shortcuts</h3>
-          <button className="shortcuts-close" onClick={onClose} aria-label="Close shortcuts">✕</button>
-        </div>
-        <div className="shortcuts-body">
+    <div className="help-page">
+      <div className="help-page-content">
+        <h1>Keyboard Shortcuts</h1>
+        <div className="shortcuts-grid">
           {SHORTCUTS.map(({ category, items }) => (
-            <div key={category} className="shortcuts-category">
-              <h4>{category}</h4>
+            <div key={category} className="shortcuts-page-category">
+              <h3>{category}</h3>
               {items.map(({ keys, desc }) => (
-                <div key={keys} className="shortcuts-row">
+                <div key={keys} className="shortcuts-page-row">
                   <kbd>{keys}</kbd>
                   <span>{desc}</span>
                 </div>

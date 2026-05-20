@@ -47,7 +47,7 @@ fn get_plugins_dir(app: &AppHandle) -> Result<PathBuf, String> {
     Ok(plugins_dir)
 }
 
-const VALID_PLUGIN_IDS: &[&str] = &["terma-dictionary", "terma-assistant"];
+const VALID_PLUGIN_IDS: &[&str] = &["terma-dictionary", "terma-assistant", "terma-translator"];
 
 fn get_plugin_data_path(app: &AppHandle, plugin_id: &str) -> Result<PathBuf, String> {
     if !VALID_PLUGIN_IDS.contains(&plugin_id) {
@@ -85,6 +85,16 @@ fn get_plugin_manifest() -> Vec<PluginInfo> {
             download_url: "https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf".to_string(),
             file_name: "gemma-3-1b-it-Q4_K_M.gguf".to_string(),
             size_mb: 806.0,
+            installed: false,
+        },
+        PluginInfo {
+            id: "terma-translator".to_string(),
+            name: "Terma Translator".to_string(),
+            description: "Tibetan-English translation powered by MITRA (Sebastian Nehrdich & Kurt Keutzer, Berkeley AI Research). Translate selected text between Tibetan and English — all offline.".to_string(),
+            version: "1.0.0".to_string(),
+            download_url: "https://huggingface.co/mradermacher/gemma-2-mitra-it-i1-GGUF/resolve/main/gemma-2-mitra-it.i1-Q4_K_M.gguf".to_string(),
+            file_name: "gemma-2-mitra-it.i1-Q4_K_M.gguf".to_string(),
+            size_mb: 5900.0,
             installed: false,
         },
     ]
@@ -378,6 +388,49 @@ fn fts_lookup(conn: &Connection, query: &str) -> Result<Vec<DictResult>, String>
         results.push(row.map_err(|e| format!("FTS row error: {}", e))?);
     }
     Ok(results)
+}
+
+#[tauri::command]
+pub fn spellcheck_tibetan(
+    app: AppHandle,
+    words: Vec<String>,
+    db: State<'_, Mutex<DictionaryDb>>,
+) -> Result<Vec<String>, String> {
+    if words.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let mut db = db.lock().map_err(|e| format!("DB lock failed: {}", e))?;
+
+    if db.conn.is_none() {
+        let db_path = get_dictionary_db_path(&app)?;
+        if !db_path.exists() {
+            // Dictionary not installed — treat all words as valid (no false positives)
+            return Ok(vec![]);
+        }
+        db.conn = Some(open_dictionary(&db_path)?);
+    }
+
+    let conn = db.conn.as_ref().unwrap();
+    let mut stmt = conn
+        .prepare_cached("SELECT EXISTS(SELECT 1 FROM entries WHERE headword = ?1)")
+        .map_err(|e| format!("Prepare failed: {}", e))?;
+
+    let mut misspelled = Vec::new();
+    for word in &words {
+        let trimmed = word.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        let exists: bool = stmt
+            .query_row([trimmed], |row| row.get(0))
+            .map_err(|e| format!("Query failed: {}", e))?;
+        if !exists {
+            misspelled.push(word.clone());
+        }
+    }
+
+    Ok(misspelled)
 }
 
 #[tauri::command]

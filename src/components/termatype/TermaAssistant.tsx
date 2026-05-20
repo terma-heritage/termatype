@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { invoke } from '@/lib/safe-invoke'
+import { listen } from '@tauri-apps/api/event'
 import type { Editor } from '@tiptap/react'
 
 type TransformMode = 'fix' | 'rewrite' | 'enhance'
@@ -25,12 +26,57 @@ export function TermaAssistant({
   const [originalText, setOriginalText] = useState('')
   const [isWholeDoc, setIsWholeDoc] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [downloadProgress, setDownloadProgress] = useState<number | null>(null)
   const selectionRef = useRef<{ from: number; to: number } | null>(null)
 
   useEffect(() => {
     invoke<boolean>('get_plugin_status', { pluginId: 'terma-assistant' })
       .then((status) => setInstalled(status))
       .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    const unlisteners: (() => void)[] = []
+
+    listen<{ pluginId: string; progress: number }>('plugin-download-progress', (event) => {
+      if (!mounted || event.payload.pluginId !== 'terma-assistant') return
+      setDownloadProgress(event.payload.progress)
+    }).then((fn) => { if (mounted) unlisteners.push(fn); else fn() })
+
+    listen<{ pluginId: string }>('plugin-installed', (event) => {
+      if (!mounted || event.payload.pluginId !== 'terma-assistant') return
+      setDownloadProgress(null)
+      setInstalled(true)
+    }).then((fn) => { if (mounted) unlisteners.push(fn); else fn() })
+
+    return () => {
+      mounted = false
+      unlisteners.forEach((fn) => fn())
+    }
+  }, [])
+
+  const handleInstall = useCallback(async () => {
+    setError(null)
+    setDownloadProgress(0)
+    try {
+      await invoke('install_plugin', { pluginId: 'terma-assistant' })
+    } catch (e) {
+      setError(String(e))
+      setDownloadProgress(null)
+    }
+  }, [])
+
+  const handleUninstall = useCallback(async () => {
+    setError(null)
+    try {
+      await invoke('unload_assistant')
+      await invoke('uninstall_plugin', { pluginId: 'terma-assistant' })
+      setInstalled(false)
+      setModelLoaded(false)
+    } catch (e) {
+      setError(String(e))
+    }
   }, [])
 
   useEffect(() => {
@@ -122,9 +168,25 @@ export function TermaAssistant({
           <button className="assistant-close" onClick={onClose} aria-label="Close assistant">✕</button>
         </div>
         <div className="assistant-not-installed">
-          <p>Terma Assistant is not installed.</p>
-          <p>Go to <strong>View → Extensions</strong> to install.</p>
-          <p className="assistant-note">Requires ~800 MB download (Gemma 3 model)</p>
+          <p>AI writing assistant for grammar, spelling, and rewrites — all offline.</p>
+          {downloadProgress !== null ? (
+            <div className="plugin-inline-progress">
+              <div className="plugin-progress">
+                <div className="plugin-progress-bar" style={{ width: `${downloadProgress}%` }} />
+                <span>{downloadProgress}%</span>
+              </div>
+              <p className="assistant-note">Downloading assistant model...</p>
+              <p className="assistant-note">You can continue using other features while this downloads. The download will continue in the background.</p>
+            </div>
+          ) : (
+            <>
+              <button className="assistant-btn assistant-btn-primary plugin-inline-install" onClick={handleInstall}>
+                Install (~800 MB)
+              </button>
+              <p className="assistant-note">Powered by Gemma 3</p>
+            </>
+          )}
+          {error && <div className="assistant-error" style={{ marginTop: '8px' }}>{error}</div>}
         </div>
       </div>
     )
@@ -201,10 +263,15 @@ export function TermaAssistant({
                   <p><strong>100% Private &amp; Local</strong></p>
                   <p>This AI runs entirely on your computer. Your text never leaves your device and nothing is sent to the internet. Processing speed depends on your hardware.</p>
                 </div>
+                <p className="assistant-help-hint">If you encounter any problems or bugs, please contact <strong>info@termafoundation.org</strong></p>
               </div>
             )}
           </>
         )}
+
+        <div className="plugin-inline-uninstall-wrap">
+          <button className="plugin-inline-uninstall" onClick={handleUninstall}>Uninstall</button>
+        </div>
       </div>
     </div>
   )

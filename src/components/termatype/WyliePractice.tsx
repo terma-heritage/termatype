@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { WylieEngine } from './tibetan-ime/wylie-engine'
 
 const PRACTICE_LINES = [
@@ -25,102 +25,71 @@ function wylieToTibetan(wylie: string): string {
   return result
 }
 
-function PracticeLine({ line, index }: { line: typeof PRACTICE_LINES[0]; index: number }) {
+export function WyliePractice() {
   const [input, setInput] = useState('')
   const [tibetanOutput, setTibetanOutput] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
   const engineRef = useRef(new WylieEngine())
 
-  const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const raw = e.target.value
     setInput(raw)
     engineRef.current.reset()
-    const converted = wylieToTibetan(raw)
-    setTibetanOutput(converted)
+    setTibetanOutput(wylieToTibetan(raw))
   }, [])
 
-  const isCorrect = tibetanOutput.length > 0 && line.tibetan.startsWith(tibetanOutput)
-  const isComplete = tibetanOutput === line.tibetan
-
   return (
-    <div className={`practice-line${isComplete ? ' complete' : ''}`}>
-      <div className="practice-number">{index + 1}</div>
-      <div className="practice-content">
-        <div className="practice-wylie">{line.wylie}</div>
-        <div className="practice-target">{line.tibetan}</div>
-        <div className="practice-input-row">
-          <input
-            ref={inputRef}
-            type="text"
-            className={`practice-input${tibetanOutput.length > 0 ? (isCorrect ? ' correct' : ' incorrect') : ''}`}
+    <div className="help-page">
+      <div className="help-page-content">
+        <h1>Typing Tibetan with Wylie</h1>
+
+        <p>
+          TermaType uses the <strong>Wylie transliteration</strong> system to type Tibetan.
+          Wylie maps each Tibetan letter to roman characters, so you can type Tibetan with a
+          standard keyboard — no special layout needed. Just press <code>Ctrl+Space</code> in
+          the editor to switch to Tibetan mode and start typing.
+        </p>
+
+        <h2>Practice Text</h2>
+        <p className="help-muted">
+          A prayer for the long life of His Holiness the Dalai Lama. The Wylie is shown on the
+          left, and the Tibetan on the right.
+        </p>
+
+        <div className="practice-verses">
+          {PRACTICE_LINES.map((line, i) => (
+            <div key={i} className="practice-verse">
+              <span className="practice-verse-wylie">{line.wylie}</span>
+              <span className="practice-verse-tibetan">{line.tibetan}</span>
+            </div>
+          ))}
+        </div>
+
+        <h2>Try it</h2>
+        <p className="help-muted">
+          Type the Wylie text above into the box below. Spaces become tshegs (་) and <code>/</code> becomes a shad (།).
+        </p>
+
+        <div className="practice-tryit">
+          <textarea
+            className="practice-textarea"
             value={input}
             onChange={handleInput}
-            placeholder="Type the Wylie here..."
+            placeholder="Type Wylie here..."
+            rows={4}
             spellCheck={false}
             autoComplete="off"
           />
-          {isComplete && <span className="practice-check">&#10003;</span>}
-        </div>
-        {tibetanOutput && (
-          <div className={`practice-output${isCorrect ? ' correct' : ' incorrect'}`}>
-            {tibetanOutput}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-export function WyliePractice({ onClose }: { onClose: () => void }) {
-  const panelRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
-
-  return (
-    <div className="wylie-practice-overlay" onClick={onClose}>
-      <div className="wylie-practice-panel" ref={panelRef} onClick={(e) => e.stopPropagation()}>
-        <div className="wylie-practice-header">
-          <h2>Typing Tibetan with Wylie</h2>
-          <button className="wylie-practice-close" onClick={onClose} aria-label="Close">×</button>
+          {tibetanOutput && (
+            <div className="practice-result">
+              {tibetanOutput}
+            </div>
+          )}
         </div>
 
-        <div className="wylie-practice-body">
-          <div className="wylie-practice-intro">
-            <p>
-              TermaType uses the <strong>Wylie transliteration</strong> system to type Tibetan.
-              Wylie maps Tibetan letters to roman characters, so you can type Tibetan using a
-              standard keyboard — no special keyboard layout needed.
-            </p>
-            <p>
-              <strong>How it works:</strong> Type roman letters and they are automatically
-              converted to Tibetan script. The space bar inserts a tsheg (་) syllable separator.
-              Type <code>/</code> for a shad (།).
-            </p>
-          </div>
-
-          <h3>Practice</h3>
-          <p className="wylie-practice-instruction">
-            Type the Wylie text below into each input field. Your input will be converted to
-            Tibetan in real-time. Try to match the target Tibetan text.
-          </p>
-
-          <div className="practice-lines">
-            {PRACTICE_LINES.map((line, i) => (
-              <PracticeLine key={i} line={line} index={i} />
-            ))}
-          </div>
-
-          <div className="wylie-practice-tip">
-            <strong>Tip:</strong> In the editor, press <code>Ctrl+Space</code> to switch between
-            English and Tibetan mode. Open <strong>View → Wylie Reference</strong> for the full
-            mapping of roman keys to Tibetan letters.
-          </div>
+        <div className="help-tip">
+          <strong>Tip:</strong> In the editor, press <code>Ctrl+Space</code> to switch between
+          English and Tibetan. Open <strong>Help → Wylie Reference</strong> for the full
+          key mapping.
         </div>
       </div>
     </div>

@@ -54,10 +54,11 @@ export function StatusBar({
       if (timer) clearTimeout(timer)
       timer = setTimeout(computeStats, 300)
     }
+    // Recompute immediately (also triggers on tab switch since fileName changes)
     computeStats()
     editor.on('update', update)
     return () => { editor.off('update', update); if (timer) clearTimeout(timer) }
-  }, [editor])
+  }, [editor, fileName])
 
   const { words, chars, charsNoSpaces, sentences, paragraphs, tibetanSyllables } = docStats
   const readingTime = Math.max(1, Math.ceil(words / 200))
@@ -69,9 +70,9 @@ export function StatusBar({
       <span className="status-separator">|</span>
       <span className={`status-save${autoSaveError ? ' status-error' : ''}`} title={autoSaveError || undefined}>{getSaveStatus()}</span>
       <span className="status-spacer" />
-      <span className="status-count status-clickable" onClick={() => setShowStats(!showStats)} title="Click for detailed statistics">
+      <button className="status-count status-clickable" onClick={() => setShowStats(!showStats)} title="Click for detailed statistics">
         {words.toLocaleString()} words | {chars.toLocaleString()} chars | ~{readingTime} min | {pageCount} pg
-      </span>
+      </button>
       {showStats && (
         <div className="status-stats-popup">
           <div className="status-stats-row"><span>Words</span><span>{words.toLocaleString()}</span></div>
@@ -89,7 +90,9 @@ export function StatusBar({
       <span className="status-separator">|</span>
       <span className="status-count">{zoom}%</span>
       <span className="status-separator">|</span>
-      <span className="status-lang" onClick={onToggleLang} title="Click to switch language">{lang === 'bo' ? 'བོད' : 'EN'}</span>
+      <button className="status-lang" onClick={onToggleLang} title="Click to switch language">{lang === 'bo' ? 'བོད' : 'EN'}</button>
+      <span className="status-separator">|</span>
+      <span className="status-privacy" title="100% private — all processing happens on your device">🔒 Local</span>
     </div>
   )
 }

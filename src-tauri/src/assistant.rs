@@ -11,6 +11,8 @@ use std::sync::Arc;
 use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
 
+use crate::backend::SharedBackend;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssistantState {
     pub loaded: bool,
@@ -18,28 +20,16 @@ pub struct AssistantState {
 }
 
 pub struct AssistantModel {
-    backend: Option<Arc<LlamaBackend>>,
-    model: Option<Arc<LlamaModel>>,
+    pub(crate) model: Option<Arc<LlamaModel>>,
     loading: bool,
 }
 
 impl AssistantModel {
     pub fn new() -> Self {
         Self {
-            backend: None,
             model: None,
             loading: false,
         }
-    }
-
-    fn ensure_backend(&mut self) -> Result<Arc<LlamaBackend>, String> {
-        if let Some(ref backend) = self.backend {
-            return Ok(backend.clone());
-        }
-        let backend = LlamaBackend::init().map_err(|e| format!("Failed to init llama backend: {:?}", e))?;
-        let backend = Arc::new(backend);
-        self.backend = Some(backend.clone());
-        Ok(backend)
     }
 }
 
@@ -80,8 +70,14 @@ fn truncate_input(text: &str) -> &str {
 }
 
 fn generate_response(model: &LlamaModel, backend: &LlamaBackend, prompt: &str, max_tokens: u32) -> Result<String, String> {
+    let n_threads = std::thread::available_parallelism()
+        .map(|n| n.get() as i32)
+        .unwrap_or(4);
+
     let ctx_params = LlamaContextParams::default()
-        .with_n_ctx(NonZeroU32::new(2048));
+        .with_n_ctx(NonZeroU32::new(2048))
+        .with_n_threads(n_threads)
+        .with_n_threads_batch(n_threads);
 
     let mut ctx = model
         .new_context(backend, ctx_params)
@@ -231,6 +227,13 @@ pub async fn load_assistant(app: AppHandle) -> Result<(), String> {
         return Err("Model not installed. Go to View → Extensions to install Terma Assistant.".to_string());
     }
 
+    // Unload translator to free memory (only one model at a time)
+    let translator = app.state::<crate::translator::SharedTranslator>().inner().clone();
+    {
+        let mut guard = translator.lock().await;
+        guard.model = None;
+    }
+
     let assistant = app.state::<SharedAssistant>().inner().clone();
     let mut guard = assistant.lock().await;
 
@@ -240,7 +243,11 @@ pub async fn load_assistant(app: AppHandle) -> Result<(), String> {
 
     guard.loading = true;
 
-    let backend = guard.ensure_backend()?;
+    let shared_backend = app.state::<SharedBackend>().inner().clone();
+    let backend = {
+        let mut bg = shared_backend.lock().await;
+        bg.ensure()?
+    };
     let path = model_path.clone();
     let model_params = LlamaModelParams::default();
 
@@ -290,11 +297,14 @@ pub async fn transform_text(app: AppHandle, text: String, mode: String) -> Resul
         _ => 256,
     };
 
-    let (model, backend) = {
+    let model = {
         let guard = assistant.lock().await;
-        let model = guard.model.as_ref().ok_or("Model not loaded")?.clone();
-        let backend = guard.backend.as_ref().ok_or("Backend not initialized")?.clone();
-        (model, backend)
+        guard.model.as_ref().ok_or("Model not loaded")?.clone()
+    };
+    let backend = {
+        let shared_backend = app.state::<SharedBackend>().inner().clone();
+        let mut bg = shared_backend.lock().await;
+        bg.ensure()?
     };
 
     tokio::task::spawn_blocking(move || {

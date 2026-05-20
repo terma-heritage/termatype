@@ -152,98 +152,116 @@ export async function exportPDF(fileName: string) {
 
 export async function exportEPUB(fileName: string) {
   const editorEl = document.querySelector('.tiptap.ProseMirror.simple-editor')
-  if (!editorEl) return
-
-  const clone = editorEl.cloneNode(true) as HTMLElement
-
-  clone.querySelectorAll('[data-type="pageBreak"]').forEach(el => el.remove())
-  clone.querySelectorAll('.ProseMirror-gapcursor').forEach(el => el.remove())
-
-  const epubName = fileName.replace(/\.[^.]+$/, '') || 'document'
-
-  const chapters: { title: string; content: string }[] = []
-  const headings = clone.querySelectorAll('h1, h2')
-
-  if (headings.length === 0) {
-    chapters.push({
-      title: epubName,
-      content: clone.innerHTML,
-    })
-  } else {
-    let currentTitle = epubName
-    let currentContent = ''
-
-    for (const child of Array.from(clone.children)) {
-      const tag = child.tagName?.toLowerCase()
-      if (tag === 'h1' || tag === 'h2') {
-        if (currentContent.trim()) {
-          chapters.push({ title: currentTitle, content: currentContent })
-        }
-        currentTitle = child.textContent || 'Untitled'
-        currentContent = (child as HTMLElement).outerHTML
-      } else {
-        currentContent += (child as HTMLElement).outerHTML
-      }
-    }
-    if (currentContent.trim()) {
-      chapters.push({ title: currentTitle, content: currentContent })
-    }
+  if (!editorEl) {
+    console.error('EPUB export: editor element not found')
+    return
   }
 
-  const epubCSS = `
-    body { font-family: Georgia, "Noto Serif Tibetan", serif; font-size: 12pt; line-height: 1.6; color: #2C2A26; }
-    h1 { font-size: 24pt; margin: 0 0 12pt; font-weight: 700; }
-    h2 { font-size: 20pt; margin: 18pt 0 8pt; font-weight: 600; }
-    h3 { font-size: 16pt; margin: 14pt 0 6pt; font-weight: 600; }
-    h4 { font-size: 13pt; margin: 12pt 0 4pt; font-weight: 600; }
-    p { margin: 0 0 8pt; }
-    blockquote { border-left: 3px solid #ccc; margin: 8pt 0; padding-left: 12pt; color: #555; }
-    code { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 1pt 3pt; }
-    pre { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 8pt; }
-    table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
-    th, td { border: 1px solid #ddd; padding: 6pt 8pt; text-align: left; }
-    th { background: #f5f5f5; font-weight: 600; }
-    img { max-width: 100%; height: auto; }
-    hr { border: none; border-top: 1px solid #ddd; margin: 12pt 0; }
-  `
-
-  const epubMod = await import('epub-gen-memory')
-  const epub = epubMod.default
-
-  const epubBuffer = await epub(
-    {
-      title: epubName,
-      author: 'TermaType',
-      css: epubCSS,
-      lang: 'en',
-    },
-    chapters.map(ch => ({
-      title: ch.title,
-      content: ch.content,
-    }))
-  )
-
-  const blob = new Blob([new Uint8Array(epubBuffer)], { type: 'application/epub+zip' })
-
   try {
-    const { save } = await import('@tauri-apps/plugin-dialog')
-    const { writeFile } = await import('@tauri-apps/plugin-fs')
+    const clone = editorEl.cloneNode(true) as HTMLElement
 
-    const savePath = await save({
-      filters: [{ name: 'EPUB Document', extensions: ['epub'] }],
-      defaultPath: `${epubName}.epub`,
-    })
+    clone.querySelectorAll('[data-type="pageBreak"]').forEach(el => el.remove())
+    clone.querySelectorAll('.ProseMirror-gapcursor').forEach(el => el.remove())
 
-    if (!savePath) return
+    const epubName = fileName.replace(/\.[^.]+$/, '') || 'document'
 
-    const buffer = await blob.arrayBuffer()
-    await writeFile(savePath, new Uint8Array(buffer))
-  } catch {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${epubName}.epub`
-    a.click()
-    URL.revokeObjectURL(url)
+    const chapters: { title: string; content: string }[] = []
+    const headings = clone.querySelectorAll('h1, h2')
+
+    if (headings.length === 0) {
+      chapters.push({
+        title: epubName,
+        content: clone.innerHTML,
+      })
+    } else {
+      let currentTitle = epubName
+      let currentContent = ''
+
+      for (const child of Array.from(clone.children)) {
+        const tag = child.tagName?.toLowerCase()
+        if (tag === 'h1' || tag === 'h2') {
+          if (currentContent.trim()) {
+            chapters.push({ title: currentTitle, content: currentContent })
+          }
+          currentTitle = child.textContent || 'Untitled'
+          currentContent = (child as HTMLElement).outerHTML
+        } else {
+          currentContent += (child as HTMLElement).outerHTML
+        }
+      }
+      if (currentContent.trim()) {
+        chapters.push({ title: currentTitle, content: currentContent })
+      }
+    }
+
+    const epubCSS = `
+      body { font-family: Georgia, "Noto Serif Tibetan", serif; font-size: 12pt; line-height: 1.6; color: #2C2A26; }
+      h1 { font-size: 24pt; margin: 0 0 12pt; font-weight: 700; }
+      h2 { font-size: 20pt; margin: 18pt 0 8pt; font-weight: 600; }
+      h3 { font-size: 16pt; margin: 14pt 0 6pt; font-weight: 600; }
+      h4 { font-size: 13pt; margin: 12pt 0 4pt; font-weight: 600; }
+      p { margin: 0 0 8pt; }
+      blockquote { border-left: 3px solid #ccc; margin: 8pt 0; padding-left: 12pt; color: #555; }
+      code { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 1pt 3pt; }
+      pre { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 8pt; }
+      table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
+      th, td { border: 1px solid #ddd; padding: 6pt 8pt; text-align: left; }
+      th { background: #f5f5f5; font-weight: 600; }
+      img { max-width: 100%; height: auto; }
+      hr { border: none; border-top: 1px solid #ddd; margin: 12pt 0; }
+    `
+
+    const epubMod = await import('epub-gen-memory')
+    // Handle both ESM default and CJS interop: epub-gen-memory may be { default: fn } or { default: { default: fn } }
+    const epub = typeof epubMod.default === 'function'
+      ? epubMod.default
+      : (epubMod.default as any)?.default ?? epubMod.default
+
+    if (typeof epub !== 'function') {
+      console.error('EPUB export: could not resolve epub-gen-memory export', epubMod)
+      alert('EPUB export failed: library could not be loaded.')
+      return
+    }
+
+    const epubBuffer = await epub(
+      {
+        title: epubName,
+        author: 'TermaType',
+        css: epubCSS,
+        lang: 'en',
+      },
+      chapters.map(ch => ({
+        title: ch.title,
+        content: ch.content,
+      }))
+    )
+
+    const blob = new Blob([new Uint8Array(epubBuffer)], { type: 'application/epub+zip' })
+
+    try {
+      const { save } = await import('@tauri-apps/plugin-dialog')
+      const { writeFile } = await import('@tauri-apps/plugin-fs')
+
+      const savePath = await save({
+        filters: [{ name: 'EPUB Document', extensions: ['epub'] }],
+        defaultPath: `${epubName}.epub`,
+      })
+
+      if (!savePath) return
+
+      const buffer = await blob.arrayBuffer()
+      await writeFile(savePath, new Uint8Array(buffer))
+    } catch {
+      // Fallback: download via browser
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${epubName}.epub`
+      a.click()
+      URL.revokeObjectURL(url)
+    }
+  } catch (err) {
+    console.error('EPUB export failed:', err)
+    alert(`EPUB export failed: ${err instanceof Error ? err.message : String(err)}`)
   }
 }

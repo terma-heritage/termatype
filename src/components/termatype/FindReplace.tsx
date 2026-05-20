@@ -4,12 +4,26 @@ import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import type { Node as PmNode } from '@tiptap/pm/model'
+import { WylieEngine } from '@/components/termatype/tibetan-ime/wylie-engine'
 
 const findReplacePluginKey = new PluginKey('findReplace')
+
+function wylieToUnicode(wylie: string): string {
+  const engine = new WylieEngine()
+  let result = ''
+  for (const char of wylie) {
+    const { committed } = engine.feed(char)
+    result += committed
+  }
+  const { committed: flushed } = engine.flush()
+  result += flushed
+  return result
+}
 
 interface FindState {
   searchTerm: string
   matchCase: boolean
+  wylieMode: boolean
   results: { from: number; to: number }[]
   currentIndex: number
 }
@@ -17,22 +31,45 @@ interface FindState {
 function findMatches(
   doc: PmNode,
   searchTerm: string,
-  matchCase: boolean
+  matchCase: boolean,
+  wylieMode: boolean
 ): { from: number; to: number }[] {
   if (!searchTerm) return []
 
   const results: { from: number; to: number }[] = []
   const term = matchCase ? searchTerm : searchTerm.toLowerCase()
+  const wylieTerm = wylieMode ? wylieToUnicode(searchTerm) : ''
 
   doc.descendants((node: PmNode, pos: number) => {
     if (!node.isText || !node.text) return
     const text = matchCase ? node.text : node.text.toLowerCase()
+
+    // Track positions already matched to avoid duplicates
+    const matched = new Set<number>()
+
+    // Search for original term
     let index = text.indexOf(term)
     while (index !== -1) {
-      results.push({ from: pos + index, to: pos + index + searchTerm.length })
+      results.push({ from: pos + index, to: pos + index + term.length })
+      matched.add(index)
       index = text.indexOf(term, index + 1)
     }
+
+    // Search for Wylie-converted term
+    if (wylieTerm && wylieTerm !== term) {
+      const wylieSearch = matchCase ? wylieTerm : wylieTerm.toLowerCase()
+      let wIndex = text.indexOf(wylieSearch)
+      while (wIndex !== -1) {
+        if (!matched.has(wIndex)) {
+          results.push({ from: pos + wIndex, to: pos + wIndex + wylieSearch.length })
+        }
+        wIndex = text.indexOf(wylieSearch, wIndex + 1)
+      }
+    }
   })
+
+  // Sort by position so navigation order is consistent
+  results.sort((a, b) => a.from - b.from)
 
   return results
 }
@@ -45,13 +82,13 @@ export const FindReplaceExtension = Extension.create({
         key: findReplacePluginKey,
         state: {
           init(): FindState {
-            return { searchTerm: '', matchCase: false, results: [], currentIndex: -1 }
+            return { searchTerm: '', matchCase: false, wylieMode: false, results: [], currentIndex: -1 }
           },
           apply(tr, prev): FindState {
             const meta = tr.getMeta(findReplacePluginKey)
             if (meta) return meta
             if (tr.docChanged && prev.searchTerm) {
-              const results = findMatches(tr.doc, prev.searchTerm, prev.matchCase)
+              const results = findMatches(tr.doc, prev.searchTerm, prev.matchCase, prev.wylieMode)
               const currentIndex = results.length > 0
                 ? Math.min(prev.currentIndex, results.length - 1)
                 : -1
@@ -98,6 +135,7 @@ export function FindReplace({
   const [searchTerm, setSearchTerm] = useState('')
   const [replaceTerm, setReplaceTerm] = useState('')
   const [matchCase, setMatchCase] = useState(false)
+  const [wylieMode, setWylieMode] = useState(false)
   const [showReplace, setShowReplace] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
 
@@ -106,12 +144,13 @@ export function FindReplace({
   }, [editor])
 
   const updateSearch = useCallback(
-    (term: string, caseSensitive: boolean) => {
-      const results = findMatches(editor.state.doc, term, caseSensitive)
+    (term: string, caseSensitive: boolean, wylie: boolean) => {
+      const results = findMatches(editor.state.doc, term, caseSensitive, wylie)
       const currentIndex = results.length > 0 ? 0 : -1
       dispatchFindState(editor, {
         searchTerm: term,
         matchCase: caseSensitive,
+        wylieMode: wylie,
         results,
         currentIndex,
       })
@@ -178,6 +217,7 @@ export function FindReplace({
     dispatchFindState(editor, {
       searchTerm: '',
       matchCase: false,
+      wylieMode: false,
       results: [],
       currentIndex: -1,
     })
@@ -191,8 +231,8 @@ export function FindReplace({
   }, [])
 
   useEffect(() => {
-    updateSearch(searchTerm, matchCase)
-  }, [searchTerm, matchCase, updateSearch])
+    updateSearch(searchTerm, matchCase, wylieMode)
+  }, [searchTerm, matchCase, wylieMode, updateSearch])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -240,6 +280,13 @@ export function FindReplace({
           title="Match case"
         >
           Aa
+        </button>
+        <button
+          className={`find-replace-btn find-replace-case ${wylieMode ? 'active' : ''}`}
+          onClick={() => setWylieMode(!wylieMode)}
+          title="Match Wylie transliteration"
+        >
+          Wy
         </button>
         <button className="find-replace-btn" onClick={goToPrev} disabled={count === 0} title="Previous (Shift+Enter)">
           ▲

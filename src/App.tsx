@@ -48,20 +48,34 @@ import { TableBubbleMenu, TableContextMenu } from '@/components/termatype/TableB
 import { EwtsKeyboard } from '@/components/termatype/EwtsKeyboard'
 import { createLanguageToggleExtension, type Lang } from '@/components/termatype/LanguageToggle'
 import { createTibetanIMEExtension } from '@/components/termatype/tibetan-ime/tibetan-ime-extension'
+import { TibetanSpellcheck } from '@/extensions/tibetan-spellcheck'
 import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindReplace'
+import { SlashCommands } from '@/components/termatype/SlashCommands'
+import { InlineDictionary } from '@/components/termatype/InlineDictionary'
 import { PluginSettings } from '@/components/termatype/PluginSettings'
 import { StatusBar } from '@/components/termatype/StatusBar'
-import { KeyboardShortcutsPanel } from '@/components/termatype/KeyboardShortcutsPanel'
 import { VersionHistoryPanel } from '@/components/termatype/VersionHistoryPanel'
 import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype/ToolbarContent'
 
 const DictionarySidebar = lazy(() => import('@/components/termatype/DictionarySidebar').then(m => ({ default: m.DictionarySidebar })))
 const TermaAssistant = lazy(() => import('@/components/termatype/TermaAssistant').then(m => ({ default: m.TermaAssistant })))
 const WylieReference = lazy(() => import('@/components/termatype/WylieReference').then(m => ({ default: m.WylieReference })))
+const TermaTranslator = lazy(() => import('@/components/termatype/TermaTranslator').then(m => ({ default: m.TermaTranslator })))
+const DocumentOutline = lazy(() => import('@/components/termatype/DocumentOutline').then(m => ({ default: m.DocumentOutline })))
 const WyliePractice = lazy(() => import('@/components/termatype/WyliePractice').then(m => ({ default: m.WyliePractice })))
+const KeyboardShortcutsPage = lazy(() => import('@/components/termatype/KeyboardShortcutsPage').then(m => ({ default: m.KeyboardShortcutsPage })))
+const AboutPage = lazy(() => import('@/components/termatype/AboutPage').then(m => ({ default: m.AboutPage })))
+
+type HelpTab = { id: string; label: string }
+const HELP_TABS: Record<string, HelpTab> = {
+  'wylie-practice': { id: 'wylie-practice', label: 'Typing Tibetan' },
+  'wylie-reference': { id: 'wylie-reference', label: 'Wylie Reference' },
+  'shortcuts': { id: 'shortcuts', label: 'Keyboard Shortcuts' },
+  'about': { id: 'about', label: 'About TermaType' },
+}
 
 import { handleImageUpload, MAX_FILE_SIZE } from '@/lib/tiptap-utils'
-import { useDocument } from '@/lib/document'
+import { useDocumentTabs } from '@/lib/document'
 import { printDocument, exportPDF, exportEPUB } from '@/lib/print'
 
 import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
@@ -72,155 +86,12 @@ import '@/components/tiptap-templates/simple/simple-editor.scss'
 
 const lowlight = createLowlight(common)
 
-const WELCOME_CONTENT = {
+const BLANK_DOC = {
   type: 'doc',
-  content: [
-    {
-      type: 'heading',
-      attrs: { level: 1 },
-      content: [{ type: 'text', text: 'Welcome to TermaType' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', text: 'གཏེར་མ་ཡིག་སྦྱོར་' },
-      ],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', text: 'A beautiful writing app for English and ' },
-        { type: 'text', text: 'བོད་ཡིག' },
-        { type: 'text', text: ' Tibetan. Free and open source, forever.' },
-      ],
-    },
-    { type: 'horizontalRule' },
-    {
-      type: 'heading',
-      attrs: { level: 2 },
-      content: [{ type: 'text', text: 'Start typing' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', text: 'Just click anywhere and write. Press ' },
-        { type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+Space' },
-        { type: 'text', text: ' to switch between English and Tibetan. The built-in Wylie keyboard lets you type Tibetan script using familiar roman keys.' },
-      ],
-    },
-    { type: 'paragraph', content: [] },
-    {
-      type: 'heading',
-      attrs: { level: 2 },
-      content: [{ type: 'text', text: 'What you can do' }],
-    },
-    {
-      type: 'bulletList',
-      content: [
-        { type: 'listItem', content: [{ type: 'paragraph', content: [
-          { type: 'text', marks: [{ type: 'bold' }], text: 'Rich formatting' },
-          { type: 'text', text: ' — headings, bold, italic, lists, tables, images, code blocks, and more' },
-        ]}] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [
-          { type: 'text', marks: [{ type: 'bold' }], text: 'Tibetan dictionary' },
-          { type: 'text', text: ' — look up words instantly from Rangjung Yeshe and Monlam (View → Dictionary)' },
-        ]}] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [
-          { type: 'text', marks: [{ type: 'bold' }], text: 'AI writing assistant' },
-          { type: 'text', text: ' — select text and let AI help you fix, rewrite, or enhance your writing (View → Assistant)' },
-        ]}] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [
-          { type: 'text', marks: [{ type: 'bold' }], text: 'Focus mode' },
-          { type: 'text', text: ' — hide distractions and write with a clean, centered view (Ctrl+\\)' },
-        ]}] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [
-          { type: 'text', marks: [{ type: 'bold' }], text: 'Print & export' },
-          { type: 'text', text: ' — print your documents or export them as PDF with beautiful formatting' },
-        ]}] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [
-          { type: 'text', marks: [{ type: 'bold' }], text: 'Footnotes & page breaks' },
-          { type: 'text', text: ' — add footnotes for references and page breaks for print layout (Insert menu)' },
-        ]}] },
-      ],
-    },
-    { type: 'paragraph', content: [] },
-    {
-      type: 'heading',
-      attrs: { level: 2 },
-      content: [{ type: 'text', text: 'Keyboard shortcuts' }],
-    },
-    {
-      type: 'table',
-      content: [
-        { type: 'tableRow', content: [
-          { type: 'tableHeader', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Action' }] }] },
-          { type: 'tableHeader', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Shortcut' }] }] },
-        ] },
-        { type: 'tableRow', content: [
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Switch language' }] }] },
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+Space' }] }] },
-        ] },
-        { type: 'tableRow', content: [
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Focus mode' }] }] },
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+\\' }] }] },
-        ] },
-        { type: 'tableRow', content: [
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Find & replace' }] }] },
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+H' }] }] },
-        ] },
-        { type: 'tableRow', content: [
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Insert page break' }] }] },
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+Enter' }] }] },
-        ] },
-        { type: 'tableRow', content: [
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'All shortcuts' }] }] },
-          { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+/' }] }] },
-        ] },
-      ],
-    },
-    { type: 'paragraph', content: [] },
-    {
-      type: 'heading',
-      attrs: { level: 2 },
-      content: [{ type: 'text', text: 'Typing in Tibetan' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', text: 'Press ' },
-        { type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+Space' },
-        { type: 'text', text: ' to switch to Tibetan mode. TermaType uses the ' },
-        { type: 'text', marks: [{ type: 'bold' }], text: 'Wylie transliteration' },
-        { type: 'text', text: ' system — you type romanized letters and they convert to Tibetan script automatically.' },
-      ],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', text: 'For example, type ' },
-        { type: 'text', marks: [{ type: 'code' }], text: 'bkra shis bde legs' },
-        { type: 'text', text: ' to get བཀྲ་ཤིས་བདེ་ལེགས། (Tashi Delek). The space bar inserts a tsheg (་) between syllables.' },
-      ],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', text: 'Open the ' },
-        { type: 'text', marks: [{ type: 'bold' }], text: 'Wylie reference' },
-        { type: 'text', text: ' sidebar (View → Wylie) to see the full mapping of roman keys to Tibetan letters. Try it now — press ' },
-        { type: 'text', marks: [{ type: 'code' }], text: 'Ctrl+Space' },
-        { type: 'text', text: ' and start typing!' },
-      ],
-    },
-    { type: 'paragraph', content: [] },
-    {
-      type: 'paragraph',
-      content: [
-        { type: 'text', marks: [{ type: 'italic' }], text: 'This is a new document. Start writing above, or go to File → New to begin fresh.' },
-      ],
-    },
-  ],
+  content: [{ type: 'paragraph' }],
 }
+
+const FIRST_LAUNCH_KEY = 'termatype-has-launched'
 
 export default function App() {
   const isMobile = useIsBreakpoint()
@@ -228,8 +99,8 @@ export default function App() {
   const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link'>('main')
   const [showFindReplace, setShowFindReplace] = useState(false)
   const [showPluginSettings, setShowPluginSettings] = useState(false)
-  const [sidePanel, setSidePanel] = useState<{ open: boolean; tab: 'assistant' | 'dictionary' | 'wylie' }>({ open: false, tab: 'assistant' })
-  const [showShortcuts, setShowShortcuts] = useState(false)
+  const [sidePanel, setSidePanel] = useState<{ open: boolean; tab: 'assistant' | 'dictionary' | 'translator' }>({ open: false, tab: 'assistant' })
+  const [outlineOpen, setOutlineOpen] = useState(false)
   const [zoom, setZoom] = useState(100)
   const [lang, setLang] = useState<Lang>('en')
   const [showKeyboard, setShowKeyboard] = useState(true)
@@ -237,8 +108,9 @@ export default function App() {
   const [typewriterMode, setTypewriterMode] = useState(false)
   const [readingMode, setReadingMode] = useState(false)
   const [showLinkInput, setShowLinkInput] = useState(false)
-  const [showAbout, setShowAbout] = useState(false)
-  const [showWyliePractice, setShowWyliePractice] = useState(false)
+  const [helpTabs, setHelpTabs] = useState<string[]>([])
+  const [activeView, setActiveView] = useState<string>('document')
+  const [closingTabId, setClosingTabId] = useState<string | null>(null)
   const [showHistory, setShowHistory] = useState(false)
   const toolbarRef = useRef<HTMLDivElement>(null)
 
@@ -310,6 +182,8 @@ export default function App() {
       languageToggleExt,
       tibetanIMEExt,
       FindReplaceExtension,
+      TibetanSpellcheck,
+      SlashCommands,
       ImageUploadNode.configure({
         accept: 'image/*',
         maxSize: MAX_FILE_SIZE,
@@ -318,7 +192,7 @@ export default function App() {
         onError: (error: Error) => console.error('Upload failed:', error),
       }),
     ],
-    content: WELCOME_CONTENT,
+    content: BLANK_DOC,
   })
 
   useEffect(() => {
@@ -343,11 +217,81 @@ export default function App() {
     editor.setEditable(!readingMode)
   }, [editor, readingMode])
 
-  const { state: docState, handleNew, handleOpen, handleOpenPath, handleSave, handleSaveAs, clearFileError } = useDocument(editor)
+  const {
+    tabs: docTabs, activeTab: activeDocTab, activeTabId: activeDocTabId,
+    switchTab: switchDocTab, closeTab: closeDocTab,
+    handleNew, handleOpen, handleOpenPath,
+    handleSave, handleSaveAs, fileError, clearFileError,
+  } = useDocumentTabs(editor)
+
+  const openHelpTab = useCallback((tabId: string) => {
+    setHelpTabs(prev => prev.includes(tabId) ? prev : [...prev, tabId])
+    setActiveView(tabId)
+  }, [])
+
+  const closeHelpTab = useCallback((tabId: string) => {
+    setHelpTabs(prev => prev.filter(t => t !== tabId))
+    setActiveView(v => v === tabId ? 'document' : v)
+  }, [])
+
+  // Show About page on first launch only
+  useEffect(() => {
+    if (!localStorage.getItem(FIRST_LAUNCH_KEY)) {
+      localStorage.setItem(FIRST_LAUNCH_KEY, '1')
+      openHelpTab('about')
+    }
+  }, [openHelpTab])
+
+  const activateDocTab = useCallback((tabId: string) => {
+    switchDocTab(tabId)
+    setActiveView('document')
+  }, [switchDocTab])
+
+  // Close tab with Save/Don't Save/Cancel dialog for dirty tabs
+  const closingTab = closingTabId ? docTabs.find(t => t.id === closingTabId) ?? null : null
+
+  // Use refs to avoid stale closure — isDirty must always reflect latest state
+  const docTabsRef = useRef(docTabs)
+  docTabsRef.current = docTabs
+  const activeDocTabIdRef = useRef(activeDocTabId)
+  activeDocTabIdRef.current = activeDocTabId
+
+  const requestCloseDocTab = useCallback((tabId: string) => {
+    const tab = docTabsRef.current.find(t => t.id === tabId)
+    if (!tab) return
+    if (tab.isDirty) {
+      // Switch to the tab so save operates on it
+      if (tabId !== activeDocTabIdRef.current) activateDocTab(tabId)
+      setClosingTabId(tabId)
+    } else {
+      closeDocTab(tabId)
+    }
+  }, [activateDocTab, closeDocTab])
+
+  const handleSaveAndClose = useCallback(async () => {
+    if (!closingTabId) return
+    const saved = await handleSave()
+    if (saved) closeDocTab(closingTabId)
+    setClosingTabId(null)
+  }, [closingTabId, handleSave, closeDocTab])
+
+  const handleDontSaveAndClose = useCallback(() => {
+    if (closingTabId) closeDocTab(closingTabId)
+    setClosingTabId(null)
+  }, [closingTabId, closeDocTab])
+
+  const handleCancelClose = useCallback(() => {
+    setClosingTabId(null)
+  }, [])
+
+  // Wrap file operations to switch to document view
+  const onNew = useCallback(async () => { await handleNew(); setActiveView('document') }, [handleNew])
+  const onOpen = useCallback(async () => { await handleOpen(); setActiveView('document') }, [handleOpen])
+  const onOpenPath = useCallback(async (path: string) => { await handleOpenPath(path); setActiveView('document') }, [handleOpenPath])
 
   const handlePrint = useCallback(() => { printDocument() }, [])
-  const handleExportPDF = useCallback(() => { exportPDF(docState.fileName) }, [docState.fileName])
-  const handleExportEPUB = useCallback(() => { exportEPUB(docState.fileName) }, [docState.fileName])
+  const handleExportPDF = useCallback(() => { exportPDF(activeDocTab.fileName) }, [activeDocTab.fileName])
+  const handleExportEPUB = useCallback(() => { exportEPUB(activeDocTab.fileName) }, [activeDocTab.fileName])
 
   useEffect(() => {
     let unlisten: (() => void) | null = null
@@ -365,8 +309,8 @@ export default function App() {
       const mod = e.ctrlKey || e.metaKey
       if (!mod) return
 
-      if (e.key === 'n' && !e.shiftKey) { e.preventDefault(); handleNew() }
-      else if (e.key === 'o' && !e.shiftKey) { e.preventDefault(); handleOpen() }
+      if (e.key === 'n' && !e.shiftKey) { e.preventDefault(); onNew() }
+      else if (e.key === 'o' && !e.shiftKey) { e.preventDefault(); onOpen() }
       else if (e.key === 's' && !e.shiftKey) { e.preventDefault(); handleSave() }
       else if (e.key === 's' && e.shiftKey) { e.preventDefault(); handleSaveAs() }
       else if (e.key === 'p') { e.preventDefault(); handlePrint() }
@@ -384,10 +328,10 @@ export default function App() {
       else if (e.key === '=' || e.key === '+') { e.preventDefault(); setZoom((z) => Math.min(z + 10, 200)) }
       else if (e.key === '-') { e.preventDefault(); setZoom((z) => Math.max(z - 10, 50)) }
       else if (e.key === '0') { e.preventDefault(); setZoom(100) }
-      else if (e.key === '/' || e.key === '?') { e.preventDefault(); setShowShortcuts((v) => !v) }
+      else if (e.key === '/' || e.key === '?') { e.preventDefault(); openHelpTab('shortcuts') }
       else if (e.key === '\\') { e.preventDefault(); setFocusMode((v) => !v) }
     },
-    [handleNew, handleOpen, handleSave, handleSaveAs, handlePrint, editor]
+    [onNew, onOpen, handleSave, handleSaveAs, handlePrint, editor, openHelpTab]
   )
 
   useEffect(() => {
@@ -410,10 +354,9 @@ export default function App() {
         <nav aria-label="Menu bar">
         <MenuBar
           editor={editor}
-          onNew={handleNew}
-          onNewFromTemplate={(content) => { editor?.commands.setContent(content) }}
-          onOpen={handleOpen}
-          onOpenRecent={handleOpenPath}
+          onNew={onNew}
+          onOpen={onOpen}
+          onOpenRecent={onOpenPath}
           onSave={handleSave}
           onSaveAs={handleSaveAs}
           onHistory={() => setShowHistory(true)}
@@ -427,21 +370,71 @@ export default function App() {
           onExtensions={() => setShowPluginSettings(true)}
           onDictionary={() => setSidePanel((s) => s.open && s.tab === 'dictionary' ? { ...s, open: false } : { open: true, tab: 'dictionary' })}
           onAssistant={() => setSidePanel((s) => s.open && s.tab === 'assistant' ? { ...s, open: false } : { open: true, tab: 'assistant' })}
-          onWylie={() => setSidePanel((s) => s.open && s.tab === 'wylie' ? { ...s, open: false } : { open: true, tab: 'wylie' })}
+          onTranslator={() => setSidePanel((s) => s.open && s.tab === 'translator' ? { ...s, open: false } : { open: true, tab: 'translator' })}
+          onOutline={() => setOutlineOpen(o => !o)}
+          onWylieReference={() => openHelpTab('wylie-reference')}
           onFocusMode={() => setFocusMode((v) => !v)}
           onTypewriterMode={() => setTypewriterMode((v) => !v)}
           onReadingMode={() => setReadingMode((v) => !v)}
           readingMode={readingMode}
-          onShortcuts={() => setShowShortcuts((v) => !v)}
-          onWyliePractice={() => setShowWyliePractice(true)}
-          onAbout={() => setShowAbout(true)}
+          onShortcuts={() => openHelpTab('shortcuts')}
+          onWyliePractice={() => openHelpTab('wylie-practice')}
+          onAbout={() => openHelpTab('about')}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-          fileName={docState.fileName}
+          fileName={activeDocTab.fileName}
         />
         </nav>
 
-        <div className="termatype-app-with-sidebar">
+        <div className="tab-bar" role="tablist">
+          {docTabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`tab-bar-tab${activeView === 'document' && activeDocTabId === tab.id ? ' active' : ''}`}
+              onClick={() => activateDocTab(tab.id)}
+              role="tab"
+              aria-selected={activeView === 'document' && activeDocTabId === tab.id}
+            >
+              {tab.isDirty && <span className="tab-dirty-dot">● </span>}
+              {tab.fileName}
+              <span
+                className="tab-bar-close"
+                onClick={(e) => { e.stopPropagation(); requestCloseDocTab(tab.id) }}
+                aria-label={`Close ${tab.fileName}`}
+              >×</span>
+            </button>
+          ))}
+          {helpTabs.map(tabId => (
+            <button
+              key={tabId}
+              className={`tab-bar-tab tab-bar-tab-help${activeView === tabId ? ' active' : ''}`}
+              onClick={() => setActiveView(tabId)}
+              role="tab"
+              aria-selected={activeView === tabId}
+            >
+              {HELP_TABS[tabId]?.label ?? tabId}
+              <span
+                className="tab-bar-close"
+                onClick={(e) => { e.stopPropagation(); closeHelpTab(tabId) }}
+                aria-label={`Close ${HELP_TABS[tabId]?.label}`}
+              >×</span>
+            </button>
+          ))}
+          <button type="button" className="tab-bar-new" onClick={onNew} title="New document" aria-label="New document">+</button>
+        </div>
+
+        <div className="termatype-app-with-sidebar" style={{ display: activeView === 'document' ? '' : 'none' }}>
+          {outlineOpen && (
+            <aside className="outline-panel" aria-label="Document outline">
+              <div className="outline-panel-header">
+                <span className="outline-panel-title">Outline</span>
+                <button type="button" className="outline-panel-close" onClick={() => setOutlineOpen(false)} aria-label="Close outline">×</button>
+              </div>
+              <Suspense fallback={<div style={{ padding: '1rem', opacity: 0.5 }}>Loading...</div>}>
+                <DocumentOutline editor={editor} />
+              </Suspense>
+            </aside>
+          )}
           <div className="simple-editor-wrapper" style={{ position: 'relative' }}>
             {showFindReplace && editor && (
               <FindReplace editor={editor} onClose={() => setShowFindReplace(false)} />
@@ -476,6 +469,7 @@ export default function App() {
             {editor && <SelectionBubbleMenu editor={editor} />}
             {editor && <TableBubbleMenu editor={editor} />}
             {editor && <TableContextMenu editor={editor} />}
+            {editor && <InlineDictionary editor={editor} />}
           </div>
 
           {sidePanel.open && (
@@ -483,20 +477,41 @@ export default function App() {
               <div className="side-panel-tabs">
                 <button type="button" className={`side-panel-tab${sidePanel.tab === 'assistant' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'assistant' }))}>Assistant</button>
                 <button type="button" className={`side-panel-tab${sidePanel.tab === 'dictionary' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'dictionary' }))}>Dictionary</button>
-                <button type="button" className={`side-panel-tab${sidePanel.tab === 'wylie' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'wylie' }))}>Wylie</button>
+                <button type="button" className={`side-panel-tab${sidePanel.tab === 'translator' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'translator' }))}>Translator</button>
                 <button type="button" className="side-panel-close" onClick={() => setSidePanel((s) => ({ ...s, open: false }))} aria-label="Close panel">×</button>
               </div>
               <div className="side-panel-content">
                 <Suspense fallback={<div style={{ padding: '1rem', opacity: 0.5 }}>Loading...</div>}>
                   {sidePanel.tab === 'dictionary' && <DictionarySidebar editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
                   {sidePanel.tab === 'assistant' && <TermaAssistant editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
-                  {sidePanel.tab === 'wylie' && <WylieReference />}
+                  {sidePanel.tab === 'translator' && <TermaTranslator editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
                 </Suspense>
               </div>
             </aside>
           )}
         </div>
+      {activeView !== 'document' && (
+        <div className="help-tab-content">
+          <Suspense fallback={<div style={{ padding: '2rem', opacity: 0.5 }}>Loading...</div>}>
+            {activeView === 'wylie-practice' && <WyliePractice />}
+            {activeView === 'wylie-reference' && <WylieReference />}
+            {activeView === 'shortcuts' && <KeyboardShortcutsPage />}
+            {activeView === 'about' && <AboutPage />}
+          </Suspense>
+        </div>
+      )}
+
       </EditorContext.Provider>
+
+      {!outlineOpen && (
+        <button type="button" className="outline-fab" onClick={() => setOutlineOpen(true)} aria-label="Open document outline" title="Document Outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="15" y2="12" />
+            <line x1="3" y1="18" x2="18" y2="18" />
+          </svg>
+        </button>
+      )}
 
       {!sidePanel.open && (
         <button type="button" className="side-panel-fab" onClick={() => setSidePanel((s) => ({ ...s, open: true }))} aria-label="Open tools panel" title="Tools Panel">
@@ -513,19 +528,24 @@ export default function App() {
 
       <StatusBar
         editor={editor}
-        fileName={docState.fileName}
-        isDirty={docState.isDirty}
-        lastSaved={docState.lastSaved}
-        autoSaveError={docState.autoSaveError}
+        fileName={activeDocTab.fileName}
+        isDirty={activeDocTab.isDirty}
+        lastSaved={activeDocTab.lastSaved}
+        autoSaveError={activeDocTab.autoSaveError}
         zoom={zoom}
         lang={lang}
         onToggleLang={toggleLang}
       />
 
       {focusMode && (
-        <div className="focus-mode-hint" onClick={() => setFocusMode(false)}>
+        <button
+          className="focus-mode-hint"
+          onClick={() => setFocusMode(false)}
+          tabIndex={0}
+          aria-label="Exit focus mode"
+        >
           Focus Mode · Ctrl+\ to exit
-        </div>
+        </button>
       )}
 
       {readingMode && (
@@ -535,7 +555,6 @@ export default function App() {
       )}
 
       {showPluginSettings && <PluginSettings onClose={() => setShowPluginSettings(false)} />}
-      {showShortcuts && <KeyboardShortcutsPanel onClose={() => setShowShortcuts(false)} />}
 
       {showLinkInput && (
         <div className="link-input-overlay" onClick={() => setShowLinkInput(false)}>
@@ -560,7 +579,7 @@ export default function App() {
 
       {showHistory && (
         <VersionHistoryPanel
-          fileName={docState.fileName}
+          fileName={activeDocTab.fileName}
           onRestore={(content) => {
             try {
               const json = JSON.parse(content)
@@ -573,31 +592,28 @@ export default function App() {
         />
       )}
 
-      {docState.fileError && (
+      {fileError && (
         <div className="file-error-toast" onClick={clearFileError}>
-          {docState.fileError}
+          {fileError}
           <button onClick={clearFileError}>✕</button>
         </div>
       )}
 
-      {showWyliePractice && (
-        <Suspense fallback={null}>
-          <WyliePractice onClose={() => setShowWyliePractice(false)} />
-        </Suspense>
-      )}
-
-      {showAbout && (
-        <div className="about-overlay" onClick={() => setShowAbout(false)}>
-          <div className="about-dialog" onClick={(e) => e.stopPropagation()}>
-            <h2>TermaType</h2>
-            <p className="about-tibetan">གཏེར་མ་ཡིག་སྦྱོར་</p>
-            <p className="about-version">Version 0.1.0</p>
-            <p className="about-tagline">Beautiful bilingual writing. Free forever.</p>
-            <p className="about-license">MIT License</p>
-            <button className="about-close-btn" onClick={() => setShowAbout(false)}>Close</button>
+      {closingTab && (
+        <div className="save-dialog-overlay" onClick={handleCancelClose}>
+          <div className="save-dialog" onClick={(e) => e.stopPropagation()}>
+            <p>Do you want to save changes to <strong>{closingTab.fileName}</strong>?</p>
+            <p className="save-dialog-hint">Your changes will be lost if you don't save them.</p>
+            <div className="save-dialog-actions">
+              <button className="save-dialog-btn save-dialog-btn-secondary" onClick={handleDontSaveAndClose}>Don't Save</button>
+              <div className="save-dialog-spacer" />
+              <button className="save-dialog-btn save-dialog-btn-secondary" onClick={handleCancelClose}>Cancel</button>
+              <button className="save-dialog-btn save-dialog-btn-primary" onClick={handleSaveAndClose}>Save</button>
+            </div>
           </div>
         </div>
       )}
+
     </div>
   )
 }

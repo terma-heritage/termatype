@@ -1,10 +1,8 @@
 export function WylieReference() {
   return (
-    <div className="wylie-reference">
-      <div className="wylie-ref-header">
-        <h3>EWTS Reference</h3>
-      </div>
-      <div className="wylie-ref-body">
+    <div className="help-page">
+      <div className="help-page-content">
+        <h1>EWTS Reference</h1>
 
         <section className="wylie-ref-section">
           <h4>How It Works</h4>

@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import type { Editor } from '@tiptap/react'
 import { TableGridPicker } from './TableGridPicker'
 import { getRecentFiles, clearRecentFiles } from '@/lib/recent-files'
-import { TEMPLATES } from '@/lib/templates'
 
 type MenuAction =
   | { separator: true; label?: never; shortcut?: never; action?: never; disabled?: never; submenu?: never }
@@ -119,7 +118,6 @@ function MenuBarItem({
 export function MenuBar({
   editor,
   onNew,
-  onNewFromTemplate,
   onOpen,
   onOpenRecent,
   onSave,
@@ -135,7 +133,9 @@ export function MenuBar({
   onExtensions,
   onDictionary,
   onAssistant,
-  onWylie,
+  onTranslator,
+  onOutline,
+  onWylieReference,
   onFocusMode,
   onTypewriterMode,
   onShortcuts,
@@ -149,7 +149,6 @@ export function MenuBar({
 }: {
   editor: Editor | null
   onNew: () => void
-  onNewFromTemplate: (content: object) => void
   onOpen: () => void
   onOpenRecent: (path: string) => void
   onSave: () => void
@@ -165,7 +164,9 @@ export function MenuBar({
   onExtensions: () => void
   onDictionary: () => void
   onAssistant: () => void
-  onWylie: () => void
+  onTranslator: () => void
+  onOutline: () => void
+  onWylieReference: () => void
   onFocusMode: () => void
   onTypewriterMode: () => void
   onShortcuts: () => void
@@ -218,18 +219,6 @@ export function MenuBar({
       label: 'File',
       items: [
         { label: 'New', shortcut: 'Ctrl+N', action: onNew },
-        {
-          label: 'New From Template',
-          submenu: (
-            <>
-              {TEMPLATES.map((t) => (
-                <button key={t.name} className="menubar-dropdown-item" onClick={() => { onNewFromTemplate(t.content); close() }}>
-                  <span className="menubar-dropdown-label">{t.name}</span>
-                </button>
-              ))}
-            </>
-          ),
-        },
         { label: 'Open...', shortcut: 'Ctrl+O', action: onOpen },
         {
           label: 'Open Recent',
@@ -290,13 +279,12 @@ export function MenuBar({
         { label: `${typewriterMode ? '✓ ' : ''}Typewriter Mode`, action: onTypewriterMode },
         { label: `${readingMode ? '✓ ' : ''}Reading Mode`, action: onReadingMode },
         { separator: true },
+        { label: 'Document Outline', action: onOutline },
         { label: 'Dictionary', action: onDictionary },
         { label: 'Assistant', action: onAssistant },
-        { label: 'Wylie Reference', action: onWylie },
+        { label: 'Translator', action: onTranslator },
         { separator: true },
         { label: 'Extensions', action: onExtensions },
-        { separator: true },
-        { label: 'Keyboard Shortcuts', shortcut: 'Ctrl+/', action: onShortcuts },
       ],
     },
     {
@@ -450,14 +438,16 @@ export function MenuBar({
       label: 'Help',
       items: [
         { label: 'Typing Tibetan (Practice)', action: onWyliePractice },
+        { label: 'Wylie Reference', action: onWylieReference },
+        { label: 'Keyboard Shortcuts', shortcut: 'Ctrl+/', action: onShortcuts },
         { separator: true },
         { label: 'About TermaType', action: onAbout },
       ],
     },
   ], [editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
-      onNew, onNewFromTemplate, onOpen, onOpenRecent, onSave, onSaveAs, onHistory, onPrint, onExportPDF, onExportEPUB, onFind,
+      onNew, onOpen, onOpenRecent, onSave, onSaveAs, onHistory, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
-      onExtensions, onDictionary, onAssistant, onWylie, onShortcuts, onWyliePractice, onAbout])
+      onExtensions, onDictionary, onAssistant, onTranslator, onOutline, onWylieReference, onShortcuts, onWyliePractice, onAbout])
 
   return (
     <div className="menubar">

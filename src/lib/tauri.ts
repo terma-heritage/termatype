@@ -18,10 +18,6 @@ const ALL_FILTERS = [
   { name: 'All Files', extensions: ['*'] },
 ]
 
-export async function newDocument(): Promise<Record<string, unknown>> {
-  return invoke('new_document')
-}
-
 export async function openFileDialog(): Promise<DocumentContent | null> {
   const path = await open({
     multiple: false,

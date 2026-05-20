@@ -31,6 +31,7 @@ import { HighlighterIcon } from '@/components/tiptap-icons/highlighter-icon'
 import { LinkIcon } from '@/components/tiptap-icons/link-icon'
 
 import { ThemeToggle } from '@/components/tiptap-templates/simple/theme-toggle'
+import { FormatPainterButton } from '@/components/termatype/FormatPainter'
 
 export function MainToolbarContent({
   onHighlighterClick,
@@ -76,6 +77,7 @@ export function MainToolbarContent({
         )}
         <TextColorPopover />
         {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
+        <FormatPainterButton />
       </ToolbarGroup>
 
       <ToolbarSeparator />

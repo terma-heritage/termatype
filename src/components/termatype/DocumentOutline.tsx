@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { Editor } from '@tiptap/react'
 
 export function DocumentOutline({ editor }: { editor: Editor | null }) {
   const [headings, setHeadings] = useState<{ level: number; text: string; pos: number }[]>([])
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!editor) return
@@ -15,9 +16,13 @@ export function DocumentOutline({ editor }: { editor: Editor | null }) {
       })
       setHeadings(items)
     }
+    const debouncedExtract = () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(extract, 300)
+    }
     extract()
-    editor.on('update', extract)
-    return () => { editor.off('update', extract) }
+    editor.on('update', debouncedExtract)
+    return () => { editor.off('update', debouncedExtract); if (timerRef.current) clearTimeout(timerRef.current) }
   }, [editor])
 
   if (headings.length === 0) {

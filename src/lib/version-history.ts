@@ -56,15 +56,8 @@ export function getSnapshotsForFile(fileName: string): Snapshot[] {
   return getSnapshots().filter((s) => s.fileName === fileName)
 }
 
-export function getAllSnapshots(): Snapshot[] {
-  return getSnapshots()
-}
-
 export function deleteSnapshot(id: string) {
   const snapshots = getSnapshots().filter((s) => s.id !== id)
   saveSnapshots(snapshots)
 }
 
-export function getSnapshot(id: string): Snapshot | undefined {
-  return getSnapshots().find((s) => s.id === id)
-}

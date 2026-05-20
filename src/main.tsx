@@ -14,3 +14,7 @@ import('@tauri-apps/api/window').then(async ({ getCurrentWindow, Window }) => {
   const splash = await Window.getByLabel('splashscreen')
   await splash?.close()
 }).catch(() => {})
+
+setTimeout(() => {
+  import('./lib/updater').then(({ checkForUpdates }) => checkForUpdates())
+}, 3000)
