@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react'
 import { EditorContent, EditorContext, useEditor } from '@tiptap/react'
 
 import { StarterKit } from '@tiptap/starter-kit'
-import { Image } from '@tiptap/extension-image'
+import { CustomImage } from '@/extensions/custom-image'
 import { TaskItem, TaskList } from '@tiptap/extension-list'
 import { TextAlign } from '@tiptap/extension-text-align'
 import { Typography } from '@tiptap/extension-typography'
@@ -45,16 +45,15 @@ import '@/components/tiptap-node/footnote-node/footnote-node.scss'
 import { MenuBar } from '@/components/termatype/MenuBar'
 import { SelectionBubbleMenu } from '@/components/termatype/SelectionBubbleMenu'
 import { TableBubbleMenu, TableContextMenu } from '@/components/termatype/TableBubbleMenu'
+import { ImageBubbleMenu } from '@/components/termatype/ImageBubbleMenu'
 import { EwtsKeyboard } from '@/components/termatype/EwtsKeyboard'
 import { createLanguageToggleExtension, type Lang } from '@/components/termatype/LanguageToggle'
 import { createTibetanIMEExtension } from '@/components/termatype/tibetan-ime/tibetan-ime-extension'
-import { TibetanSpellcheck } from '@/extensions/tibetan-spellcheck'
 import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindReplace'
 import { SlashCommands } from '@/components/termatype/SlashCommands'
-import { InlineDictionary } from '@/components/termatype/InlineDictionary'
+import { onUpdateAvailable, installUpdate, dismissUpdate, type UpdateInfo } from '@/lib/updater'
 import { PluginSettings } from '@/components/termatype/PluginSettings'
 import { StatusBar } from '@/components/termatype/StatusBar'
-import { VersionHistoryPanel } from '@/components/termatype/VersionHistoryPanel'
 import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype/ToolbarContent'
 
 const DictionarySidebar = lazy(() => import('@/components/termatype/DictionarySidebar').then(m => ({ default: m.DictionarySidebar })))
@@ -111,7 +110,8 @@ export default function App() {
   const [helpTabs, setHelpTabs] = useState<string[]>([])
   const [activeView, setActiveView] = useState<string>('document')
   const [closingTabId, setClosingTabId] = useState<string | null>(null)
-  const [showHistory, setShowHistory] = useState(false)
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null)
+  const [updating, setUpdating] = useState(false)
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const langRef = useRef(lang)
@@ -154,7 +154,7 @@ export default function App() {
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
-      Image,
+      CustomImage.configure({ allowBase64: true }),
       Typography,
       Superscript,
       Subscript,
@@ -182,7 +182,6 @@ export default function App() {
       languageToggleExt,
       tibetanIMEExt,
       FindReplaceExtension,
-      TibetanSpellcheck,
       SlashCommands,
       ImageUploadNode.configure({
         accept: 'image/*',
@@ -241,6 +240,11 @@ export default function App() {
       openHelpTab('about')
     }
   }, [openHelpTab])
+
+  // Listen for app updates
+  useEffect(() => {
+    return onUpdateAvailable((info) => setUpdateInfo(info))
+  }, [])
 
   const activateDocTab = useCallback((tabId: string) => {
     switchDocTab(tabId)
@@ -359,7 +363,6 @@ export default function App() {
           onOpenRecent={onOpenPath}
           onSave={handleSave}
           onSaveAs={handleSaveAs}
-          onHistory={() => setShowHistory(true)}
           onPrint={handlePrint}
           onExportPDF={handleExportPDF}
           onExportEPUB={handleExportEPUB}
@@ -468,8 +471,8 @@ export default function App() {
 
             {editor && <SelectionBubbleMenu editor={editor} />}
             {editor && <TableBubbleMenu editor={editor} />}
+            {editor && <ImageBubbleMenu editor={editor} />}
             {editor && <TableContextMenu editor={editor} />}
-            {editor && <InlineDictionary editor={editor} />}
           </div>
 
           {sidePanel.open && (
@@ -577,25 +580,43 @@ export default function App() {
         </div>
       )}
 
-      {showHistory && (
-        <VersionHistoryPanel
-          fileName={activeDocTab.fileName}
-          onRestore={(content) => {
-            try {
-              const json = JSON.parse(content)
-              editor?.commands.setContent(json)
-            } catch {
-              editor?.commands.setContent(content)
-            }
-          }}
-          onClose={() => setShowHistory(false)}
-        />
-      )}
 
       {fileError && (
         <div className="file-error-toast" onClick={clearFileError}>
           {fileError}
           <button onClick={clearFileError}>✕</button>
+        </div>
+      )}
+
+      {updateInfo && (
+        <div className="update-toast">
+          <div className="update-toast-content">
+            <svg className="update-toast-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>TermaType <strong>v{updateInfo.version}</strong> is available</span>
+          </div>
+          <div className="update-toast-actions">
+            <button
+              className="update-toast-btn update-toast-btn-primary"
+              onClick={async () => {
+                setUpdating(true)
+                try { await installUpdate() } catch { setUpdating(false) }
+              }}
+              disabled={updating}
+            >
+              {updating ? 'Updating…' : 'Update Now'}
+            </button>
+            <button
+              className="update-toast-btn"
+              onClick={() => { dismissUpdate(); setUpdateInfo(null) }}
+              disabled={updating}
+            >
+              Later
+            </button>
+          </div>
         </div>
       )}
 

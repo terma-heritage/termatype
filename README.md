@@ -29,8 +29,6 @@ Built by **Thupten Chakrishar** at **Terma Heritage Foundation, Inc.**
 
 ### Tibetan Language Tools
 - **Tibetan Dictionary** — offline Tibetan-English dictionary with 239,000+ entries from Rangjung Yeshe and Monlam dictionaries
-- **Inline Dictionary** — select any Tibetan word, right-click to look it up in a popup
-- **Tibetan Spellcheck** — unrecognized Tibetan words underlined in red, powered by the dictionary database
 - **Wylie-aware Find & Replace** — search using Wylie transliteration to find matching Tibetan text (`Ctrl+H`, toggle "Wy" button)
 - **Translation** — translate between Tibetan and English using the MITRA model offline, or via dharmamitra.org
 
@@ -57,7 +55,6 @@ Built by **Thupten Chakrishar** at **Terma Heritage Foundation, Inc.**
 - Multi-tab document editing with browser-style tabs
 - Auto-save (30-second interval when file has a path)
 - Auto-naming from first heading or paragraph
-- Version history with snapshot restore
 - Unsaved changes dialog (Save / Don't Save / Cancel)
 
 ### Print & Export
@@ -87,7 +84,7 @@ Built by **Thupten Chakrishar** at **Terma Heritage Foundation, Inc.**
 - Native image file picker for image insertion
 
 ### Privacy
-- 100% local — documents, dictionary, spellcheck, AI, and translations all run on your computer
+- 100% local — documents, dictionary, AI, and translations all run on your computer
 - No cloud, no accounts, no tracking, no telemetry
 
 ## Development

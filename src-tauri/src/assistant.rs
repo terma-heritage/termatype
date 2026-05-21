@@ -154,10 +154,10 @@ fn build_transform_prompt(text: &str, mode: &str) -> String {
     let anti_ai = "Write like a human, NOT like AI. NEVER use: moreover, furthermore, additionally, hence, thus, utilize, delve, leverage, facilitate, remarkably, incredibly, significantly, arguably, notably, essentially. NEVER use phrases like: it's important to note, it's worth mentioning, this highlights, it could be argued, in today's world. Vary sentence length, use simple everyday words, be direct.";
 
     let instruction = match mode {
-        "fix" => format!("Fix ONLY grammar, spelling, and punctuation errors. Do NOT change any words, rephrase anything, or restructure sentences. Keep every word the user wrote — just correct mistakes. Keep first person. Return ONLY the corrected text. {}", anti_ai),
-        "rewrite" => format!("Rewrite this text to say the same thing in clearer, better-structured English. You may rephrase and restructure sentences freely, but preserve the exact meaning — don't add or remove any ideas. Keep first person. Return ONLY the rewritten text. {}", anti_ai),
-        "enhance" => format!("Improve this text by fixing errors, rephrasing for clarity, and adding minor supporting details or smooth transitions where it feels thin. Keep it grounded — only add details that logically follow from what the user wrote. Don't invent unrelated facts. Keep first person. Return ONLY the enhanced text. {}", anti_ai),
-        _ => format!("Fix grammar, spelling, and punctuation. Keep the same meaning. Return ONLY the corrected text. {}", anti_ai),
+        "fix" => format!("Fix ONLY grammar, spelling, and punctuation errors. Do NOT change any words, rephrase anything, or restructure sentences. Keep every word the user wrote — just correct mistakes. Keep the same point of view and voice as the original (if it's third person, keep third person; if first person, keep first person). Return ONLY the corrected text, nothing else. {}", anti_ai),
+        "rewrite" => format!("Rewrite this text to say the same thing in clearer, better-structured English. You may rephrase and restructure freely, but preserve the exact meaning and point of view — don't add or remove ideas, and keep the same perspective (third person stays third person, first person stays first person). Return ONLY the rewritten text, nothing else — no preamble, no quotes. {}", anti_ai),
+        "enhance" => format!("Improve this text by fixing errors, rephrasing for clarity, and adding minor supporting details or smooth transitions where it feels thin. Keep it grounded — only add details that logically follow from what was written. Don't invent unrelated facts. Keep the same point of view and voice as the original. Return ONLY the enhanced text, nothing else. {}", anti_ai),
+        _ => format!("Fix grammar, spelling, and punctuation. Keep the same meaning and point of view. Return ONLY the corrected text. {}", anti_ai),
     };
 
     format!(
@@ -193,6 +193,18 @@ fn clean_transform_response(response: &str) -> String {
         "Here's the formalized version:",
         "Here is the improved version:",
         "Here is the improved text:",
+        "Here's the corrected text:",
+        "Here is the corrected text:",
+        "Here's the rewritten text:",
+        "Here is the rewritten text:",
+        "Here's the rewritten version:",
+        "Here is the rewritten version:",
+        "Here's the enhanced text:",
+        "Here is the enhanced text:",
+        "Here's the enhanced version:",
+        "Here is the enhanced version:",
+        "Here's the fixed text:",
+        "Here is the fixed text:",
     ];
     for preamble in &preambles {
         if let Some(rest) = text.strip_prefix(preamble) {

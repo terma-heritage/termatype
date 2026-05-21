@@ -122,7 +122,6 @@ export function MenuBar({
   onOpenRecent,
   onSave,
   onSaveAs,
-  onHistory,
   onPrint,
   onExportPDF,
   onExportEPUB,
@@ -153,7 +152,6 @@ export function MenuBar({
   onOpenRecent: (path: string) => void
   onSave: () => void
   onSaveAs: () => void
-  onHistory: () => void
   onPrint: () => void
   onExportPDF: () => void
   onExportEPUB: () => void
@@ -245,8 +243,6 @@ export function MenuBar({
         { separator: true },
         { label: 'Save', shortcut: 'Ctrl+S', action: onSave },
         { label: 'Save As...', shortcut: 'Ctrl+Shift+S', action: onSaveAs },
-        { separator: true },
-        { label: 'Version History', action: onHistory },
         { separator: true },
         { label: 'Export PDF', action: onExportPDF },
         { label: 'Export EPUB', action: onExportEPUB },
@@ -445,7 +441,7 @@ export function MenuBar({
       ],
     },
   ], [editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
-      onNew, onOpen, onOpenRecent, onSave, onSaveAs, onHistory, onPrint, onExportPDF, onExportEPUB, onFind,
+      onNew, onOpen, onOpenRecent, onSave, onSaveAs, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
       onExtensions, onDictionary, onAssistant, onTranslator, onOutline, onWylieReference, onShortcuts, onWyliePractice, onAbout])
 

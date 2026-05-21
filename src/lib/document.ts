@@ -2,7 +2,6 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import type { Editor } from '@tiptap/react'
 import { openFileDialog, openFilePath, saveFile, saveFileAsDialog } from './tauri'
 import { addRecentFile } from './recent-files'
-import { createSnapshot } from './version-history'
 
 export interface DocTab {
   id: string
@@ -204,7 +203,6 @@ export function useDocumentTabs(editor: Editor | null) {
     if (tab.filePath) {
       try {
         await saveFile(tab.filePath, content)
-        createSnapshot(tab.fileName, JSON.stringify(content), 'Manual save')
         setTabs(prev => prev.map(t =>
           t.id === activeIdRef.current
             ? { ...t, isDirty: false, lastSaved: new Date(), autoSaveError: null, content }

@@ -72,7 +72,7 @@ fn get_plugin_manifest() -> Vec<PluginInfo> {
             name: "Terma Dictionary".to_string(),
             description: "Tibetan-English dictionary with 239,000+ entries from Rangjung Yeshe and Monlam. Select a word or search to find meanings.".to_string(),
             version: "2.0.0".to_string(),
-            download_url: "https://github.com/termatype/plugins/releases/download/v2.0.0/terma-dictionary.db".to_string(),
+            download_url: "https://github.com/vajradog/termatype-app/releases/download/v1.0.0/terma-dictionary.db".to_string(),
             file_name: "terma-dictionary.db".to_string(),
             size_mb: 48.0,
             installed: false,

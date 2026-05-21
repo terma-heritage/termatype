@@ -39,8 +39,6 @@ export function AboutPage() {
         <h2>Tibetan Language Tools</h2>
         <ul>
           <li><strong>Tibetan Dictionary</strong> — look up words instantly from Rangjung Yeshe and Monlam dictionaries (View → Dictionary, or <code>Ctrl+D</code>)</li>
-          <li><strong>Inline Dictionary</strong> — select any Tibetan word and right-click to look it up instantly in a popup</li>
-          <li><strong>Tibetan Spellcheck</strong> — unrecognized Tibetan words are underlined in red, powered by the dictionary database</li>
           <li><strong>Wylie-aware Find & Replace</strong> — search using Wylie transliteration and find the matching Tibetan text (<code>Ctrl+H</code>, toggle the "Wy" button)</li>
           <li><strong>Translation</strong> — translate between Tibetan and English using the MITRA model offline, or via dharmamitra.org (View → Translator)</li>
         </ul>
@@ -65,7 +63,6 @@ export function AboutPage() {
           <li><strong>Tabs</strong> — work on multiple documents at once with browser-style tabs</li>
           <li><strong>Auto-save</strong> — your work is saved automatically as you type</li>
           <li><strong>Auto-naming</strong> — unsaved documents are automatically named from their first heading or paragraph</li>
-          <li><strong>Version History</strong> — browse and restore previous versions of your document (File → Version History)</li>
           <li><strong>DOCX format</strong> — open and save Word-compatible .docx files, plus .txt and .md</li>
         </ul>
 
@@ -103,7 +100,7 @@ export function AboutPage() {
 
         <h2>Privacy</h2>
         <p>
-          TermaType is 100% local. Your documents, dictionary lookups, spellcheck, AI assistant,
+          TermaType is 100% local. Your documents, dictionary lookups, AI assistant,
           and translations all run on your computer. Nothing is sent to the cloud. No accounts,
           no tracking, no telemetry.
         </p>
@@ -129,7 +126,7 @@ export function AboutPage() {
             </a>{' '}
             for more tools and resources.
           </p>
-          <p className="about-page-version">Version 0.1.0</p>
+          <p className="about-page-version">TermaType v1.0.0</p>
         </div>
       </div>
     </div>
