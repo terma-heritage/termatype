@@ -26,3 +26,6 @@ dist-ssr
 # Tauri signing keys
 src-tauri/.tauri_private_key
 src-tauri/.tauri_private_key.pub
+src-tauri/termatype.key
+src-tauri/termatype.pub
+*.key

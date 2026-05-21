@@ -72,7 +72,8 @@
         "displayLanguageSelector": false,
         "installerIcon": "icons/icon.ico",
         "headerImage": null,
-        "sidebarImage": null
+        "sidebarImage": null,
+        "installerHooks": "nsis-hooks.nsh"
       }
     },
     "macOS": {
