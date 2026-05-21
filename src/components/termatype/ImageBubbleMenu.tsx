@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { type Editor } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
+import { NodeSelection } from '@tiptap/pm/state'
 
 type ImageAlignment = 'left' | 'center' | 'right' | 'float-left' | 'float-right'
 
@@ -48,6 +49,7 @@ export function ImageBubbleMenu({ editor }: { editor: Editor }) {
 
   const getImageAttrs = useCallback(() => {
     const { selection } = editor.state
+    if (!(selection instanceof NodeSelection)) return null
     const node = selection.node
     if (node?.type.name === 'image') {
       return node.attrs
@@ -57,8 +59,9 @@ export function ImageBubbleMenu({ editor }: { editor: Editor }) {
 
   const updateImageAttr = useCallback((attrs: Record<string, any>) => {
     const { selection } = editor.state
+    if (!(selection instanceof NodeSelection)) return
     if (selection.node?.type.name !== 'image') return
-    const pos = (selection as any).$from?.pos ?? (selection as any).from
+    const pos = selection.from
     const tr = editor.state.tr.setNodeMarkup(pos, undefined, {
       ...selection.node.attrs,
       ...attrs,

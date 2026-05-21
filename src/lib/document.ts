@@ -235,7 +235,7 @@ export function useDocumentTabs(editor: Editor | null) {
     }
     if (activeIdRef.current === tabId) {
       const idx = tabsRef.current.findIndex(t => t.id === tabId)
-      const nextTab = remaining[Math.min(idx, remaining.length - 1)]
+      const nextTab = remaining[Math.min(idx, remaining.length - 1)]!
       loadContent(nextTab.content)
       setActiveTabId(nextTab.id)
     }

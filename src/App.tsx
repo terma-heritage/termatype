@@ -243,7 +243,8 @@ export default function App() {
 
   // Listen for app updates
   useEffect(() => {
-    return onUpdateAvailable((info) => setUpdateInfo(info))
+    const unsub = onUpdateAvailable((info) => setUpdateInfo(info))
+    return () => { unsub() }
   }, [])
 
   const activateDocTab = useCallback((tabId: string) => {
@@ -294,8 +295,8 @@ export default function App() {
   const onOpenPath = useCallback(async (path: string) => { await handleOpenPath(path); setActiveView('document') }, [handleOpenPath])
 
   const handlePrint = useCallback(() => { printDocument() }, [])
-  const handleExportPDF = useCallback(() => { exportPDF(activeDocTab.fileName) }, [activeDocTab.fileName])
-  const handleExportEPUB = useCallback(() => { exportEPUB(activeDocTab.fileName) }, [activeDocTab.fileName])
+  const handleExportPDF = useCallback(() => { exportPDF(activeDocTab?.fileName ?? 'Untitled') }, [activeDocTab?.fileName])
+  const handleExportEPUB = useCallback(() => { exportEPUB(activeDocTab?.fileName ?? 'Untitled') }, [activeDocTab?.fileName])
 
   useEffect(() => {
     let unlisten: (() => void) | null = null
@@ -385,7 +386,7 @@ export default function App() {
           onAbout={() => openHelpTab('about')}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-          fileName={activeDocTab.fileName}
+          fileName={activeDocTab?.fileName ?? 'Untitled'}
         />
         </nav>
 
@@ -531,10 +532,10 @@ export default function App() {
 
       <StatusBar
         editor={editor}
-        fileName={activeDocTab.fileName}
-        isDirty={activeDocTab.isDirty}
-        lastSaved={activeDocTab.lastSaved}
-        autoSaveError={activeDocTab.autoSaveError}
+        fileName={activeDocTab?.fileName ?? 'Untitled'}
+        isDirty={activeDocTab?.isDirty ?? false}
+        lastSaved={activeDocTab?.lastSaved ?? null}
+        autoSaveError={activeDocTab?.autoSaveError ?? null}
         zoom={zoom}
         lang={lang}
         onToggleLang={toggleLang}

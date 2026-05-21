@@ -1,7 +1,7 @@
 import { Extension, type Editor, type Range } from '@tiptap/core'
 import Suggestion, { type SuggestionProps, type SuggestionKeyDownProps } from '@tiptap/suggestion'
 import { createRoot, type Root } from 'react-dom/client'
-import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { open } from '@tauri-apps/plugin-dialog'
 import { readFile } from '@tauri-apps/plugin-fs'
 
@@ -150,7 +150,7 @@ const SLASH_COMMANDS: SlashCommandItem[] = [
 
           // Convert to base64 data URL
           let binary = ''
-          for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
+          for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]!)
           const base64 = btoa(binary)
           const dataUrl = `data:${mime};base64,${base64}`
 
