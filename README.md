@@ -1,133 +1,138 @@
-# TermaType
+<p align="center">
+  <img src="src-tauri/icons/128x128@2x.png" width="100" alt="TermaType icon" />
+</p>
 
-**གཏེར་མ་ཡིག་སྦྱོར། Beautiful bilingual writing. Free forever.**
+<h1 align="center">TermaType</h1>
 
-TermaType is a free, open-source, offline-first word processor designed for bilingual English-Tibetan writing. Built with Tauri 2, React, and TipTap 3.
+<p align="center">
+  <strong>གཏེར་མ་ཡིག་སྦྱོར།</strong><br>
+  The first word processor built for English and Tibetan.<br>
+  Free. Open source. 100% offline.
+</p>
 
-Built by **Thupten Chakrishar** at **[Terma Heritage Foundation, Inc.](https://termafoundation.org/)**
+<p align="center">
+  <a href="https://github.com/vajradog/termatype-app/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe">
+    <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.0-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/license/vajradog/termatype-app?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/github/v/release/vajradog/termatype-app?style=flat-square&color=E8784A" alt="Release" />
+  <img src="https://img.shields.io/badge/platform-Windows%2010+-blue?style=flat-square" alt="Platform" />
+  <img src="https://img.shields.io/badge/offline-100%25-green?style=flat-square" alt="Offline" />
+</p>
+
+---
+
+<!-- 
+  TODO: Add a hero screenshot here. Take a screenshot of the app with some 
+  Tibetan + English text, save as screenshots/hero.png, and uncomment:
+  
+  <p align="center">
+    <img src="screenshots/hero.png" width="800" alt="TermaType — bilingual English-Tibetan writing" />
+  </p>
+-->
+
+## Why TermaType?
+
+Most word processors treat Tibetan as an afterthought. TermaType was built from the ground up for bilingual writing — with proper Tibetan input, an offline dictionary, and AI tools that understand both languages.
+
+- **Just type Wylie, get Tibetan.** Full EWTS input with real-time conversion. Toggle with `Ctrl+Space`.
+- **Look up any word instantly.** 239,000+ entry Tibetan-English dictionary built into the sidebar.
+- **AI that stays on your machine.** Grammar fixes, rewrites, translations — all running locally. No cloud. No accounts.
+- **Export anywhere.** Save as DOCX, PDF, or EPUB. Print-ready with footnotes and page breaks.
+
+---
+
+## What's Inside
+
+### Write in both languages, seamlessly
+
+Type English normally. Hit `Ctrl+Space` and type Wylie — it converts to Tibetan Unicode in real time. Consonant stacking, vowel placement, and Sanskrit extensions all handled automatically. An on-screen keyboard shows every EWTS mapping.
+
+### A real word processor
+
+Everything you'd expect: headings, lists, tables, images with alignment and resizing, code blocks, footnotes, format painter, find & replace. Multiple document tabs with auto-save. Dark mode. Focus mode that fades everything but your current paragraph.
+
+### Dictionary at your fingertips
+
+Select any Tibetan word and look it up instantly in the sidebar. 239,000+ entries from the Rangjung Yeshe and Monlam dictionaries. Works offline — no internet needed.
+
+### AI writing assistant
+
+Highlight text and ask the AI to fix grammar, rewrite for clarity, summarize, or expand. Powered by Gemma 3 running entirely on your computer. Your text never leaves your device.
+
+### Tibetan-English translation
+
+Translate between Tibetan and English using the MITRA model (by Sebastian Nehrdich & Kurt Keutzer, Berkeley AI Research). Auto-detects direction. Runs offline for machines with 12+ GB RAM, with a dharmamitra.org fallback for lighter systems.
 
 ---
 
 ## Download
 
-| Platform | Download | Requirements |
-|----------|----------|-------------|
-| Windows  | [**TermaType_1.0.0_x64-setup.exe**](https://github.com/vajradog/termatype-app/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe) (7.8 MB) | Windows 10 or later |
-| macOS    | Coming soon | — |
+### Windows
 
-> **Note:** Windows may show a SmartScreen warning because the app is new and not yet code-signed with an EV certificate. Click **"More info"** then **"Run anyway"** to proceed. The app is fully open-source — you can inspect every line of code in this repository.
+**[Download TermaType v1.0.0](https://github.com/vajradog/termatype-app/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe)** (7.8 MB)
+
+Requires Windows 10 or later.
+
+> **Windows SmartScreen:** Because TermaType is new and open-source, Windows may show a warning. Click **"More info"** then **"Run anyway"**. You can inspect every line of code in this repository.
+
+### macOS
+
+Coming soon.
+
+---
 
 ## Optional Extensions
 
-TermaType is lightweight (7.8 MB) by default. Install optional extensions from **View → Extensions** inside the app:
+TermaType is tiny (7.8 MB) out of the box. Heavy features are optional plugins you install from **View → Extensions**:
 
-| Extension | Size | Description |
+| Extension | Size | What it does |
 |-----------|------|-------------|
-| Terma Dictionary | 48 MB | Offline Tibetan-English dictionary with 239,000+ entries (Rangjung Yeshe + Monlam) |
-| Terma Assistant | 806 MB | Local AI writing assistant — grammar fix, rewrite, summarize, expand (Gemma 3 1B) |
-| Terma Translator | 5.9 GB | Offline Tibetan↔English translation (MITRA model, requires 12+ GB RAM) |
+| **Terma Dictionary** | 48 MB | Offline Tibetan-English dictionary (Rangjung Yeshe + Monlam) |
+| **Terma Assistant** | 806 MB | Local AI writing assistant (Gemma 3 1B) |
+| **Terma Translator** | 5.9 GB | Offline Tibetan↔English translation (MITRA / Gemma 2 9B) |
 
-All extensions run 100% locally. No internet required after download.
-
----
-
-## Features
-
-### Rich Text Editor
-- Headings, bold, italic, underline, strikethrough, highlight, superscript, subscript
-- Bullet lists, numbered lists, and task lists with checkboxes
-- Resizable tables, blockquotes, and syntax-highlighted code blocks
-- Images with alignment (left, center, right, float), resize, and alt text editing
-- Font family, font size, text color, text alignment, line height, and indentation
-- Footnotes and page breaks for print-ready documents
-- Slash commands — type `/` to quickly insert any block type
-- Format Painter — copy formatting from one selection and apply to another
-- DOCX, TXT, and Markdown file support with native file dialogs
-
-### Tibetan Input (EWTS)
-- Full EWTS 2.0 (Extended Wylie Transliteration Scheme) compliant input
-- Real-time Wylie-to-Tibetan Unicode conversion as you type
-- Toggle between English and Tibetan with `Ctrl+Space`
-- Automatic consonant stacking, vowel placement, and syllable validation
-- Sanskrit extensions (retroflex, sibilants, bindu, visarga, anusvara)
-- On-screen EWTS keyboard reference with interactive practice page
-- Inline buffer preview showing pending Wylie input
-
-### Tibetan Language Tools
-- **Tibetan Dictionary** — offline Tibetan-English dictionary sidebar
-- **Wylie-aware Find & Replace** — search using Wylie transliteration to find matching Tibetan text (`Ctrl+H`, toggle "Wy" button)
-- **Translation** — translate between Tibetan and English using the MITRA model offline, or via dharmamitra.org
-
-### AI Writing Assistant
-- Grammar fix, rewrite, summarize, expand, and translate
-- Runs 100% locally — text never leaves your device
-- Non-blocking inference — UI stays responsive during processing
-
-### Writing Modes
-- **Focus Mode** (`Ctrl+\`) — fades UI chrome, dims non-active paragraphs
-- **Typewriter Mode** — keeps the current line centered on screen
-- **Reading Mode** — hides all toolbars for distraction-free reading
-- **Zoom** — 50% to 200% with content reflow (`Ctrl++/-`, `Ctrl+0` to reset)
-- Light and dark themes
-
-### Document Management
-- Multi-tab document editing with browser-style tabs
-- Auto-save (30-second interval when file has a path)
-- Auto-naming from first heading or paragraph
-- Unsaved changes dialog (Save / Don't Save / Cancel)
-- Drag and drop file opening
-
-### Print & Export
-- Print with native system dialog (`Ctrl+P`)
-- PDF export with beautiful formatting
-- EPUB export with automatic chapter splitting at H1/H2 headings
-
-### Privacy
-- 100% local — documents, dictionary, AI, and translations all run on your computer
-- No cloud, no accounts, no tracking, no telemetry
+Everything runs locally. No internet required after download. No accounts. No tracking.
 
 ---
 
-## Development
+## Keyboard Shortcuts
 
-### Prerequisites
+| Action | Shortcut |
+|--------|----------|
+| Toggle Tibetan/English | `Ctrl+Space` |
+| Focus Mode | `Ctrl+\` |
+| Find & Replace | `Ctrl+H` |
+| Zoom In/Out | `Ctrl++` / `Ctrl+-` |
+| Reset Zoom | `Ctrl+0` |
+| Print | `Ctrl+P` |
+| Slash Commands | Type `/` |
 
-- [Node.js](https://nodejs.org/) 18+
-- [Rust](https://rustup.rs/) 1.77+
-- [Tauri CLI](https://tauri.app/start/): `cargo install tauri-cli --version "^2"`
+Full shortcuts reference available inside the app (`Ctrl+/`).
 
-### Setup
+---
 
-```bash
-npm install
-cargo tauri dev
-```
+## Built With
 
-### Build
-
-```bash
-cargo tauri build
-```
-
-### Architecture
-
-- **Frontend**: React 19 + TipTap 3 + ProseMirror extensions
-- **Backend**: Tauri 2 (Rust) for file I/O, plugin management, and AI inference
-- **AI Assistant**: llama.cpp via llama-cpp-2 Rust bindings (Gemma 3 1B Q4_K_M)
-- **Translator**: llama.cpp via llama-cpp-2 Rust bindings (MITRA / Gemma 2 9B Q4_K_M)
-- **IME**: Custom stateful Wylie engine with multi-character lookahead
-- **Dictionary**: SQLite via rusqlite with bundled build (Rangjung Yeshe + Monlam)
+- [Tauri 2](https://tauri.app/) — native desktop shell
+- [React 19](https://react.dev/) + [TipTap 3](https://tiptap.dev/) — editor framework
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) — local AI inference
+- [MITRA](https://github.com/buddhist-nlp/mitra) — Tibetan-English translation model
+- [Rangjung Yeshe](https://rywiki.tsadra.org/) + [Monlam](https://monlam.ai/) — dictionary data
 
 ---
 
 ## About
 
-**Terma Heritage Foundation, Inc.**
-
-*To preserve, promote, and advance Himalayan and Tibetan cultural heritage, including language preservation and revitalization, through technology, education, arts, and community programs — for the benefit of Tibetan, Himalayan, and broader communities worldwide.*
-
-[termafoundation.org](https://termafoundation.org/)
+<p align="center">
+  <strong>Terma Heritage Foundation, Inc.</strong><br>
+  <em>Preserving Himalayan and Tibetan cultural heritage through technology.</em><br><br>
+  <a href="https://termafoundation.org/">termafoundation.org</a>
+</p>
 
 ## License
 
-MIT
+MIT — free to use, modify, and distribute.
