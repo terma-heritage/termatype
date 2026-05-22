@@ -4,14 +4,40 @@
 
 TermaType is a free, open-source, offline-first word processor designed for bilingual English-Tibetan writing. Built with Tauri 2, React, and TipTap 3.
 
-Built by **Thupten Chakrishar** at **Terma Heritage Foundation, Inc.**
+Built by **Thupten Chakrishar** at **[Terma Heritage Foundation, Inc.](https://termafoundation.org/)**
+
+---
+
+## Download
+
+| Platform | Download | Requirements |
+|----------|----------|-------------|
+| Windows  | [**TermaType_1.0.0_x64-setup.exe**](https://github.com/vajradog/termatype-app/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe) (7.8 MB) | Windows 10 or later |
+| macOS    | Coming soon | — |
+
+> **Note:** Windows may show a SmartScreen warning because the app is new and not yet code-signed with an EV certificate. Click **"More info"** then **"Run anyway"** to proceed. The app is fully open-source — you can inspect every line of code in this repository.
+
+## Optional Extensions
+
+TermaType is lightweight (7.8 MB) by default. Install optional extensions from **View → Extensions** inside the app:
+
+| Extension | Size | Description |
+|-----------|------|-------------|
+| Terma Dictionary | 48 MB | Offline Tibetan-English dictionary with 239,000+ entries (Rangjung Yeshe + Monlam) |
+| Terma Assistant | 806 MB | Local AI writing assistant — grammar fix, rewrite, summarize, expand (Gemma 3 1B) |
+| Terma Translator | 5.9 GB | Offline Tibetan↔English translation (MITRA model, requires 12+ GB RAM) |
+
+All extensions run 100% locally. No internet required after download.
+
+---
 
 ## Features
 
 ### Rich Text Editor
 - Headings, bold, italic, underline, strikethrough, highlight, superscript, subscript
 - Bullet lists, numbered lists, and task lists with checkboxes
-- Resizable tables, images, blockquotes, and syntax-highlighted code blocks
+- Resizable tables, blockquotes, and syntax-highlighted code blocks
+- Images with alignment (left, center, right, float), resize, and alt text editing
 - Font family, font size, text color, text alignment, line height, and indentation
 - Footnotes and page breaks for print-ready documents
 - Slash commands — type `/` to quickly insert any block type
@@ -28,21 +54,14 @@ Built by **Thupten Chakrishar** at **Terma Heritage Foundation, Inc.**
 - Inline buffer preview showing pending Wylie input
 
 ### Tibetan Language Tools
-- **Tibetan Dictionary** — offline Tibetan-English dictionary with 239,000+ entries from Rangjung Yeshe and Monlam dictionaries
+- **Tibetan Dictionary** — offline Tibetan-English dictionary sidebar
 - **Wylie-aware Find & Replace** — search using Wylie transliteration to find matching Tibetan text (`Ctrl+H`, toggle "Wy" button)
 - **Translation** — translate between Tibetan and English using the MITRA model offline, or via dharmamitra.org
 
 ### AI Writing Assistant
-- Grammar fix, rewrite, summarize, expand, and translate powered by Gemma 3 1B
-- Runs 100% locally — text never leaves the device
-- Installable as a plugin (~800 MB model download)
+- Grammar fix, rewrite, summarize, expand, and translate
+- Runs 100% locally — text never leaves your device
 - Non-blocking inference — UI stays responsive during processing
-
-### Translation (MITRA)
-- Offline Tibetan-English translation powered by the MITRA model (Gemma 2 9B)
-- Auto-detects translation direction based on input text
-- Fallback to dharmamitra.org for systems with limited RAM
-- Credits: Sebastian Nehrdich & Kurt Keutzer, Berkeley AI Research
 
 ### Writing Modes
 - **Focus Mode** (`Ctrl+\`) — fades UI chrome, dims non-active paragraphs
@@ -56,36 +75,18 @@ Built by **Thupten Chakrishar** at **Terma Heritage Foundation, Inc.**
 - Auto-save (30-second interval when file has a path)
 - Auto-naming from first heading or paragraph
 - Unsaved changes dialog (Save / Don't Save / Cancel)
+- Drag and drop file opening
 
 ### Print & Export
 - Print with native system dialog (`Ctrl+P`)
 - PDF export with beautiful formatting
 - EPUB export with automatic chapter splitting at H1/H2 headings
 
-### Side Panel & Tools
-- **Dictionary** — Tibetan-English dictionary sidebar
-- **Assistant** — AI writing assistant
-- **Translator** — Tibetan-English translation
-- **Document Outline** — left-side slide-in panel for heading navigation
-- Keyboard shortcuts reference (`Ctrl+/`)
-- Wylie reference with consonant/vowel grids, stacking rules, punctuation table
-
-### Status Bar
-- Word count, character count, reading time, and page estimate
-- Click for detailed statistics (sentences, paragraphs, Tibetan syllables)
-- Save status indicator with auto-save error reporting
-- Language toggle (EN / བོད)
-- Privacy indicator (100% local)
-
-### Desktop
-- Native splash screen during app startup
-- Drag and drop file opening
-- Native save/open dialogs
-- Native image file picker for image insertion
-
 ### Privacy
 - 100% local — documents, dictionary, AI, and translations all run on your computer
 - No cloud, no accounts, no tracking, no telemetry
+
+---
 
 ## Development
 
@@ -116,6 +117,8 @@ cargo tauri build
 - **Translator**: llama.cpp via llama-cpp-2 Rust bindings (MITRA / Gemma 2 9B Q4_K_M)
 - **IME**: Custom stateful Wylie engine with multi-character lookahead
 - **Dictionary**: SQLite via rusqlite with bundled build (Rangjung Yeshe + Monlam)
+
+---
 
 ## About
 
