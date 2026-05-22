@@ -135,4 +135,4 @@ Full shortcuts reference available inside the app (`Ctrl+/`).
 
 ## License
 
-MIT — free to use, modify, and distribute.
+GPL v3 — free to use, modify, and distribute.
