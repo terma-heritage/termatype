@@ -19,12 +19,20 @@
   <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe">
     <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.0-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
   </a>
+  &nbsp;
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_aarch64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v1.0.0-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
+  </a>
+  &nbsp;
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v1.0.0-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
+  </a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/github/license/terma-heritage/termatype?style=flat-square" alt="License" />
   <img src="https://img.shields.io/github/v/release/terma-heritage/termatype?style=flat-square&color=E8784A" alt="Release" />
-  <img src="https://img.shields.io/badge/platform-Windows%2010+-blue?style=flat-square" alt="Platform" />
+  <img src="https://img.shields.io/badge/platform-Windows%20|%20macOS-blue?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/offline-100%25-green?style=flat-square" alt="Offline" />
 </p>
 
@@ -82,11 +90,21 @@ Translate between Tibetan and English using the MITRA model (by Sebastian Nehrdi
 
 Requires Windows 10 or later.
 
-> **Windows SmartScreen:** Because TermaType is new and open-source, Windows may show a warning. Click **"More info"** then **"Run anyway"**. You can inspect every line of code in this repository.
+> **Windows SmartScreen:** Because TermaType is new and not yet code-signed, Windows may show a SmartScreen warning when you run the installer. Click **"More info"** → **"Run anyway"**. The app is fully open source — you can inspect every line of code in this repository.
 
 ### macOS
 
-Coming soon.
+**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_aarch64.dmg)** — for newer Macs (2020+)
+
+**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64.dmg)** — for older Macs
+
+Requires macOS 10.15 (Catalina) or later.
+
+> **macOS Gatekeeper:** Because TermaType is not yet notarized with Apple, macOS will block the app the first time you open it. To allow it:
+> 1. Open the `.dmg` and drag TermaType to your Applications folder.
+> 2. Try to open TermaType — you'll see a warning that it "can't be opened."
+> 3. Go to **System Settings → Privacy & Security**, scroll down, and click **"Open Anyway"** next to the TermaType message.
+> 4. Click **"Open"** in the confirmation dialog. You only need to do this once.
 
 ---
 
