@@ -126,7 +126,7 @@ export function AboutPage() {
             </a>{' '}
             for more tools and resources.
           </p>
-          <p className="about-page-version">TermaType v1.0.0</p>
+          <p className="about-page-version">TermaType v1.0.1</p>
         </div>
       </div>
     </div>
