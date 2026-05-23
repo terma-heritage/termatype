@@ -153,8 +153,13 @@ Full shortcuts reference available inside the app (`Ctrl+/`).
 ## About
 
 <p align="center">
-  <strong>Terma Heritage Foundation, Inc.</strong><br>
-  <em>Preserving Himalayan and Tibetan cultural heritage through technology.</em><br><br>
+  <em>This software is offered freely for the benefit of all beings.<br>
+  May it help preserve and share the Tibetan language for generations to come.</em>
+</p>
+
+<p align="center">
+  Built by <strong>Terma Heritage Foundation, Inc.</strong><br>
+  Lead developer: <strong>Thupten Chakrishar</strong><br><br>
   <a href="https://termafoundation.org/">termafoundation.org</a>
 </p>
 

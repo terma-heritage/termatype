@@ -108,8 +108,13 @@ export function AboutPage() {
         <hr />
 
         <div className="about-page-credits">
+          <p className="about-page-dedication">
+            <em>This software is offered freely for the benefit of all beings.<br />
+            May it help preserve and share the Tibetan language for generations to come.</em>
+          </p>
           <p>
-            Built by <strong>Thupten Chakrishar</strong> at <strong>Terma Heritage Foundation, Inc.</strong>
+            Built by <strong>Terma Heritage Foundation, Inc.</strong><br />
+            Lead developer: <strong>Thupten Chakrishar</strong>
           </p>
           <p className="about-page-mission">
             <em>
@@ -126,7 +131,7 @@ export function AboutPage() {
             </a>{' '}
             for more tools and resources.
           </p>
-          <p className="about-page-version">TermaType v1.0.1</p>
+          <p className="about-page-version">TermaType v1.0.2</p>
         </div>
       </div>
     </div>
