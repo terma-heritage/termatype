@@ -1,4 +1,9 @@
 <p align="center">
+  <em>This software is offered freely for the benefit of all beings.<br>
+  May it help preserve and share the Tibetan language for generations to come.</em>
+</p>
+
+<p align="center">
   <img src="src-tauri/icons/128x128@2x.png" width="100" alt="TermaType icon" />
 </p>
 
@@ -134,8 +139,5 @@ Full shortcuts reference available inside the app (`Ctrl+/`).
 </p>
 
 ## License
-
-*This software is offered freely for the benefit of all beings.
-May it help preserve and share the Tibetan language for generations to come.*
 
 GPL v3 — free to use, modify, and distribute.
