@@ -43,7 +43,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDBENDdGRTc0RUFGNjY4QjEKUldTeGFQYnFkUDVIRGJvNHlrNzdNeXpiRjRlaWd1RFFiUzZKbVZ0d2g3enJzaHJ0SGxNWXlOQXUK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFFMTdDODJDNUYwOERFMkQKUldRdDNnaGZMTWdYcnBNN20vTWlablVtYVl0aUxDV0lxTThVSFA2MFB5c0hZUkhsUDVrYTlhNDEK",
       "endpoints": [
         "https://github.com/terma-heritage/termatype/releases/latest/download/latest.json"
       ],
