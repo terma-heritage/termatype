@@ -16,16 +16,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe">
-    <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.0-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.1/TermaType_1.0.1_x64-setup.exe">
+    <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.1-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_aarch64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v1.0.0-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.1/TermaType_1.0.1_aarch64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v1.0.1-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v1.0.0-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.1/TermaType_1.0.1_x64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v1.0.1-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
   </a>
 </p>
 
@@ -86,7 +86,7 @@ Translate between Tibetan and English using the MITRA model (by Sebastian Nehrdi
 
 ### Windows
 
-**[Download TermaType v1.0.0](https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe)** (7.8 MB)
+**[Download TermaType v1.0.1](https://github.com/terma-heritage/termatype/releases/download/v1.0.1/TermaType_1.0.1_x64-setup.exe)** (7.8 MB)
 
 Requires Windows 10 or later.
 
@@ -94,9 +94,9 @@ Requires Windows 10 or later.
 
 ### macOS
 
-**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_aarch64.dmg)** — for newer Macs (2020+)
+**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v1.0.1/TermaType_1.0.1_aarch64.dmg)** — for newer Macs (2020+)
 
-**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64.dmg)** — for older Macs
+**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v1.0.1/TermaType_1.0.1_x64.dmg)** — for older Macs
 
 Requires macOS 10.15 (Catalina) or later.
 
