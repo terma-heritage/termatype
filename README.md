@@ -11,14 +11,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/vajradog/termatype-app/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe">
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe">
     <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.0-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/vajradog/termatype-app?style=flat-square" alt="License" />
-  <img src="https://img.shields.io/github/v/release/vajradog/termatype-app?style=flat-square&color=E8784A" alt="Release" />
+  <img src="https://img.shields.io/github/license/terma-heritage/termatype?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/github/v/release/terma-heritage/termatype?style=flat-square&color=E8784A" alt="Release" />
   <img src="https://img.shields.io/badge/platform-Windows%2010+-blue?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/offline-100%25-green?style=flat-square" alt="Offline" />
 </p>
@@ -73,7 +73,7 @@ Translate between Tibetan and English using the MITRA model (by Sebastian Nehrdi
 
 ### Windows
 
-**[Download TermaType v1.0.0](https://github.com/vajradog/termatype-app/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe)** (7.8 MB)
+**[Download TermaType v1.0.0](https://github.com/terma-heritage/termatype/releases/download/v1.0.0/TermaType_1.0.0_x64-setup.exe)** (7.8 MB)
 
 Requires Windows 10 or later.
 
@@ -134,5 +134,8 @@ Full shortcuts reference available inside the app (`Ctrl+/`).
 </p>
 
 ## License
+
+*This software is offered freely for the benefit of all beings.
+May it help preserve and share the Tibetan language for generations to come.*
 
 GPL v3 — free to use, modify, and distribute.
