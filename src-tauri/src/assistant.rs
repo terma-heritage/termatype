@@ -151,13 +151,13 @@ fn generate_response(model: &LlamaModel, backend: &LlamaBackend, prompt: &str, m
 }
 
 fn build_transform_prompt(text: &str, mode: &str) -> String {
-    let anti_ai = "Write like a human, NOT like AI. NEVER use: moreover, furthermore, additionally, hence, thus, utilize, delve, leverage, facilitate, remarkably, incredibly, significantly, arguably, notably, essentially. NEVER use phrases like: it's important to note, it's worth mentioning, this highlights, it could be argued, in today's world. Vary sentence length, use simple everyday words, be direct.";
+    let anti_ai = "Use simple everyday words, be direct. NEVER use: moreover, furthermore, additionally, hence, thus, utilize, delve, leverage, facilitate, remarkably, incredibly, significantly.";
 
     let instruction = match mode {
-        "fix" => format!("Fix ONLY grammar, spelling, and punctuation errors. Do NOT change any words, rephrase anything, or restructure sentences. Keep every word the user wrote — just correct mistakes. Keep the same point of view and voice as the original (if it's third person, keep third person; if first person, keep first person). Return ONLY the corrected text, nothing else. {}", anti_ai),
-        "rewrite" => format!("Rewrite this text to say the same thing in clearer, better-structured English. You may rephrase and restructure freely, but preserve the exact meaning and point of view — don't add or remove ideas, and keep the same perspective (third person stays third person, first person stays first person). Return ONLY the rewritten text, nothing else — no preamble, no quotes. {}", anti_ai),
-        "enhance" => format!("Improve this text by fixing errors, rephrasing for clarity, and adding minor supporting details or smooth transitions where it feels thin. Keep it grounded — only add details that logically follow from what was written. Don't invent unrelated facts. Keep the same point of view and voice as the original. Return ONLY the enhanced text, nothing else. {}", anti_ai),
-        _ => format!("Fix grammar, spelling, and punctuation. Keep the same meaning and point of view. Return ONLY the corrected text. {}", anti_ai),
+        "fix" => format!("Fix ONLY grammar, spelling, and punctuation errors in this text. Do NOT change any words or rephrase. If the text says \"I\" keep \"I\". If the text says \"he\" or \"she\" keep \"he\" or \"she\". Output ONLY the corrected text. No explanations. {}", anti_ai),
+        "rewrite" => format!("Rewrite this text in clearer English. Keep the EXACT same meaning. IMPORTANT: If the original text uses \"I\" or \"my\", your output MUST also use \"I\" and \"my\". If the original uses \"he\"/\"she\"/\"they\", keep that. Never change who is speaking. Output ONLY the rewritten text. No explanations, no preamble. {}", anti_ai),
+        "enhance" => format!("Improve this text: fix errors, make it clearer, and add small details where it feels thin. IMPORTANT: If the original text uses \"I\" or \"my\", your output MUST also use \"I\" and \"my\". Never switch from first person to third person. Only add details that follow from what was written. Output ONLY the enhanced text. No explanations. {}", anti_ai),
+        _ => format!("Fix grammar, spelling, and punctuation. Keep the same meaning. If the text uses \"I\", keep \"I\". Output ONLY the corrected text. {}", anti_ai),
     };
 
     format!(
