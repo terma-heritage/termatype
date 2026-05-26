@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+title: "TermaType: A Bilingual English–Tibetan Word Processor"
+message: "If you use TermaType in academic work, please cite it as below."
+type: software
+authors:
+  - given-names: Thupten
+    family-names: Chakrishar
+    affiliation: "Terma Heritage Foundation, Inc."
+    email: thupten@termafoundation.org
+repository-code: "https://github.com/terma-heritage/termatype"
+url: "https://termafoundation.org"
+abstract: >-
+  TermaType is a free, open-source, fully offline desktop word processor
+  designed for bilingual English and Tibetan writing. It provides EWTS
+  (Wylie) input with real-time Tibetan Unicode conversion, an integrated
+  239,000-entry Tibetan-English dictionary, on-device AI writing assistance
+  via local language models, and offline Tibetan-English translation using
+  the MITRA model. Built with Tauri, React, and Rust, TermaType serves
+  Tibetan writers, translators, scholars, and language learners worldwide.
+keywords:
+  - tibetan
+  - tibetan-language
+  - word-processor
+  - endangered-languages
+  - language-preservation
+  - wylie
+  - ewts
+  - offline-first
+  - local-ai
+  - cultural-heritage
+license: GPL-3.0
+version: 1.0.2
+date-released: "2026-05-23"
