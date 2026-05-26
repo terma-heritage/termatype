@@ -31,8 +31,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/terma-heritage/termatype?style=flat-square" alt="License" />
-  <img src="https://img.shields.io/github/v/release/terma-heritage/termatype?style=flat-square&color=E8784A" alt="Release" />
+  <a href="https://github.com/terma-heritage/termatype/blob/main/LICENSE"><img src="https://img.shields.io/github/license/terma-heritage/termatype?style=flat-square" alt="License" /></a>
+  <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/v/release/terma-heritage/termatype?style=flat-square&color=E8784A" alt="Release" /></a>
+  <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/downloads/terma-heritage/termatype/total?style=flat-square&color=E8784A" alt="Downloads" /></a>
+  <a href="https://github.com/terma-heritage/termatype/commits/main"><img src="https://img.shields.io/github/last-commit/terma-heritage/termatype?style=flat-square" alt="Last Commit" /></a>
   <img src="https://img.shields.io/badge/platform-Windows%20|%20macOS-blue?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/offline-100%25-green?style=flat-square" alt="Offline" />
 </p>
