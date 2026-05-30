@@ -17,16 +17,16 @@
 
 <!-- UPDATE THESE LINKS WHEN RELEASING A NEW VERSION -->
 <p align="center">
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.2/TermaType_1.0.2_x64-setup.exe">
-    <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.2-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.3/TermaType_1.0.3_x64-setup.exe">
+    <img src="https://img.shields.io/badge/Download_for_Windows-v1.0.3-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.2/TermaType_1.0.2_aarch64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v1.0.2-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.3/TermaType_1.0.3_aarch64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v1.0.3-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.2/TermaType_1.0.2_x64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v1.0.2-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v1.0.3/TermaType_1.0.3_x64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v1.0.3-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
   </a>
 </p>
 
@@ -90,7 +90,7 @@ Translate between Tibetan and English using the MITRA model (by Sebastian Nehrdi
 
 ### Windows
 
-**[Download TermaType for Windows](https://github.com/terma-heritage/termatype/releases/download/v1.0.2/TermaType_1.0.2_x64-setup.exe)**
+**[Download TermaType for Windows](https://github.com/terma-heritage/termatype/releases/download/v1.0.3/TermaType_1.0.3_x64-setup.exe)**
 
 Requires Windows 10 or later.
 
@@ -98,17 +98,13 @@ Requires Windows 10 or later.
 
 ### macOS
 
-**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v1.0.2/TermaType_1.0.2_aarch64.dmg)** — for newer Macs (2020+)
+**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v1.0.3/TermaType_1.0.3_aarch64.dmg)** — for newer Macs (2020+)
 
-**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v1.0.2/TermaType_1.0.2_x64.dmg)** — for older Macs
+**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v1.0.3/TermaType_1.0.3_x64.dmg)** — for older Macs
 
 Requires macOS 10.15 (Catalina) or later.
 
-> **macOS Gatekeeper:** Because TermaType is not yet notarized with Apple, macOS will block the app the first time you open it. To allow it:
-> 1. Open the `.dmg` and drag TermaType to your Applications folder.
-> 2. Try to open TermaType — you'll see a warning that it "can't be opened."
-> 3. Go to **System Settings → Privacy & Security**, scroll down, and click **"Open Anyway"** next to the TermaType message.
-> 4. Click **"Open"** in the confirmation dialog. You only need to do this once.
+> TermaType is code-signed and notarized by Apple. Just open the `.dmg`, drag TermaType to your Applications folder, and launch it — no security warnings.
 
 ---
 
