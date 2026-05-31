@@ -38,17 +38,9 @@ export function AboutPage() {
 
         <h2>Tibetan Language Tools</h2>
         <ul>
-          <li><strong>Tibetan Dictionary</strong> — look up words instantly from Rangjung Yeshe and Monlam dictionaries (View → Dictionary, or <code>Ctrl+D</code>)</li>
+          <li><strong>Tibetan-English Dictionary</strong> — look up words instantly (View → Dictionary)</li>
           <li><strong>Wylie-aware Find & Replace</strong> — search using Wylie transliteration and find the matching Tibetan text (<code>Ctrl+H</code>, toggle the "Wy" button)</li>
-          <li><strong>Translation</strong> — translate between Tibetan and English using the MITRA model offline, or via dharmamitra.org (View → Translator)</li>
         </ul>
-
-        <h2>AI Writing Assistant</h2>
-        <p>
-          An optional local AI assistant that runs entirely on your computer. Select text and ask it
-          to fix grammar, rewrite, expand, summarize, or translate. Install via{' '}
-          <strong>View → Extensions</strong> and open with <strong>View → Assistant</strong>.
-        </p>
 
         <h2>Writing Modes</h2>
         <ul>
@@ -100,9 +92,8 @@ export function AboutPage() {
 
         <h2>Privacy</h2>
         <p>
-          TermaType is 100% local. Your documents, dictionary lookups, AI assistant,
-          and translations all run on your computer. Nothing is sent to the cloud. No accounts,
-          no tracking, no telemetry.
+          TermaType is 100% local. Your documents and dictionary lookups all stay on your
+          computer. Nothing is sent to the cloud. No accounts, no tracking, no telemetry.
         </p>
 
         <hr />

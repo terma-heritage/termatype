@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { invoke } from '@/lib/safe-invoke'
-import { listen } from '@tauri-apps/api/event'
 import type { Editor } from '@tiptap/react'
 
 interface DictResult {
@@ -13,12 +12,6 @@ interface DictResult {
 
 const isTibetan = (text: string) => /[ༀ-࿿]/.test(text)
 
-const SOURCE_LABELS: Record<string, string> = {
-  'rangjung-yeshe': 'RY',
-  'monlam-tib-eng': 'Monlam',
-  'monlam-eng-tib': 'Monlam',
-}
-
 export function DictionarySidebar({
   editor,
   onClose,
@@ -29,62 +22,7 @@ export function DictionarySidebar({
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<DictResult[]>([])
   const [searching, setSearching] = useState(false)
-  const [installed, setInstalled] = useState(false)
-  const [downloadProgress, setDownloadProgress] = useState<number | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    try {
-      invoke<boolean>('get_plugin_status', { pluginId: 'terma-dictionary' })
-        .then((status) => setInstalled(status))
-        .catch(() => {})
-    } catch {}
-  }, [])
-
-  useEffect(() => {
-    let mounted = true
-    const unlisteners: (() => void)[] = []
-
-    listen<{ pluginId: string; progress: number }>('plugin-download-progress', (event) => {
-      if (!mounted || event.payload.pluginId !== 'terma-dictionary') return
-      setDownloadProgress(event.payload.progress)
-    }).then((fn) => { if (mounted) unlisteners.push(fn); else fn() })
-
-    listen<{ pluginId: string }>('plugin-installed', (event) => {
-      if (!mounted || event.payload.pluginId !== 'terma-dictionary') return
-      setDownloadProgress(null)
-      setInstalled(true)
-    }).then((fn) => { if (mounted) unlisteners.push(fn); else fn() })
-
-    return () => {
-      mounted = false
-      unlisteners.forEach((fn) => fn())
-    }
-  }, [])
-
-  const handleInstall = useCallback(async () => {
-    setError(null)
-    setDownloadProgress(0)
-    try {
-      await invoke('install_plugin', { pluginId: 'terma-dictionary' })
-    } catch (e) {
-      setError(String(e))
-      setDownloadProgress(null)
-    }
-  }, [])
-
-  const handleUninstall = useCallback(async () => {
-    setError(null)
-    try {
-      await invoke('uninstall_plugin', { pluginId: 'terma-dictionary' })
-      setInstalled(false)
-      setResults([])
-      setQuery('')
-    } catch (e) {
-      setError(String(e))
-    }
-  }, [])
 
   const search = useCallback(async (term: string) => {
     if (!term.trim()) {
@@ -102,7 +40,7 @@ export function DictionarySidebar({
   }, [])
 
   useEffect(() => {
-    if (!editor || !installed) return
+    if (!editor) return
 
     let debounceTimer: ReturnType<typeof setTimeout>
     const handleSelectionUpdate = () => {
@@ -123,46 +61,17 @@ export function DictionarySidebar({
       clearTimeout(debounceTimer)
       editor.off('selectionUpdate', handleSelectionUpdate)
     }
-  }, [editor, installed, search])
+  }, [editor, search])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     search(query)
   }
 
-  if (!installed) {
-    return (
-      <div className="dictionary-sidebar">
-        <div className="dictionary-header">
-          <h3>Terma Dictionary</h3>
-          <button className="dictionary-close" onClick={onClose} aria-label="Close dictionary">✕</button>
-        </div>
-        <div className="dictionary-not-installed">
-          <p>239,000+ Tibetan-English entries from Rangjung Yeshe and Monlam.</p>
-          {downloadProgress !== null ? (
-            <div className="plugin-inline-progress">
-              <div className="plugin-progress">
-                <div className="plugin-progress-bar" style={{ width: `${downloadProgress}%` }} />
-                <span>{downloadProgress}%</span>
-              </div>
-              <p className="assistant-note">Downloading dictionary...</p>
-            </div>
-          ) : (
-            <button className="assistant-btn assistant-btn-primary plugin-inline-install" onClick={handleInstall}>
-              Install (~48 MB)
-            </button>
-          )}
-          {error && <div className="assistant-error" style={{ marginTop: '8px' }}>{error}</div>}
-          <p className="assistant-note" style={{ marginTop: '12px' }}>If you encounter any problems or bugs, please contact <strong>info@termafoundation.org</strong></p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="dictionary-sidebar">
       <div className="dictionary-header">
-        <h3>Terma Dictionary</h3>
+        <h3>Tibetan-English Dictionary</h3>
         <button className="dictionary-close" onClick={onClose} aria-label="Close dictionary">✕</button>
       </div>
 
@@ -189,9 +98,6 @@ export function DictionarySidebar({
           <div key={i} className="dictionary-entry">
             <div className="dictionary-entry-header">
               <span className={`dictionary-term${isTibetan(entry.headword) ? ' dictionary-term-tibetan' : ''}`}>{entry.headword}</span>
-              <span className="dictionary-source-badge">
-                {SOURCE_LABELS[entry.source] || entry.source_name}
-              </span>
             </div>
             {entry.headword_wylie && (
               <div className="dictionary-wylie">{entry.headword_wylie}</div>
@@ -199,11 +105,6 @@ export function DictionarySidebar({
             <div className="dictionary-definition">{entry.definition}</div>
           </div>
         ))}
-      </div>
-
-      <div className="plugin-inline-uninstall-wrap">
-        <p className="assistant-help-hint" style={{ marginBottom: '8px' }}>If you encounter any problems or bugs, please contact <strong>info@termafoundation.org</strong></p>
-        <button className="plugin-inline-uninstall" onClick={handleUninstall}>Uninstall</button>
       </div>
     </div>
   )

@@ -52,14 +52,11 @@ import { createTibetanIMEExtension } from '@/components/termatype/tibetan-ime/ti
 import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindReplace'
 import { SlashCommands } from '@/components/termatype/SlashCommands'
 import { onUpdateAvailable, installUpdate, dismissUpdate, type UpdateInfo } from '@/lib/updater'
-import { PluginSettings } from '@/components/termatype/PluginSettings'
 import { StatusBar } from '@/components/termatype/StatusBar'
 import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype/ToolbarContent'
 
 const DictionarySidebar = lazy(() => import('@/components/termatype/DictionarySidebar').then(m => ({ default: m.DictionarySidebar })))
-const TermaAssistant = lazy(() => import('@/components/termatype/TermaAssistant').then(m => ({ default: m.TermaAssistant })))
 const WylieReference = lazy(() => import('@/components/termatype/WylieReference').then(m => ({ default: m.WylieReference })))
-const TermaTranslator = lazy(() => import('@/components/termatype/TermaTranslator').then(m => ({ default: m.TermaTranslator })))
 const DocumentOutline = lazy(() => import('@/components/termatype/DocumentOutline').then(m => ({ default: m.DocumentOutline })))
 const WyliePractice = lazy(() => import('@/components/termatype/WyliePractice').then(m => ({ default: m.WyliePractice })))
 const KeyboardShortcutsPage = lazy(() => import('@/components/termatype/KeyboardShortcutsPage').then(m => ({ default: m.KeyboardShortcutsPage })))
@@ -97,8 +94,7 @@ export default function App() {
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link'>('main')
   const [showFindReplace, setShowFindReplace] = useState(false)
-  const [showPluginSettings, setShowPluginSettings] = useState(false)
-  const [sidePanel, setSidePanel] = useState<{ open: boolean; tab: 'assistant' | 'dictionary' | 'translator' }>({ open: false, tab: 'assistant' })
+  const [dictionaryOpen, setDictionaryOpen] = useState(false)
   const [outlineOpen, setOutlineOpen] = useState(false)
   const [zoom, setZoom] = useState(100)
   const [lang, setLang] = useState<Lang>('en')
@@ -371,10 +367,7 @@ export default function App() {
           onZoomIn={() => setZoom((z) => Math.min(z + 10, 200))}
           onZoomOut={() => setZoom((z) => Math.max(z - 10, 50))}
           onZoomReset={() => setZoom(100)}
-          onExtensions={() => setShowPluginSettings(true)}
-          onDictionary={() => setSidePanel((s) => s.open && s.tab === 'dictionary' ? { ...s, open: false } : { open: true, tab: 'dictionary' })}
-          onAssistant={() => setSidePanel((s) => s.open && s.tab === 'assistant' ? { ...s, open: false } : { open: true, tab: 'assistant' })}
-          onTranslator={() => setSidePanel((s) => s.open && s.tab === 'translator' ? { ...s, open: false } : { open: true, tab: 'translator' })}
+          onDictionary={() => setDictionaryOpen(o => !o)}
           onOutline={() => setOutlineOpen(o => !o)}
           onWylieReference={() => openHelpTab('wylie-reference')}
           onFocusMode={() => setFocusMode((v) => !v)}
@@ -476,21 +469,11 @@ export default function App() {
             {editor && <TableContextMenu editor={editor} />}
           </div>
 
-          {sidePanel.open && (
-            <aside className="side-panel" aria-label="Tools panel">
-              <div className="side-panel-tabs">
-                <button type="button" className={`side-panel-tab${sidePanel.tab === 'assistant' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'assistant' }))}>Assistant</button>
-                <button type="button" className={`side-panel-tab${sidePanel.tab === 'dictionary' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'dictionary' }))}>Dictionary</button>
-                <button type="button" className={`side-panel-tab${sidePanel.tab === 'translator' ? ' active' : ''}`} onClick={() => setSidePanel((s) => ({ ...s, tab: 'translator' }))}>Translator</button>
-                <button type="button" className="side-panel-close" onClick={() => setSidePanel((s) => ({ ...s, open: false }))} aria-label="Close panel">×</button>
-              </div>
-              <div className="side-panel-content">
-                <Suspense fallback={<div style={{ padding: '1rem', opacity: 0.5 }}>Loading...</div>}>
-                  {sidePanel.tab === 'dictionary' && <DictionarySidebar editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
-                  {sidePanel.tab === 'assistant' && <TermaAssistant editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
-                  {sidePanel.tab === 'translator' && <TermaTranslator editor={editor} onClose={() => setSidePanel((s) => ({ ...s, open: false }))} />}
-                </Suspense>
-              </div>
+          {dictionaryOpen && (
+            <aside className="side-panel" aria-label="Dictionary panel">
+              <Suspense fallback={<div style={{ padding: '1rem', opacity: 0.5 }}>Loading...</div>}>
+                <DictionarySidebar editor={editor} onClose={() => setDictionaryOpen(false)} />
+              </Suspense>
             </aside>
           )}
         </div>
@@ -517,8 +500,8 @@ export default function App() {
         </button>
       )}
 
-      {!sidePanel.open && (
-        <button type="button" className="side-panel-fab" onClick={() => setSidePanel((s) => ({ ...s, open: true }))} aria-label="Open tools panel" title="Tools Panel">
+      {!dictionaryOpen && (
+        <button type="button" className="side-panel-fab" onClick={() => setDictionaryOpen(true)} aria-label="Open dictionary" title="Dictionary">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
@@ -557,8 +540,6 @@ export default function App() {
           Exit Reading Mode
         </button>
       )}
-
-      {showPluginSettings && <PluginSettings onClose={() => setShowPluginSettings(false)} />}
 
       {showLinkInput && (
         <div className="link-input-overlay" onClick={() => setShowLinkInput(false)}>

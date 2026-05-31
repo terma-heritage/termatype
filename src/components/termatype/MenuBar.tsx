@@ -129,10 +129,7 @@ export function MenuBar({
   onZoomIn,
   onZoomOut,
   onZoomReset,
-  onExtensions,
   onDictionary,
-  onAssistant,
-  onTranslator,
   onOutline,
   onWylieReference,
   onFocusMode,
@@ -159,10 +156,7 @@ export function MenuBar({
   onZoomIn: () => void
   onZoomOut: () => void
   onZoomReset: () => void
-  onExtensions: () => void
   onDictionary: () => void
-  onAssistant: () => void
-  onTranslator: () => void
   onOutline: () => void
   onWylieReference: () => void
   onFocusMode: () => void
@@ -277,10 +271,6 @@ export function MenuBar({
         { separator: true },
         { label: 'Document Outline', action: onOutline },
         { label: 'Dictionary', action: onDictionary },
-        { label: 'Assistant', action: onAssistant },
-        { label: 'Translator', action: onTranslator },
-        { separator: true },
-        { label: 'Extensions', action: onExtensions },
       ],
     },
     {
@@ -443,7 +433,7 @@ export function MenuBar({
   ], [editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
       onNew, onOpen, onOpenRecent, onSave, onSaveAs, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
-      onExtensions, onDictionary, onAssistant, onTranslator, onOutline, onWylieReference, onShortcuts, onWyliePractice, onAbout])
+      onDictionary, onOutline, onWylieReference, onShortcuts, onWyliePractice, onAbout])
 
   return (
     <div className="menubar">

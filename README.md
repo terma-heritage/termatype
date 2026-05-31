@@ -52,12 +52,12 @@
 
 ## Why TermaType?
 
-Most word processors treat Tibetan as an afterthought. TermaType was built from the ground up for bilingual writing — with proper Tibetan input, an offline dictionary, and AI tools that understand both languages.
+Most word processors treat Tibetan as an afterthought. TermaType was built from the ground up for bilingual writing — with proper Tibetan input and an offline dictionary.
 
 - **Just type Wylie, get Tibetan.** Full EWTS input with real-time conversion. Toggle with `Ctrl+Space`.
-- **Look up any word instantly.** 239,000+ entry Tibetan-English dictionary built into the sidebar.
-- **AI that stays on your machine.** Grammar fixes, rewrites, translations — all running locally. No cloud. No accounts.
+- **Look up any word instantly.** Tibetan-English dictionary built in.
 - **Export anywhere.** Save as DOCX, PDF, or EPUB. Print-ready with footnotes and page breaks.
+- **100% local.** No cloud. No accounts. No tracking.
 
 ---
 
@@ -73,15 +73,7 @@ Everything you'd expect: headings, lists, tables, images with alignment and resi
 
 ### Dictionary at your fingertips
 
-Select any Tibetan word and look it up instantly in the sidebar. 239,000+ entries from the Rangjung Yeshe and Monlam dictionaries. Works offline — no internet needed.
-
-### AI writing assistant
-
-Highlight text and ask the AI to fix grammar, rewrite for clarity, summarize, or expand. Powered by Gemma 3 running entirely on your computer. Your text never leaves your device.
-
-### Tibetan-English translation
-
-Translate between Tibetan and English using the MITRA model (by Sebastian Nehrdich & Kurt Keutzer, Berkeley AI Research). Auto-detects direction. Runs offline for machines with 12+ GB RAM, with a dharmamitra.org fallback for lighter systems.
+Select any Tibetan word and look it up instantly in the sidebar. Works offline — no internet needed.
 
 ---
 
@@ -108,20 +100,6 @@ Requires macOS 10.15 (Catalina) or later.
 
 ---
 
-## Optional Extensions
-
-TermaType is tiny (7.8 MB) out of the box. Heavy features are optional plugins you install from **View → Extensions**:
-
-| Extension | Size | What it does |
-|-----------|------|-------------|
-| **Terma Dictionary** | 48 MB | Offline Tibetan-English dictionary (Rangjung Yeshe + Monlam) |
-| **Terma Assistant** | 806 MB | Local AI writing assistant (Gemma 3 1B) |
-| **Terma Translator** | 5.9 GB | Offline Tibetan↔English translation (MITRA / Gemma 2 9B) |
-
-Everything runs locally. No internet required after download. No accounts. No tracking.
-
----
-
 ## Keyboard Shortcuts
 
 | Action | Shortcut |
@@ -142,9 +120,7 @@ Full shortcuts reference available inside the app (`Ctrl+/`).
 
 - [Tauri 2](https://tauri.app/) — native desktop shell
 - [React 19](https://react.dev/) + [TipTap 3](https://tiptap.dev/) — editor framework
-- [llama.cpp](https://github.com/ggml-org/llama.cpp) — local AI inference
-- [MITRA](https://github.com/buddhist-nlp/mitra) — Tibetan-English translation model
-- [Rangjung Yeshe](https://rywiki.tsadra.org/) + [Monlam](https://monlam.ai/) — dictionary data
+- [Monlam](https://monlam.ai/) — dictionary data
 
 ---
 

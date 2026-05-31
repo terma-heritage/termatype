@@ -65,7 +65,8 @@
     ],
     "category": "Productivity",
     "shortDescription": "Beautiful bilingual writing for English and Tibetan",
-    "longDescription": "TermaType is a modern desktop writing application designed for bilingual English-Tibetan documents. Features include EWTS Tibetan input, an integrated Tibetan-English dictionary, local AI writing assistance, and export to DOCX, PDF, and EPUB.",
+    "longDescription": "TermaType is a modern desktop writing application designed for bilingual English-Tibetan documents. Features include EWTS Tibetan input, an integrated Tibetan-English dictionary, and export to DOCX, PDF, and EPUB.",
+    "resources": ["resources/terma-dictionary.db"],
     "copyright": "© 2024-2026 TermaType contributors",
     "windows": {
       "nsis": {
