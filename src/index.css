@@ -220,14 +220,104 @@ html, body {
   -webkit-app-region: no-drag;
 }
 
+.menubar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  padding-right: 4px;
+  -webkit-app-region: no-drag;
+}
+
 .menubar-title {
   font-size: 12px;
   color: var(--tt-gray-light-400);
-  padding-right: 8px;
-  -webkit-app-region: no-drag;
 
   .dark & {
     color: var(--tt-gray-dark-400);
+  }
+}
+
+.menubar-lang-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 72px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 15px;
+  background: var(--tt-brand-color-500, #e8784a);
+  cursor: pointer;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+  margin-right: 8px;
+
+  &.active {
+    background: #2563eb;
+  }
+
+  .dark & {
+    background: var(--tt-brand-color-500, #e8784a);
+
+    &.active {
+      background: #3b82f6;
+    }
+  }
+}
+
+.menubar-lang-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .active > & {
+    transform: translateX(42px);
+  }
+}
+
+.menubar-lang-switch-label {
+  flex: 1;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+
+.menubar-lang-en {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--tt-font-ui);
+  letter-spacing: 0.5px;
+  line-height: 30px;
+  color: white;
+  opacity: 0;
+  padding-left: 6px;
+
+  .active > & {
+    opacity: 1;
+  }
+}
+
+.menubar-lang-bo {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 13px;
+  font-weight: 400;
+  color: white;
+  line-height: 30px;
+  opacity: 1;
+  padding-right: 10px;
+  padding-left: 2px;
+
+  .active > & {
+    opacity: 0;
   }
 }
 
@@ -263,6 +353,97 @@ html, body {
     background: var(--tt-gray-dark-a-100);
     color: var(--tt-gray-dark-900);
   }
+}
+
+/* ============================================
+   Tibetan Mode — Global UI Overrides
+   When .app-tibetan is on the root, the entire
+   UI switches to Tibetan fonts & sizing.
+   ============================================ */
+
+/* Menu bar: taller, larger Tibetan text, more breathing room */
+.app-tibetan .menubar {
+  height: 40px;
+  padding: 0 12px;
+}
+
+.menubar-tibetan .menubar-trigger {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 16px;
+  padding: 0 14px;
+  height: 36px;
+}
+
+.menubar-tibetan .menubar-dropdown-label {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 15px;
+}
+
+.menubar-tibetan .menubar-dropdown-item {
+  padding: 6px 16px;
+}
+
+/* Tab bar: taller, larger Tibetan text */
+.app-tibetan .tab-bar {
+  min-height: 36px;
+}
+
+.app-tibetan .tab-bar-tab {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 14px;
+  padding: 0.5rem 1rem;
+}
+
+.app-tibetan .tab-bar-close {
+  font-family: var(--tt-font-ui);
+  font-size: 1rem;
+}
+
+/* Status bar: taller, legible Tibetan */
+.app-tibetan .termatype-status-bar {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 13px;
+  height: 34px;
+  padding: 4px 16px;
+}
+
+.app-tibetan .termatype-status-bar .status-lang {
+  font-family: var(--tt-font-ui);
+}
+
+/* Document title in menu bar */
+.app-tibetan .menubar-title {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 13px;
+}
+
+/* Outline panel */
+.app-tibetan .outline-panel-title {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 15px;
+}
+
+.app-tibetan .outline-empty {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.app-tibetan .outline-item {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+}
+
+.dictionary-tibetan .dictionary-header h3 {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 16px;
+}
+
+.dictionary-tibetan .dictionary-input,
+.dictionary-tibetan .dictionary-search-btn,
+.dictionary-tibetan .dictionary-loading,
+.dictionary-tibetan .dictionary-empty {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 14px;
 }
 
 .menubar-dropdown {
@@ -582,6 +763,16 @@ html, body {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: #222;
+}
+
+.status-stats-tibetan {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 13px;
+  min-width: 220px;
+}
+
+.status-stats-tibetan .status-stats-row {
+  padding: 4px 0;
 }
 
 .dark .status-stats-row span:last-child {
@@ -1082,6 +1273,25 @@ html, body {
 
 .dark .font-family-separator {
   background: var(--tt-gray-dark-a-100, rgba(255, 255, 255, 0.08));
+}
+
+.font-family-dropdown-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.font-family-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tt-gray-light-400);
+  padding: 6px 12px 2px;
+  font-family: var(--tt-font-ui);
+
+  .dark & {
+    color: var(--tt-gray-dark-400);
+  }
 }
 
 /* ============================================
@@ -1636,6 +1846,206 @@ html, body {
   }
 }
 
+/* ---- Dictionary Popup (inline) ---- */
+
+.dictionary-popup {
+  background: var(--tt-bg-color);
+  border: 1px solid var(--tt-border-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  max-width: 320px;
+  min-width: 200px;
+  max-height: 260px;
+  overflow-y: auto;
+  font-family: var(--tt-font-ui);
+  animation: dict-popup-in 0.15s ease;
+
+  .dark & {
+    background: var(--tt-gray-dark-a-100);
+    border-color: var(--tt-gray-dark-a-200);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@keyframes dict-popup-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dictionary-popup-entry {
+  padding: 10px 14px;
+}
+
+.dictionary-popup-entry + .dictionary-popup-entry {
+  border-top: 1px solid var(--tt-border-color);
+
+  .dark & {
+    border-color: var(--tt-gray-dark-a-200);
+  }
+}
+
+.dictionary-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dictionary-popup-term {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--tt-gray-light-900);
+
+  .dark & {
+    color: var(--tt-gray-dark-900);
+  }
+}
+
+.dictionary-popup-term-tibetan {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 18px;
+}
+
+.dictionary-popup-wylie {
+  font-size: 11px;
+  color: var(--tt-gray-light-400);
+  margin-top: 1px;
+
+  .dark & {
+    color: var(--tt-gray-dark-400);
+  }
+}
+
+.dictionary-popup-definition {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tt-gray-light-600);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  .dark & {
+    color: var(--tt-gray-dark-600);
+  }
+}
+
+.dictionary-popup-insert {
+  background: none;
+  border: 1px solid var(--tt-border-color);
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 1px 6px;
+  cursor: pointer;
+  color: var(--tt-gray-light-500);
+  flex-shrink: 0;
+  transition: all 0.15s;
+
+  &:hover {
+    background: var(--tt-brand-color-500);
+    border-color: var(--tt-brand-color-500);
+    color: white;
+  }
+
+  .dark & {
+    border-color: var(--tt-gray-dark-a-200);
+    color: var(--tt-gray-dark-500);
+
+    &:hover {
+      background: var(--tt-brand-color-500);
+      border-color: var(--tt-brand-color-500);
+      color: white;
+    }
+  }
+}
+
+.dictionary-popup-more {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: var(--tt-font-ui);
+  font-weight: 500;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--tt-border-color);
+  color: var(--tt-brand-color-500);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--tt-gray-light-a-50, rgba(0,0,0,0.03));
+  }
+
+  .dark & {
+    border-color: var(--tt-gray-dark-a-200);
+
+    &:hover {
+      background: var(--tt-gray-dark-a-100);
+    }
+  }
+}
+
+/* ---- Dictionary Hover Tooltip ---- */
+
+.dictionary-hover {
+  background: var(--tt-bg-color);
+  border: 1px solid var(--tt-border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  max-width: 280px;
+  padding: 8px 12px;
+  font-family: var(--tt-font-ui);
+  animation: dict-popup-in 0.12s ease;
+  pointer-events: auto;
+
+  .dark & {
+    background: var(--tt-gray-dark-a-100);
+    border-color: var(--tt-gray-dark-a-200);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.dictionary-hover-term {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tt-gray-light-900);
+
+  .dark & {
+    color: var(--tt-gray-dark-900);
+  }
+}
+
+.dictionary-hover-wylie {
+  font-size: 11px;
+  color: var(--tt-gray-light-400);
+  margin-top: 1px;
+
+  .dark & {
+    color: var(--tt-gray-dark-400);
+  }
+}
+
+.dictionary-hover-definition {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tt-gray-light-600);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  .dark & {
+    color: var(--tt-gray-dark-600);
+  }
+}
+
+/* ---- Dictionary Sidebar Search ---- */
+
 .dictionary-search {
   display: flex;
   padding: 12px 16px;
@@ -1679,18 +2089,30 @@ html, body {
 .dictionary-search-btn {
   height: 34px;
   padding: 0 14px;
-  border: none;
+  border: 1px solid var(--tt-border-color);
+  border-left: none;
   border-radius: 0 6px 6px 0;
-  background: var(--tt-brand-color-500);
-  color: white;
+  background: var(--tt-gray-light-100, #f5f0eb);
+  color: var(--tt-gray-light-700);
   font-size: 12px;
   font-weight: 500;
   font-family: var(--tt-font-ui);
   cursor: pointer;
+  transition: background 0.15s;
+
+  .dark & {
+    background: var(--tt-gray-dark-a-100);
+    color: var(--tt-gray-dark-700);
+    border-color: var(--tt-gray-dark-a-200);
+  }
 }
 
 .dictionary-search-btn:hover {
-  background: var(--tt-brand-color-600);
+  background: var(--tt-gray-light-200, #ebe5de);
+
+  .dark & {
+    background: var(--tt-gray-dark-a-200);
+  }
 }
 
 .dictionary-results {
@@ -1883,7 +2305,7 @@ html, body {
 }
 
 /* ============================================
-   Side Panel (Dictionary & Assistant tabs)
+   Side Panel (Dictionary)
    ============================================ */
 
 .side-panel {
@@ -2800,6 +3222,53 @@ html, body {
   border-bottom-color: var(--tt-gray-dark-a-100, #333);
 }
 
+.about-page-bo h1,
+.about-page-bo h2,
+.about-page-bo p,
+.about-page-bo li,
+.about-page-bo td,
+.about-page-bo th,
+.about-page-bo em,
+.about-page-bo strong {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+}
+
+.about-page-bo h1 {
+  font-size: 28px;
+  line-height: 1.6;
+}
+
+.about-page-bo h2 {
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.about-page-bo p,
+.about-page-bo li {
+  font-size: 16px;
+  line-height: 2;
+}
+
+.about-page-bo .about-page-subtitle em {
+  font-size: 18px;
+}
+
+.about-page-bo .about-page-dedication em {
+  font-size: 16px;
+  line-height: 2;
+}
+
+.about-page-bo .about-page-mission em {
+  font-size: 14px;
+  line-height: 2;
+}
+
+.about-page-bo .about-page-table th,
+.about-page-bo .about-page-table td {
+  font-size: 14px;
+  line-height: 1.8;
+}
+
 .termatype-status-bar .status-lang {
   cursor: pointer;
   border-radius: 3px;
@@ -3172,6 +3641,49 @@ html, body {
 
 .dark .help-page-content code {
   background: var(--tt-gray-dark-100, #222);
+}
+
+.help-page-bo .help-page-content h1,
+.help-page-bo .help-page-content h2,
+.help-page-bo .help-page-content h3,
+.help-page-bo .help-page-content h4,
+.help-page-bo .help-page-content p,
+.help-page-bo .help-page-content li,
+.help-page-bo .help-page-content span,
+.help-page-bo .help-page-content td,
+.help-page-bo .help-page-content th,
+.help-page-bo .help-muted {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+}
+
+.help-page-bo .help-page-content h1 {
+  font-size: 26px;
+  line-height: 1.6;
+}
+
+.help-page-bo .help-page-content h2,
+.help-page-bo .help-page-content h3,
+.help-page-bo .help-page-content h4 {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.help-page-bo .help-page-content p,
+.help-page-bo .help-page-content li,
+.help-page-bo .help-muted {
+  font-size: 15px;
+  line-height: 2;
+}
+
+.help-page-bo .shortcuts-page-row span {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 14px;
+}
+
+.help-page-bo .help-tip {
+  font-family: var(--tt-font-tibetan, 'Jomolhari', 'Noto Serif Tibetan', serif);
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 .dark .help-tip {

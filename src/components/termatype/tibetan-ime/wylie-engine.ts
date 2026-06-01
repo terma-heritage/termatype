@@ -185,24 +185,34 @@ function parseSyllableStructure(tokens: string[]): SyllableParts {
     const [a, b, c, d] = tokens
     const rest = tokens.slice(4)
 
-    // prefix + superscript + root + subscript
-    if (SUPERSCRIPTS[b]?.has(c) && PREFIXES[a]?.has(c) && SUBSCRIPTS[d]?.has(c)) {
+    // prefix + superscript + root + subscript (+ suffixes)
+    if (PREFIXES[a]?.has(c) && SUPERSCRIPTS[b]?.has(c) && SUBSCRIPTS[d]?.has(c)) {
       return { prefix: a, superscript: b, root: c, subscripts: [d], suffixes: rest }
     }
 
-    // prefix + root + subscript + suffix
+    // prefix + superscript + root + suffix (+ suffixes)
+    if (PREFIXES[a]?.has(c) && SUPERSCRIPTS[b]?.has(c)) {
+      return { prefix: a, superscript: b, root: c, subscripts: [], suffixes: [d, ...rest] }
+    }
+
+    // prefix + root + subscript + suffix (+ suffixes)
     if (PREFIXES[a]?.has(b) && SUBSCRIPTS[c]?.has(b)) {
       return { prefix: a, superscript: null, root: b, subscripts: [c], suffixes: [d, ...rest] }
     }
 
-    // superscript + root + subscript + suffix
+    // superscript + root + subscript + suffix (+ suffixes)
     if (SUPERSCRIPTS[a]?.has(b) && SUBSCRIPTS[c]?.has(b)) {
       return { prefix: null, superscript: a, root: b, subscripts: [c], suffixes: [d, ...rest] }
     }
 
-    // prefix + superscript + root + suffix
-    if (SUPERSCRIPTS[b]?.has(c) && PREFIXES[a]?.has(c)) {
-      return { prefix: a, superscript: b, root: c, subscripts: [], suffixes: [d, ...rest] }
+    // superscript + root + suffix + suffix (e.g., lcags: l=super, c=root, g=suf, s=suf)
+    if (SUPERSCRIPTS[a]?.has(b)) {
+      return { prefix: null, superscript: a, root: b, subscripts: [], suffixes: [c, d, ...rest] }
+    }
+
+    // prefix + root + suffix + suffix
+    if (PREFIXES[a]?.has(b)) {
+      return { prefix: a, superscript: null, root: b, subscripts: [], suffixes: [c, d, ...rest] }
     }
 
     // fallback: treat first as root

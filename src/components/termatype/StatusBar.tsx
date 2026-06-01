@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { Editor } from '@tiptap/react'
 import { countWords } from '@/lib/word-count'
+import { TIBETAN_LABELS } from './MenuBar'
 import type { Lang } from '@/components/termatype/LanguageToggle'
 
 export function StatusBar({
@@ -12,6 +13,7 @@ export function StatusBar({
   zoom,
   lang,
   onToggleLang,
+  menuLang = 'en',
 }: {
   editor: Editor | null
   fileName: string
@@ -21,17 +23,19 @@ export function StatusBar({
   zoom: number
   lang: Lang
   onToggleLang: () => void
+  menuLang?: 'en' | 'bo'
 }) {
+  const t = useCallback((label: string) => menuLang === 'bo' ? (TIBETAN_LABELS[label] || label) : label, [menuLang])
   const getSaveStatus = () => {
-    if (autoSaveError) return 'Save failed'
-    if (isDirty) return 'Modified'
+    if (autoSaveError) return menuLang === 'bo' ? 'ཉར་ཚགས་མི་ཐུབ།' : 'Save failed'
+    if (isDirty) return t('Modified')
     if (lastSaved) {
       const seconds = Math.floor((Date.now() - lastSaved.getTime()) / 1000)
-      if (seconds < 5) return 'Saved just now'
-      if (seconds < 60) return `Saved ${seconds}s ago`
-      return `Saved at ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+      if (seconds < 5) return menuLang === 'bo' ? 'ད་ལྟ་ཉར་ཚགས།' : 'Saved just now'
+      if (seconds < 60) return menuLang === 'bo' ? `${seconds} སྐར་ཆ་སྔོན་ཉར།` : `Saved ${seconds}s ago`
+      return menuLang === 'bo' ? `${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ལ་ཉར།` : `Saved at ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
     }
-    return 'New document'
+    return menuLang === 'bo' ? 'ཡིག་ཆ་གསར་པ།' : 'New document'
   }
 
   const [showStats, setShowStats] = useState(false)
@@ -65,26 +69,26 @@ export function StatusBar({
   const pageCount = Math.max(1, Math.ceil(words / 250))
 
   return (
-    <div className="termatype-status-bar">
+    <div className={`termatype-status-bar${menuLang === 'bo' ? ' status-bar-tibetan' : ''}`}>
       <span className="status-filename">{fileName}</span>
       <span className="status-separator">|</span>
       <span className={`status-save${autoSaveError ? ' status-error' : ''}`} title={autoSaveError || undefined}>{getSaveStatus()}</span>
       <span className="status-spacer" />
       <button className="status-count status-clickable" onClick={() => setShowStats(!showStats)} title="Click for detailed statistics">
-        {words.toLocaleString()} words | {chars.toLocaleString()} chars | ~{readingTime} min | {pageCount} pg
+        {words.toLocaleString()} {t('words')} | {chars.toLocaleString()} {t('chars')} | ~{readingTime} {t('min')} | {pageCount} {t('pg')}
       </button>
       {showStats && (
-        <div className="status-stats-popup">
-          <div className="status-stats-row"><span>Words</span><span>{words.toLocaleString()}</span></div>
-          <div className="status-stats-row"><span>Characters</span><span>{chars.toLocaleString()}</span></div>
-          <div className="status-stats-row"><span>Characters (no spaces)</span><span>{charsNoSpaces.toLocaleString()}</span></div>
-          <div className="status-stats-row"><span>Sentences</span><span>{sentences.toLocaleString()}</span></div>
-          <div className="status-stats-row"><span>Paragraphs</span><span>{paragraphs.toLocaleString()}</span></div>
+        <div className={`status-stats-popup${menuLang === 'bo' ? ' status-stats-tibetan' : ''}`}>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཚིག' : 'Words'}</span><span>{words.toLocaleString()}</span></div>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཡིག་འབྲུ' : 'Characters'}</span><span>{chars.toLocaleString()}</span></div>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཡིག་འབྲུ (བར་སྟོང་མེད)' : 'Characters (no spaces)'}</span><span>{charsNoSpaces.toLocaleString()}</span></div>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཚིག་གྲུབ' : 'Sentences'}</span><span>{sentences.toLocaleString()}</span></div>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཡིག་དོན' : 'Paragraphs'}</span><span>{paragraphs.toLocaleString()}</span></div>
           {tibetanSyllables > 0 && (
-            <div className="status-stats-row"><span>Tibetan syllables</span><span>{tibetanSyllables.toLocaleString()}</span></div>
+            <div className="status-stats-row"><span>{menuLang === 'bo' ? 'བོད་ཡིག་ཚེག་བར' : 'Tibetan syllables'}</span><span>{tibetanSyllables.toLocaleString()}</span></div>
           )}
-          <div className="status-stats-row"><span>Reading time</span><span>~{readingTime} min</span></div>
-          <div className="status-stats-row"><span>Pages (est.)</span><span>{pageCount}</span></div>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཀློག་དུས' : 'Reading time'}</span><span>~{readingTime} {menuLang === 'bo' ? 'སྐར་མ' : 'min'}</span></div>
+          <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཤོག་ངོས (ཚོད་དཔག)' : 'Pages (est.)'}</span><span>{pageCount}</span></div>
         </div>
       )}
       <span className="status-separator">|</span>
@@ -92,7 +96,7 @@ export function StatusBar({
       <span className="status-separator">|</span>
       <button className="status-lang" onClick={onToggleLang} title="Click to switch language">{lang === 'bo' ? 'བོད' : 'EN'}</button>
       <span className="status-separator">|</span>
-      <span className="status-privacy" title="100% private — all processing happens on your device">🔒 Local</span>
+      <span className="status-privacy" title="100% private — all processing happens on your device">🔒 {t('Local')}</span>
     </div>
   )
 }

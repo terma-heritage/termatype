@@ -52,6 +52,8 @@ import { createTibetanIMEExtension } from '@/components/termatype/tibetan-ime/ti
 import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindReplace'
 import { SlashCommands } from '@/components/termatype/SlashCommands'
 import { onUpdateAvailable, installUpdate, dismissUpdate, type UpdateInfo } from '@/lib/updater'
+import { DictionaryPopup } from '@/components/termatype/DictionaryPopup'
+import { DictionaryHover } from '@/components/termatype/DictionaryHover'
 import { StatusBar } from '@/components/termatype/StatusBar'
 import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype/ToolbarContent'
 
@@ -62,12 +64,12 @@ const WyliePractice = lazy(() => import('@/components/termatype/WyliePractice').
 const KeyboardShortcutsPage = lazy(() => import('@/components/termatype/KeyboardShortcutsPage').then(m => ({ default: m.KeyboardShortcutsPage })))
 const AboutPage = lazy(() => import('@/components/termatype/AboutPage').then(m => ({ default: m.AboutPage })))
 
-type HelpTab = { id: string; label: string }
+type HelpTab = { id: string; label: string; labelBo: string }
 const HELP_TABS: Record<string, HelpTab> = {
-  'wylie-practice': { id: 'wylie-practice', label: 'Typing Tibetan' },
-  'wylie-reference': { id: 'wylie-reference', label: 'Wylie Reference' },
-  'shortcuts': { id: 'shortcuts', label: 'Keyboard Shortcuts' },
-  'about': { id: 'about', label: 'About TermaType' },
+  'wylie-practice': { id: 'wylie-practice', label: 'Typing Tibetan', labelBo: 'བོད་ཡིག་སྦྱོང་བརྡར།' },
+  'wylie-reference': { id: 'wylie-reference', label: 'Wylie Reference', labelBo: 'ཝ་ལིའི་གཞུང་།' },
+  'shortcuts': { id: 'shortcuts', label: 'Keyboard Shortcuts', labelBo: 'མཐེབ་གནོན།' },
+  'about': { id: 'about', label: 'About TermaType', labelBo: 'གཏེར་མ་ཡིག་སྦྱོར་སྐོར།' },
 }
 
 import { handleImageUpload, MAX_FILE_SIZE } from '@/lib/tiptap-utils'
@@ -95,6 +97,8 @@ export default function App() {
   const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link'>('main')
   const [showFindReplace, setShowFindReplace] = useState(false)
   const [dictionaryOpen, setDictionaryOpen] = useState(false)
+  const [menuLang, setMenuLang] = useState<'en' | 'bo'>('en')
+  const toggleMenuLang = useCallback(() => setMenuLang(l => l === 'en' ? 'bo' : 'en'), [])
   const [outlineOpen, setOutlineOpen] = useState(false)
   const [zoom, setZoom] = useState(100)
   const [lang, setLang] = useState<Lang>('en')
@@ -120,6 +124,24 @@ export default function App() {
   }, [])
   const [languageToggleExt] = useState(() => createLanguageToggleExtension(toggleLang, () => langRef.current))
   const [tibetanIMEExt] = useState(() => createTibetanIMEExtension(() => langRef.current, toggleLang))
+
+  // Sync typing language and window title when menu language changes
+  const menuLangInitRef = useRef(true)
+  useEffect(() => {
+    // Skip on initial mount
+    if (menuLangInitRef.current) { menuLangInitRef.current = false; return }
+    // Switch typing language to match menu language
+    if (menuLang === 'bo' && langRef.current === 'en') toggleLang()
+    if (menuLang === 'en' && langRef.current === 'bo') toggleLang()
+    // Update native window title
+    import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
+      getCurrentWindow().setTitle(
+        menuLang === 'bo'
+          ? 'གཏེར་མ་ཡིག་སྦྱོར། — སྐད་གཉིས་ཀྱི་ཡིག་སྦྱོར་མཛེས་པོ།'
+          : 'TermaType — Beautiful bilingual writing'
+      ).catch(() => {})
+    }).catch(() => {})
+  }, [menuLang, toggleLang])
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -350,7 +372,7 @@ export default function App() {
   }, [isMobile, mobileView])
 
   return (
-    <div className={`termatype-app${focusMode ? ' focus-mode' : ''}${readingMode ? ' reading-mode' : ''}`}>
+    <div className={`termatype-app${focusMode ? ' focus-mode' : ''}${readingMode ? ' reading-mode' : ''}${menuLang === 'bo' ? ' app-tibetan' : ''}`}>
       <EditorContext.Provider value={{ editor }}>
         <nav aria-label="Menu bar">
         <MenuBar
@@ -379,7 +401,12 @@ export default function App() {
           onAbout={() => openHelpTab('about')}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-          fileName={activeDocTab?.fileName ?? 'Untitled'}
+          fileName={(() => {
+            const name = activeDocTab?.fileName ?? 'Untitled'
+            return name === 'Untitled' && menuLang === 'bo' ? 'མིང་མེད།' : name
+          })()}
+          menuLang={menuLang}
+          onToggleMenuLang={toggleMenuLang}
         />
         </nav>
 
@@ -393,7 +420,7 @@ export default function App() {
               aria-selected={activeView === 'document' && activeDocTabId === tab.id}
             >
               {tab.isDirty && <span className="tab-dirty-dot">● </span>}
-              {tab.fileName}
+              {tab.fileName === 'Untitled' && menuLang === 'bo' ? 'མིང་མེད།' : tab.fileName}
               <span
                 className="tab-bar-close"
                 onClick={(e) => { e.stopPropagation(); requestCloseDocTab(tab.id) }}
@@ -409,7 +436,7 @@ export default function App() {
               role="tab"
               aria-selected={activeView === tabId}
             >
-              {HELP_TABS[tabId]?.label ?? tabId}
+              {menuLang === 'bo' ? (HELP_TABS[tabId]?.labelBo ?? tabId) : (HELP_TABS[tabId]?.label ?? tabId)}
               <span
                 className="tab-bar-close"
                 onClick={(e) => { e.stopPropagation(); closeHelpTab(tabId) }}
@@ -417,18 +444,18 @@ export default function App() {
               >×</span>
             </button>
           ))}
-          <button type="button" className="tab-bar-new" onClick={onNew} title="New document" aria-label="New document">+</button>
+          <button type="button" className="tab-bar-new" onClick={onNew} title={menuLang === 'bo' ? 'ཡིག་ཆ་གསར་བཟོ།' : 'New document'} aria-label="New document">+</button>
         </div>
 
         <div className="termatype-app-with-sidebar" style={{ display: activeView === 'document' ? '' : 'none' }}>
           {outlineOpen && (
             <aside className="outline-panel" aria-label="Document outline">
               <div className="outline-panel-header">
-                <span className="outline-panel-title">Outline</span>
+                <span className="outline-panel-title">{menuLang === 'bo' ? 'ས་བཅད།' : 'Outline'}</span>
                 <button type="button" className="outline-panel-close" onClick={() => setOutlineOpen(false)} aria-label="Close outline">×</button>
               </div>
               <Suspense fallback={<div style={{ padding: '1rem', opacity: 0.5 }}>Loading...</div>}>
-                <DocumentOutline editor={editor} />
+                <DocumentOutline editor={editor} menuLang={menuLang} />
               </Suspense>
             </aside>
           )}
@@ -464,6 +491,8 @@ export default function App() {
             />
 
             {editor && <SelectionBubbleMenu editor={editor} />}
+            {editor && <DictionaryPopup editor={editor} onOpenSidebar={() => setDictionaryOpen(true)} menuLang={menuLang} />}
+            {editor && <DictionaryHover editor={editor} />}
             {editor && <TableBubbleMenu editor={editor} />}
             {editor && <ImageBubbleMenu editor={editor} />}
             {editor && <TableContextMenu editor={editor} />}
@@ -472,7 +501,7 @@ export default function App() {
           {dictionaryOpen && (
             <aside className="side-panel" aria-label="Dictionary panel">
               <Suspense fallback={<div style={{ padding: '1rem', opacity: 0.5 }}>Loading...</div>}>
-                <DictionarySidebar editor={editor} onClose={() => setDictionaryOpen(false)} />
+                <DictionarySidebar editor={editor} onClose={() => setDictionaryOpen(false)} menuLang={menuLang} />
               </Suspense>
             </aside>
           )}
@@ -480,10 +509,10 @@ export default function App() {
       {activeView !== 'document' && (
         <div className="help-tab-content">
           <Suspense fallback={<div style={{ padding: '2rem', opacity: 0.5 }}>Loading...</div>}>
-            {activeView === 'wylie-practice' && <WyliePractice />}
-            {activeView === 'wylie-reference' && <WylieReference />}
-            {activeView === 'shortcuts' && <KeyboardShortcutsPage />}
-            {activeView === 'about' && <AboutPage />}
+            {activeView === 'wylie-practice' && <WyliePractice menuLang={menuLang} />}
+            {activeView === 'wylie-reference' && <WylieReference menuLang={menuLang} />}
+            {activeView === 'shortcuts' && <KeyboardShortcutsPage menuLang={menuLang} />}
+            {activeView === 'about' && <AboutPage menuLang={menuLang} />}
           </Suspense>
         </div>
       )}
@@ -515,13 +544,17 @@ export default function App() {
 
       <StatusBar
         editor={editor}
-        fileName={activeDocTab?.fileName ?? 'Untitled'}
+        fileName={(() => {
+            const name = activeDocTab?.fileName ?? 'Untitled'
+            return name === 'Untitled' && menuLang === 'bo' ? 'མིང་མེད།' : name
+          })()}
         isDirty={activeDocTab?.isDirty ?? false}
         lastSaved={activeDocTab?.lastSaved ?? null}
         autoSaveError={activeDocTab?.autoSaveError ?? null}
         zoom={zoom}
         lang={lang}
         onToggleLang={toggleLang}
+        menuLang={menuLang}
       />
 
       {focusMode && (

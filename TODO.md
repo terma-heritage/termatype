@@ -24,12 +24,12 @@
 
 ## Phase 2: Inline Dictionary (the magic)
 
-- [ ] Hover any Tibetan word to see definition in a tooltip
-- [ ] Select a Tibetan word to see full dictionary entry inline
-- [ ] Type an English word and see Tibetan suggestions
-- [ ] Click-to-insert Tibetan from dictionary suggestions
-- [ ] Keep sidebar as an option but make inline the default experience
-- [ ] Dictionary should feel "woven into the page" not bolted on
+- [x] Hover any Tibetan word to see definition in a tooltip
+- [x] Select a Tibetan word to see full dictionary entry inline
+- [x] Type an English word and see Tibetan suggestions
+- [x] Click-to-insert Tibetan from dictionary suggestions
+- [x] Keep sidebar as an option but make inline the default experience
+- [x] Dictionary should feel "woven into the page" not bolted on
 
 ---
 

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { invoke } from '@/lib/safe-invoke'
+import { TIBETAN_LABELS } from './MenuBar'
 import type { Editor } from '@tiptap/react'
 
 interface DictResult {
@@ -15,14 +16,18 @@ const isTibetan = (text: string) => /[ༀ-࿿]/.test(text)
 export function DictionarySidebar({
   editor,
   onClose,
+  menuLang = 'en',
 }: {
   editor: Editor | null
   onClose: () => void
+  menuLang?: 'en' | 'bo'
 }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<DictResult[]>([])
   const [searching, setSearching] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const t = useCallback((label: string) => menuLang === 'bo' ? (TIBETAN_LABELS[label] || label) : label, [menuLang])
 
   const search = useCallback(async (term: string) => {
     if (!term.trim()) {
@@ -68,10 +73,12 @@ export function DictionarySidebar({
     search(query)
   }
 
+  const bo = menuLang === 'bo'
+
   return (
-    <div className="dictionary-sidebar">
+    <div className={`dictionary-sidebar${bo ? ' dictionary-tibetan' : ''}`}>
       <div className="dictionary-header">
-        <h3>Tibetan-English Dictionary</h3>
+        <h3>{t('Tibetan-English Dictionary')}</h3>
         <button className="dictionary-close" onClick={onClose} aria-label="Close dictionary">✕</button>
       </div>
 
@@ -81,18 +88,18 @@ export function DictionarySidebar({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search Tibetan or English..."
+          placeholder={t('Search Tibetan or English...')}
           className="dictionary-input"
         />
         <button type="submit" className="dictionary-search-btn">
-          Search
+          {t('Search')}
         </button>
       </form>
 
       <div className="dictionary-results">
-        {searching && <div className="dictionary-loading">Searching...</div>}
+        {searching && <div className="dictionary-loading">{t('Searching...')}</div>}
         {!searching && results.length === 0 && query && (
-          <div className="dictionary-empty">No results found.</div>
+          <div className="dictionary-empty">{t('No results found.')}</div>
         )}
         {results.map((entry, i) => (
           <div key={i} className="dictionary-entry">

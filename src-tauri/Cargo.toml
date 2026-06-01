@@ -26,3 +26,4 @@ docx-rs = "0.4"
 rusqlite = { version = "0.31", features = ["bundled", "vtab"] }
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
+font-kit = "0.14"

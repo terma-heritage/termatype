@@ -92,7 +92,7 @@ export function MainToolbarContent({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <ImageUploadButton text="Add" />
+        <ImageUploadButton />
       </ToolbarGroup>
 
       <Spacer />

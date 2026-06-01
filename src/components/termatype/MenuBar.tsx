@@ -3,6 +3,107 @@ import type { Editor } from '@tiptap/react'
 import { TableGridPicker } from './TableGridPicker'
 import { getRecentFiles, clearRecentFiles } from '@/lib/recent-files'
 
+export const TIBETAN_LABELS: Record<string, string> = {
+  // Menu bar
+  'File': 'ཡིག་ཆ།',
+  'Edit': 'རྩོམ་སྒྲིག',
+  'View': 'ལྟ་བཤེར།',
+  'Insert': 'བསྒར་འཛུད།',
+  'Format': 'རྣམ་གཞག',
+  'Table': 'རེའུ་མིག',
+  'Help': 'རོགས་རམ།',
+  // File menu
+  'New': 'གསར་བཟོ།',
+  'Open...': 'ཁ་ཕྱེ།',
+  'Open Recent': 'ཉེ་ལམ།',
+  'No recent files': 'ཡིག་ཆ་མེད།',
+  'Clear Recent': 'གཙང་བཟོ།',
+  'Save': 'ཉར་ཚགས།',
+  'Save As...': 'གཞན་ཉར།',
+  'Export PDF': 'PDF ཕྱིར་འདོན།',
+  'Export EPUB': 'EPUB ཕྱིར་འདོན།',
+  'Print': 'པར་འདེབས།',
+  // Edit menu
+  'Undo': 'ཕྱིར་འཐེན།',
+  'Redo': 'བསྐྱར་བྱེད།',
+  'Cut': 'གཏུབ།',
+  'Copy': 'ཕབ་བཤུས།',
+  'Paste': 'སྦྱར།',
+  'Select All': 'ཚང་མ་འདེམས།',
+  'Find & Replace': 'འཚོལ་བརྗེ།',
+  // View menu
+  'Zoom In': 'ཆེ་རུ།',
+  'Zoom Out': 'ཆུང་རུ།',
+  'Reset Zoom': 'ཆེ་ཆུང་སོར་ཆུད།',
+  'Focus Mode': 'དམིགས་གཏད།',
+  'Typewriter Mode': 'ཡིག་འཕྲུལ།',
+  'Reading Mode': 'ཀློག་ཐབས།',
+  'Document Outline': 'ས་བཅད།',
+  'Dictionary': 'ཚིག་མཛོད།',
+  // Insert menu
+  'Image': 'པར་རིས།',
+  'Horizontal Rule': 'ཐིག་ཕྲེང་།',
+  'Page Break': 'ཤོག་ངོས་གསར།',
+  'Footnote': 'ཞབས་མཆན།',
+  'Code Block': 'ཨང་རྟགས།',
+  'Special Characters': 'ཡིག་རྟགས།',
+  // Format menu
+  'Bold': 'སྦོམ་པོ།',
+  'Italic': 'གཡོན་འཁྱོག',
+  'Underline': 'འོག་ཐིག',
+  'Strikethrough': 'དཀྲོག་ཐིག',
+  'Superscript': 'སྟེང་ཡིག',
+  'Subscript': 'འོག་ཡིག',
+  'Heading 1': 'མགོ་བྱང་ ༡',
+  'Heading 2': 'མགོ་བྱང་ ༢',
+  'Heading 3': 'མགོ་བྱང་ ༣',
+  'Bullet List': 'རྩེ་རྟགས།',
+  'Numbered List': 'ཨང་རིམ།',
+  'Blockquote': 'དྲངས་ཚིག',
+  'Indent': 'ནང་སྐུད།',
+  'Outdent': 'ཕྱིར་སྐུད།',
+  'Line Spacing': 'ཐིག་བར།',
+  'Clear Formatting': 'རྣམ་གཞག་གཙང་བཟོ།',
+  // Line spacing submenu
+  'Single (1.0)': 'གཅིག (1.0)',
+  'Double (2.0)': 'གཉིས (2.0)',
+  'Default': 'སོར་བཞག',
+  // Table menu
+  'Insert Table': 'རེའུ་མིག་བསྒར།',
+  'Add Row Above': 'སྟེང་ལ་སྟར།',
+  'Add Row Below': 'འོག་ལ་སྟར།',
+  'Delete Row': 'སྟར་སུབ།',
+  'Add Column Left': 'གཡོན་ལ་སྟར།',
+  'Add Column Right': 'གཡས་ལ་སྟར།',
+  'Delete Column': 'སྟར་སུབ།',
+  'Merge Cells': 'ཁང་མིག་སྡེབ།',
+  'Split Cell': 'ཁང་མིག་གཏོར།',
+  'Delete Table': 'རེའུ་མིག་སུབ།',
+  // Help menu
+  'Typing Tibetan (Practice)': 'བོད་ཡིག་སྦྱོང་བརྡར།',
+  'Wylie Reference': 'ཝ་ལིའི་གཞུང་།',
+  'Keyboard Shortcuts': 'མཐེབ་གནོན།',
+  'About TermaType': 'གཏེར་མ་ཡིག་སྦྱོར་སྐོར།',
+  // Dictionary sidebar
+  'Tibetan-English Dictionary': 'བོད་དབྱིན་ཚིག་མཛོད།',
+  'Search Tibetan or English...': 'བོད་ཡིག་གམ་དབྱིན་ཡིག་འཚོལ།',
+  'Search': 'འཚོལ།',
+  'Searching...': 'འཚོལ་བཞིན།',
+  'No results found.': 'འབྲས་བུ་མ་རྙེད།',
+  'Open Dictionary ›': 'ཚིག་མཛོད་ཁ་ཕྱེ། ›',
+  // Status bar
+  'words': 'ཚིག',
+  'chars': 'ཡིག་འབྲུ',
+  'min': 'སྐར་མ',
+  'pg': 'ཤོག་ངོས',
+  'Modified': 'བཟོ་བཅོས།',
+  'Local': 'ས་གནས།',
+  'Untitled': 'མིང་མེད།',
+  'New document': 'ཡིག་ཆ་གསར་བཟོ།',
+  'Saved just now': 'ད་ལྟ་ཉར་ཚགས།',
+  'New document tab': 'ཡིག་ཆ་གསར་པ།',
+}
+
 type MenuAction =
   | { separator: true; label?: never; shortcut?: never; action?: never; disabled?: never; submenu?: never }
   | { label: string; shortcut?: string; action?: () => void; separator?: false; disabled?: boolean; submenu?: React.ReactNode }
@@ -142,6 +243,8 @@ export function MenuBar({
   readingMode,
   onReadingMode,
   fileName,
+  menuLang,
+  onToggleMenuLang,
 }: {
   editor: Editor | null
   onNew: () => void
@@ -169,10 +272,13 @@ export function MenuBar({
   readingMode: boolean
   onReadingMode: () => void
   fileName: string
+  menuLang: 'en' | 'bo'
+  onToggleMenuLang: () => void
 }) {
   const [openMenu, setOpenMenu] = useState<number | null>(null)
   const anyOpen = openMenu !== null
 
+  const t = useCallback((label: string) => menuLang === 'bo' ? (TIBETAN_LABELS[label] || label) : label, [menuLang])
   const close = useCallback(() => setOpenMenu(null), [])
 
   const handleCut = useCallback(() => {
@@ -208,16 +314,16 @@ export function MenuBar({
 
   const menus: Menu[] = useMemo(() => [
     {
-      label: 'File',
+      label: t('File'),
       items: [
-        { label: 'New', shortcut: 'Ctrl+N', action: onNew },
-        { label: 'Open...', shortcut: 'Ctrl+O', action: onOpen },
+        { label: t('New'), shortcut: 'Ctrl+N', action: onNew },
+        { label: t('Open...'), shortcut: 'Ctrl+O', action: onOpen },
         {
-          label: 'Open Recent',
+          label: t('Open Recent'),
           submenu: (() => {
             const files = getRecentFiles()
             if (files.length === 0) {
-              return <button className="menubar-dropdown-item" disabled><span className="menubar-dropdown-label">No recent files</span></button>
+              return <button className="menubar-dropdown-item" disabled><span className="menubar-dropdown-label">{t('No recent files')}</span></button>
             }
             return (
               <>
@@ -228,62 +334,62 @@ export function MenuBar({
                 ))}
                 <div className="menubar-separator" />
                 <button className="menubar-dropdown-item" onClick={() => { clearRecentFiles(); close() }}>
-                  <span className="menubar-dropdown-label">Clear Recent</span>
+                  <span className="menubar-dropdown-label">{t('Clear Recent')}</span>
                 </button>
               </>
             )
           })(),
         },
         { separator: true },
-        { label: 'Save', shortcut: 'Ctrl+S', action: onSave },
-        { label: 'Save As...', shortcut: 'Ctrl+Shift+S', action: onSaveAs },
+        { label: t('Save'), shortcut: 'Ctrl+S', action: onSave },
+        { label: t('Save As...'), shortcut: 'Ctrl+Shift+S', action: onSaveAs },
         { separator: true },
-        { label: 'Export PDF', action: onExportPDF },
-        { label: 'Export EPUB', action: onExportEPUB },
-        { label: 'Print', shortcut: 'Ctrl+P', action: onPrint },
+        { label: t('Export PDF'), action: onExportPDF },
+        { label: t('Export EPUB'), action: onExportEPUB },
+        { label: t('Print'), shortcut: 'Ctrl+P', action: onPrint },
       ],
     },
     {
-      label: 'Edit',
+      label: t('Edit'),
       items: [
-        { label: 'Undo', shortcut: 'Ctrl+Z', action: () => editor?.chain().focus().undo().run() },
-        { label: 'Redo', shortcut: 'Ctrl+Shift+Z', action: () => editor?.chain().focus().redo().run() },
+        { label: t('Undo'), shortcut: 'Ctrl+Z', action: () => editor?.chain().focus().undo().run() },
+        { label: t('Redo'), shortcut: 'Ctrl+Shift+Z', action: () => editor?.chain().focus().redo().run() },
         { separator: true },
-        { label: 'Cut', shortcut: 'Ctrl+X', action: handleCut },
-        { label: 'Copy', shortcut: 'Ctrl+C', action: handleCopy },
-        { label: 'Paste', shortcut: 'Ctrl+V', action: handlePaste },
+        { label: t('Cut'), shortcut: 'Ctrl+X', action: handleCut },
+        { label: t('Copy'), shortcut: 'Ctrl+C', action: handleCopy },
+        { label: t('Paste'), shortcut: 'Ctrl+V', action: handlePaste },
         { separator: true },
-        { label: 'Select All', shortcut: 'Ctrl+A', action: () => editor?.chain().focus().selectAll().run() },
+        { label: t('Select All'), shortcut: 'Ctrl+A', action: () => editor?.chain().focus().selectAll().run() },
         { separator: true },
-        { label: 'Find & Replace', shortcut: 'Ctrl+F', action: onFind },
+        { label: t('Find & Replace'), shortcut: 'Ctrl+F', action: onFind },
       ],
     },
     {
-      label: 'View',
+      label: t('View'),
       items: [
-        { label: 'Zoom In', shortcut: 'Ctrl++', action: onZoomIn },
-        { label: 'Zoom Out', shortcut: 'Ctrl+-', action: onZoomOut },
-        { label: 'Reset Zoom', shortcut: 'Ctrl+0', action: onZoomReset },
+        { label: t('Zoom In'), shortcut: 'Ctrl++', action: onZoomIn },
+        { label: t('Zoom Out'), shortcut: 'Ctrl+-', action: onZoomOut },
+        { label: t('Reset Zoom'), shortcut: 'Ctrl+0', action: onZoomReset },
         { separator: true },
-        { label: `${focusMode ? '✓ ' : ''}Focus Mode`, shortcut: 'Ctrl+\\', action: onFocusMode },
-        { label: `${typewriterMode ? '✓ ' : ''}Typewriter Mode`, action: onTypewriterMode },
-        { label: `${readingMode ? '✓ ' : ''}Reading Mode`, action: onReadingMode },
+        { label: `${focusMode ? '✓ ' : ''}${t('Focus Mode')}`, shortcut: 'Ctrl+\\', action: onFocusMode },
+        { label: `${typewriterMode ? '✓ ' : ''}${t('Typewriter Mode')}`, action: onTypewriterMode },
+        { label: `${readingMode ? '✓ ' : ''}${t('Reading Mode')}`, action: onReadingMode },
         { separator: true },
-        { label: 'Document Outline', action: onOutline },
-        { label: 'Dictionary', action: onDictionary },
+        { label: t('Document Outline'), action: onOutline },
+        { label: t('Dictionary'), action: onDictionary },
       ],
     },
     {
-      label: 'Insert',
+      label: t('Insert'),
       items: [
-        { label: 'Image', action: () => editor?.chain().focus().setImageUploadNode().run() },
-        { label: 'Horizontal Rule', action: () => editor?.chain().focus().setHorizontalRule().run() },
-        { label: 'Page Break', shortcut: 'Ctrl+Enter', action: () => editor?.chain().focus().setPageBreak().run() },
-        { label: 'Footnote', action: () => editor?.chain().focus().addFootnote().run() },
-        { label: 'Code Block', action: () => editor?.chain().focus().toggleCodeBlock().run() },
+        { label: t('Image'), action: () => editor?.chain().focus().setImageUploadNode().run() },
+        { label: t('Horizontal Rule'), action: () => editor?.chain().focus().setHorizontalRule().run() },
+        { label: t('Page Break'), shortcut: 'Ctrl+Enter', action: () => editor?.chain().focus().setPageBreak().run() },
+        { label: t('Footnote'), action: () => editor?.chain().focus().addFootnote().run() },
+        { label: t('Code Block'), action: () => editor?.chain().focus().toggleCodeBlock().run() },
         { separator: true },
         {
-          label: 'Special Characters',
+          label: t('Special Characters'),
           submenu: (
             <div className="menubar-char-grid">
               {[
@@ -336,38 +442,38 @@ export function MenuBar({
       ],
     },
     {
-      label: 'Format',
+      label: t('Format'),
       items: [
-        { label: 'Bold', shortcut: 'Ctrl+B', action: () => editor?.chain().focus().toggleBold().run() },
-        { label: 'Italic', shortcut: 'Ctrl+I', action: () => editor?.chain().focus().toggleItalic().run() },
-        { label: 'Underline', shortcut: 'Ctrl+U', action: () => editor?.chain().focus().toggleUnderline().run() },
-        { label: 'Strikethrough', shortcut: 'Ctrl+Shift+X', action: () => editor?.chain().focus().toggleStrike().run() },
-        { label: 'Superscript', action: () => editor?.chain().focus().toggleSuperscript().run() },
-        { label: 'Subscript', action: () => editor?.chain().focus().toggleSubscript().run() },
+        { label: t('Bold'), shortcut: 'Ctrl+B', action: () => editor?.chain().focus().toggleBold().run() },
+        { label: t('Italic'), shortcut: 'Ctrl+I', action: () => editor?.chain().focus().toggleItalic().run() },
+        { label: t('Underline'), shortcut: 'Ctrl+U', action: () => editor?.chain().focus().toggleUnderline().run() },
+        { label: t('Strikethrough'), shortcut: 'Ctrl+Shift+X', action: () => editor?.chain().focus().toggleStrike().run() },
+        { label: t('Superscript'), action: () => editor?.chain().focus().toggleSuperscript().run() },
+        { label: t('Subscript'), action: () => editor?.chain().focus().toggleSubscript().run() },
         { separator: true },
-        { label: 'Heading 1', shortcut: 'Ctrl+Alt+1', action: () => editor?.chain().focus().toggleHeading({ level: 1 }).run() },
-        { label: 'Heading 2', shortcut: 'Ctrl+Alt+2', action: () => editor?.chain().focus().toggleHeading({ level: 2 }).run() },
-        { label: 'Heading 3', shortcut: 'Ctrl+Alt+3', action: () => editor?.chain().focus().toggleHeading({ level: 3 }).run() },
+        { label: t('Heading 1'), shortcut: 'Ctrl+Alt+1', action: () => editor?.chain().focus().toggleHeading({ level: 1 }).run() },
+        { label: t('Heading 2'), shortcut: 'Ctrl+Alt+2', action: () => editor?.chain().focus().toggleHeading({ level: 2 }).run() },
+        { label: t('Heading 3'), shortcut: 'Ctrl+Alt+3', action: () => editor?.chain().focus().toggleHeading({ level: 3 }).run() },
         { separator: true },
-        { label: 'Bullet List', action: () => editor?.chain().focus().toggleBulletList().run() },
-        { label: 'Numbered List', action: () => editor?.chain().focus().toggleOrderedList().run() },
-        { label: 'Blockquote', action: () => editor?.chain().focus().toggleBlockquote().run() },
+        { label: t('Bullet List'), action: () => editor?.chain().focus().toggleBulletList().run() },
+        { label: t('Numbered List'), action: () => editor?.chain().focus().toggleOrderedList().run() },
+        { label: t('Blockquote'), action: () => editor?.chain().focus().toggleBlockquote().run() },
         { separator: true },
-        { label: 'Indent', shortcut: 'Tab', action: () => editor?.chain().focus().indent().run() },
-        { label: 'Outdent', shortcut: 'Shift+Tab', action: () => editor?.chain().focus().outdent().run() },
+        { label: t('Indent'), shortcut: 'Tab', action: () => editor?.chain().focus().indent().run() },
+        { label: t('Outdent'), shortcut: 'Shift+Tab', action: () => editor?.chain().focus().outdent().run() },
         { separator: true },
         {
-          label: 'Line Spacing',
+          label: t('Line Spacing'),
           submenu: (
             <>
               {[
-                { label: 'Single (1.0)', value: '1' },
+                { label: t('Single (1.0)'), value: '1' },
                 { label: '1.15', value: '1.15' },
                 { label: '1.5', value: '1.5' },
-                { label: 'Double (2.0)', value: '2' },
+                { label: t('Double (2.0)'), value: '2' },
                 { label: '2.5', value: '2.5' },
                 { label: 'Triple (3.0)', value: '3' },
-                { label: 'Default', value: '' },
+                { label: t('Default'), value: '' },
               ].map((opt) => (
                 <button
                   key={opt.value}
@@ -388,14 +494,14 @@ export function MenuBar({
           ),
         },
         { separator: true },
-        { label: 'Clear Formatting', action: () => editor?.chain().focus().unsetAllMarks().clearNodes().run() },
+        { label: t('Clear Formatting'), action: () => editor?.chain().focus().unsetAllMarks().clearNodes().run() },
       ],
     },
     {
-      label: 'Table',
+      label: t('Table'),
       items: [
         {
-          label: 'Insert Table',
+          label: t('Insert Table'),
           submenu: (
             <TableGridPicker
               onSelect={(rows, cols) => {
@@ -406,37 +512,37 @@ export function MenuBar({
           ),
         },
         { separator: true },
-        { label: 'Add Row Above', action: () => editor?.chain().focus().addRowBefore().run(), disabled: !editor?.can().addRowBefore() },
-        { label: 'Add Row Below', action: () => editor?.chain().focus().addRowAfter().run(), disabled: !editor?.can().addRowAfter() },
-        { label: 'Delete Row', action: () => editor?.chain().focus().deleteRow().run(), disabled: !editor?.can().deleteRow() },
+        { label: t('Add Row Above'), action: () => editor?.chain().focus().addRowBefore().run(), disabled: !editor?.can().addRowBefore() },
+        { label: t('Add Row Below'), action: () => editor?.chain().focus().addRowAfter().run(), disabled: !editor?.can().addRowAfter() },
+        { label: t('Delete Row'), action: () => editor?.chain().focus().deleteRow().run(), disabled: !editor?.can().deleteRow() },
         { separator: true },
-        { label: 'Add Column Left', action: () => editor?.chain().focus().addColumnBefore().run(), disabled: !editor?.can().addColumnBefore() },
-        { label: 'Add Column Right', action: () => editor?.chain().focus().addColumnAfter().run(), disabled: !editor?.can().addColumnAfter() },
-        { label: 'Delete Column', action: () => editor?.chain().focus().deleteColumn().run(), disabled: !editor?.can().deleteColumn() },
+        { label: t('Add Column Left'), action: () => editor?.chain().focus().addColumnBefore().run(), disabled: !editor?.can().addColumnBefore() },
+        { label: t('Add Column Right'), action: () => editor?.chain().focus().addColumnAfter().run(), disabled: !editor?.can().addColumnAfter() },
+        { label: t('Delete Column'), action: () => editor?.chain().focus().deleteColumn().run(), disabled: !editor?.can().deleteColumn() },
         { separator: true },
-        { label: 'Merge Cells', action: () => editor?.chain().focus().mergeCells().run(), disabled: !editor?.can().mergeCells() },
-        { label: 'Split Cell', action: () => editor?.chain().focus().splitCell().run(), disabled: !editor?.can().splitCell() },
+        { label: t('Merge Cells'), action: () => editor?.chain().focus().mergeCells().run(), disabled: !editor?.can().mergeCells() },
+        { label: t('Split Cell'), action: () => editor?.chain().focus().splitCell().run(), disabled: !editor?.can().splitCell() },
         { separator: true },
-        { label: 'Delete Table', action: () => editor?.chain().focus().deleteTable().run(), disabled: !editor?.can().deleteTable() },
+        { label: t('Delete Table'), action: () => editor?.chain().focus().deleteTable().run(), disabled: !editor?.can().deleteTable() },
       ],
     },
     {
-      label: 'Help',
+      label: t('Help'),
       items: [
-        { label: 'Typing Tibetan (Practice)', action: onWyliePractice },
-        { label: 'Wylie Reference', action: onWylieReference },
-        { label: 'Keyboard Shortcuts', shortcut: 'Ctrl+/', action: onShortcuts },
+        { label: t('Typing Tibetan (Practice)'), action: onWyliePractice },
+        { label: t('Wylie Reference'), action: onWylieReference },
+        { label: t('Keyboard Shortcuts'), shortcut: 'Ctrl+/', action: onShortcuts },
         { separator: true },
-        { label: 'About TermaType', action: onAbout },
+        { label: t('About TermaType'), action: onAbout },
       ],
     },
-  ], [editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
+  ], [t, editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
       onNew, onOpen, onOpenRecent, onSave, onSaveAs, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
       onDictionary, onOutline, onWylieReference, onShortcuts, onWyliePractice, onAbout])
 
   return (
-    <div className="menubar">
+    <div className={`menubar${menuLang === 'bo' ? ' menubar-tibetan' : ''}`}>
       <div className="menubar-menus" role="menubar">
         {menus.map((menu, i) => (
           <MenuBarItem
@@ -451,7 +557,21 @@ export function MenuBar({
           />
         ))}
       </div>
-      <div className="menubar-title">{fileName}</div>
+      <div className="menubar-right">
+        <div className="menubar-title">{fileName}</div>
+        <button
+          type="button"
+          className={`menubar-lang-switch${menuLang === 'bo' ? ' active' : ''}`}
+          onClick={onToggleMenuLang}
+          title={menuLang === 'en' ? 'Switch menu to Tibetan' : 'Switch menu to English'}
+          role="switch"
+          aria-checked={menuLang === 'bo'}
+        >
+          <span className="menubar-lang-switch-label menubar-lang-en">EN</span>
+          <span className="menubar-lang-switch-thumb" />
+          <span className="menubar-lang-switch-label menubar-lang-bo">བོད</span>
+        </button>
+      </div>
     </div>
   )
 }

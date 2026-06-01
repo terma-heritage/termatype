@@ -180,6 +180,19 @@ pub fn debug_docx(path: String) -> Result<String, String> {
     Ok(json_str)
 }
 
+#[tauri::command]
+pub fn get_system_fonts() -> Result<Vec<String>, String> {
+    use font_kit::source::SystemSource;
+
+    let source = SystemSource::new();
+    let families = source.all_families()
+        .map_err(|e| format!("Failed to enumerate fonts: {}", e))?;
+
+    let mut sorted = families;
+    sorted.sort_by(|a, b| a.to_lowercase().cmp(&b.to_lowercase()));
+    Ok(sorted)
+}
+
 fn extract_plain_text(content: &serde_json::Value) -> String {
     let mut result = String::new();
     extract_text_recursive(content, &mut result);

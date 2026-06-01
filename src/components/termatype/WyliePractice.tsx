@@ -25,10 +25,11 @@ function wylieToTibetan(wylie: string): string {
   return result
 }
 
-export function WyliePractice() {
+export function WyliePractice({ menuLang = 'en' }: { menuLang?: 'en' | 'bo' }) {
   const [input, setInput] = useState('')
   const [tibetanOutput, setTibetanOutput] = useState('')
   const engineRef = useRef(new WylieEngine())
+  const bo = menuLang === 'bo'
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const raw = e.target.value
@@ -38,21 +39,28 @@ export function WyliePractice() {
   }, [])
 
   return (
-    <div className="help-page">
+    <div className={`help-page${bo ? ' help-page-bo' : ''}`}>
       <div className="help-page-content">
-        <h1>Typing Tibetan with Wylie</h1>
+        <h1>{bo ? 'ཝ་ལིའི་ཐབས་ཀྱིས་བོད་ཡིག་འབྲི་ཚུལ།' : 'Typing Tibetan with Wylie'}</h1>
 
         <p>
-          TermaType uses the <strong>Wylie transliteration</strong> system to type Tibetan.
-          Wylie maps each Tibetan letter to roman characters, so you can type Tibetan with a
-          standard keyboard — no special layout needed. Just press <code>Ctrl+Space</code> in
-          the editor to switch to Tibetan mode and start typing.
+          {bo ? (
+            <>གཏེར་མ་ཡིག་སྦྱོར་གྱིས་ <strong>ཝ་ལིའི་བསྒྱུར་བྱང་</strong> བཀོལ་ནས་བོད་ཡིག་འབྲི། ཝ་ལིས་བོད་ཡིག་གི་ཡི་གེ་རེ་རེ་དབྱིན་ཡིག་ཏུ་བསྒྱུར་བས། མཐེབ་གཞོང་དཀྱུས་མ་བཀོལ་ནས་བོད་ཡིག་འབྲི་ཐུབ། རྩོམ་སྒྲིག་ནང་ <code>Ctrl+Space</code> མནན་ནས་བོད་ཡིག་ཐབས་སུ་སྒྱུར།</>
+          ) : (
+            <>
+              TermaType uses the <strong>Wylie transliteration</strong> system to type Tibetan.
+              Wylie maps each Tibetan letter to roman characters, so you can type Tibetan with a
+              standard keyboard — no special layout needed. Just press <code>Ctrl+Space</code> in
+              the editor to switch to Tibetan mode and start typing.
+            </>
+          )}
         </p>
 
-        <h2>Practice Text</h2>
+        <h2>{bo ? 'སྦྱོང་བརྡར་ཡིག་ཆ།' : 'Practice Text'}</h2>
         <p className="help-muted">
-          A prayer for the long life of His Holiness the Dalai Lama. The Wylie is shown on the
-          left, and the Tibetan on the right.
+          {bo
+            ? '༧གོང་ས་མཆོག་གི་ཞབས་བརྟན་གསོལ་འདེབས། གཡོན་ངོས་ཝ་ལི། གཡས་ངོས་བོད་ཡིག'
+            : 'A prayer for the long life of His Holiness the Dalai Lama. The Wylie is shown on the left, and the Tibetan on the right.'}
         </p>
 
         <div className="practice-verses">
@@ -64,9 +72,13 @@ export function WyliePractice() {
           ))}
         </div>
 
-        <h2>Try it</h2>
+        <h2>{bo ? 'ཚོད་ལྟ།' : 'Try it'}</h2>
         <p className="help-muted">
-          Type the Wylie text above into the box below. Spaces become tshegs (་) and <code>/</code> becomes a shad (།).
+          {bo ? (
+            <>སྟེང་གི་ཝ་ལིའི་ཡིག་ཆ་འོག་གི་སྒམ་ནང་བྲིས། བར་སྟོང་ནི་ཚེག (་) ཏུ་འགྱུར། / ནི་ཤད (།) ཏུ་འགྱུར།</>
+          ) : (
+            <>Type the Wylie text above into the box below. Spaces become tshegs (་) and <code>/</code> becomes a shad (།).</>
+          )}
         </p>
 
         <div className="practice-tryit">
@@ -74,7 +86,7 @@ export function WyliePractice() {
             className="practice-textarea"
             value={input}
             onChange={handleInput}
-            placeholder="Type Wylie here..."
+            placeholder={bo ? 'ཝ་ལི་འདིར་བྲིས།' : 'Type Wylie here...'}
             rows={4}
             spellCheck={false}
             autoComplete="off"
@@ -87,9 +99,17 @@ export function WyliePractice() {
         </div>
 
         <div className="help-tip">
-          <strong>Tip:</strong> In the editor, press <code>Ctrl+Space</code> to switch between
-          English and Tibetan. Open <strong>Help → Wylie Reference</strong> for the full
-          key mapping.
+          {bo ? (
+            <>
+              <strong>བརྡ་ཆོས།</strong> རྩོམ་སྒྲིག་ནང་ <code>Ctrl+Space</code> མནན་ནས་དབྱིན་ཡིག་དང་བོད་ཡིག་བརྗེ། <strong>རོགས་རམ། → ཝ་ལིའི་གཞུང་།</strong> ནས་མཐེབ་གཞོང་གི་རྣམ་པ་ཚང་མ་ལྟ་ཐུབ།
+            </>
+          ) : (
+            <>
+              <strong>Tip:</strong> In the editor, press <code>Ctrl+Space</code> to switch between
+              English and Tibetan. Open <strong>Help → Wylie Reference</strong> for the full
+              key mapping.
+            </>
+          )}
         </div>
       </div>
     </div>

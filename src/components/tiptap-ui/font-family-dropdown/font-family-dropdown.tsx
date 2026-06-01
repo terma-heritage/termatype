@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useState } from "react"
+import { forwardRef, useCallback, useState, useEffect } from "react"
 import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon"
 import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
@@ -10,33 +10,50 @@ import {
   DropdownMenuItem,
   DropdownMenuGroup,
 } from "@/components/tiptap-ui-primitive/dropdown-menu"
+import { invoke } from "@/lib/safe-invoke"
+interface FontEntry {
+  label: string
+  value: string | null
+  preview: string
+}
 
-const FONT_FAMILIES = [
+// Bundled with TermaType — always available
+const TERMATYPE_FONTS: FontEntry[] = [
+  { label: "Jomolhari", value: "Jomolhari, Noto Serif Tibetan, serif", preview: "Jomolhari, serif" },
+  { label: "Noto Serif Tibetan", value: "Noto Serif Tibetan, serif", preview: "Noto Serif Tibetan, serif" },
+  { label: "Monlam Bodyig", value: "Monlam Bodyig, Noto Serif Tibetan, serif", preview: "Monlam Bodyig, serif" },
+  { label: "Qomolangma Drutsa", value: "Qomolangma Drutsa, Noto Serif Tibetan, serif", preview: "Qomolangma Drutsa, serif" },
+  { label: "Tibetan Machine Uni", value: "Tibetan Machine Uni, Noto Serif Tibetan, serif", preview: "Tibetan Machine Uni, serif" },
+]
+
+const COMMON_FONTS: FontEntry[] = [
   { label: "Default", value: null, preview: "Source Serif 4, serif" },
   { label: "Source Serif", value: "Source Serif 4, Source Serif Pro, Georgia, serif", preview: "Source Serif 4, serif" },
   { label: "Georgia", value: "Georgia, Palatino Linotype, serif", preview: "Georgia, serif" },
   { label: "Times New Roman", value: "Times New Roman, Times, serif", preview: "Times New Roman, serif" },
   { label: "Arial", value: "Arial, Helvetica, sans-serif", preview: "Arial, sans-serif" },
-  { label: "Consolas", value: "Consolas, Monaco, monospace", preview: "Consolas, monospace" },
-  { label: "separator", value: null, preview: "" },
-  { label: "Noto Serif Tibetan", value: "Noto Serif Tibetan, serif", preview: "Noto Serif Tibetan, serif" },
-  { label: "Jomolhari", value: "Jomolhari, Noto Serif Tibetan, serif", preview: "Jomolhari, serif" },
-  { label: "Monlam Bodyig", value: "Monlam Bodyig, Noto Serif Tibetan, serif", preview: "Monlam Bodyig, serif" },
-  { label: "Qomolangma Drutsa", value: "Qomolangma Drutsa, Noto Serif Tibetan, serif", preview: "Qomolangma Drutsa, serif" },
-  { label: "Tibetan Machine Uni", value: "Tibetan Machine Uni, Noto Serif Tibetan, serif", preview: "Tibetan Machine Uni, serif" },
 ]
+
+// Names to exclude from system fonts (already in our lists above)
+const EXCLUDE_NAMES = new Set([
+  'jomolhari', 'noto serif tibetan', 'monlam bodyig', 'qomolangma drutsa',
+  'tibetan machine uni', 'source serif', 'source serif 4', 'source serif pro',
+  'georgia', 'times new roman', 'arial', 'consolas',
+])
 
 function getCurrentFontFamily(editor: any): string | null {
   if (!editor) return null
   return editor.getAttributes("textStyle")?.fontFamily || null
 }
 
-function getDisplayName(fontFamily: string | null): string {
+function getDisplayName(fontFamily: string | null, allFonts: FontEntry[]): string {
   if (!fontFamily) return "Font"
-  const match = FONT_FAMILIES.find((f) => f.value === fontFamily)
+  const match = allFonts.find((f) => f.value === fontFamily)
   if (match) return match.label
-  const first = (fontFamily.split(",")[0] ?? fontFamily).trim().replace(/['"]/g, "")
-  return first
+  // Strip quotes and take first family name
+  const cleaned = fontFamily.replace(/['"]/g, "")
+  const first = (cleaned.split(",")[0] ?? cleaned).trim()
+  return first || "Font"
 }
 
 export interface FontFamilyDropdownProps extends ButtonProps {
@@ -51,6 +68,20 @@ export const FontFamilyDropdown = forwardRef<
 >(({ editor: providedEditor, onOpenChange, modal = false, ...buttonProps }, ref) => {
   const { editor } = useTiptapEditor(providedEditor)
   const [isOpen, setIsOpen] = useState(false)
+  const [systemFonts, setSystemFonts] = useState<FontEntry[]>([])
+
+  useEffect(() => {
+    invoke<string[]>('get_system_fonts').then((names) => {
+      const fonts: FontEntry[] = names
+        .filter(name => !EXCLUDE_NAMES.has(name.toLowerCase()))
+        .map(name => ({
+          label: name,
+          value: name,
+          preview: name,
+        }))
+      setSystemFonts(fonts)
+    }).catch(() => {})
+  }, [])
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -76,8 +107,9 @@ export const FontFamilyDropdown = forwardRef<
 
   if (!editor) return null
 
+  const allFonts = [...TERMATYPE_FONTS, ...COMMON_FONTS, ...systemFonts]
   const currentFamily = getCurrentFontFamily(editor)
-  const displayName = getDisplayName(currentFamily)
+  const displayName = getDisplayName(currentFamily, allFonts)
 
   return (
     <DropdownMenu modal={modal} open={isOpen} onOpenChange={handleOpenChange}>
@@ -97,32 +129,61 @@ export const FontFamilyDropdown = forwardRef<
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align="start" className="font-family-dropdown-content">
         <DropdownMenuGroup>
-          {FONT_FAMILIES.map((item, i) =>
-            item.label === "separator" ? (
-              <div key={i} className="font-family-separator" />
-            ) : (
-              <DropdownMenuItem key={item.label} onSelect={() => handleSelect(item.value)}>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  role="menuitem"
-                  data-active-state={
-                    item.value === null
-                      ? !currentFamily ? "on" : "off"
-                      : currentFamily === item.value ? "on" : "off"
-                  }
-                  style={{
-                    width: "100%",
-                    justifyContent: "flex-start",
-                    fontFamily: item.preview,
-                  }}
-                >
-                  {item.label}
-                </Button>
-              </DropdownMenuItem>
-            )
+          <div className="font-family-section-label">TermaType</div>
+          {TERMATYPE_FONTS.map((item) => (
+            <DropdownMenuItem key={item.label} onSelect={() => handleSelect(item.value)}>
+              <Button
+                type="button"
+                variant="ghost"
+                role="menuitem"
+                data-active-state={currentFamily === item.value ? "on" : "off"}
+                style={{ width: "100%", justifyContent: "flex-start", fontFamily: item.preview }}
+              >
+                {item.label}
+              </Button>
+            </DropdownMenuItem>
+          ))}
+
+          <div className="font-family-separator" />
+
+          {COMMON_FONTS.map((item) => (
+            <DropdownMenuItem key={item.label} onSelect={() => handleSelect(item.value)}>
+              <Button
+                type="button"
+                variant="ghost"
+                role="menuitem"
+                data-active-state={
+                  item.value === null
+                    ? !currentFamily ? "on" : "off"
+                    : currentFamily === item.value ? "on" : "off"
+                }
+                style={{ width: "100%", justifyContent: "flex-start", fontFamily: item.preview }}
+              >
+                {item.label}
+              </Button>
+            </DropdownMenuItem>
+          ))}
+
+          {systemFonts.length > 0 && (
+            <>
+              <div className="font-family-separator" />
+              <div className="font-family-section-label">System</div>
+              {systemFonts.map((item) => (
+                <DropdownMenuItem key={item.label} onSelect={() => handleSelect(item.value)}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    role="menuitem"
+                    data-active-state={currentFamily === item.value ? "on" : "off"}
+                    style={{ width: "100%", justifyContent: "flex-start", fontFamily: item.preview }}
+                  >
+                    {item.label}
+                  </Button>
+                </DropdownMenuItem>
+              ))}
+            </>
           )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
