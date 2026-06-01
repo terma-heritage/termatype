@@ -563,7 +563,7 @@ export function MenuBar({
           type="button"
           className={`menubar-lang-switch${menuLang === 'bo' ? ' active' : ''}`}
           onClick={onToggleMenuLang}
-          title={menuLang === 'en' ? 'Switch menu to Tibetan' : 'Switch menu to English'}
+          title={menuLang === 'en' ? 'Toolbar Language / ལག་ཆའི་སྐད་ཡིག' : 'ལག་ཆའི་སྐད་ཡིག / Toolbar Language'}
           role="switch"
           aria-checked={menuLang === 'bo'}
         >

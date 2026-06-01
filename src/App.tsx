@@ -125,15 +125,8 @@ export default function App() {
   const [languageToggleExt] = useState(() => createLanguageToggleExtension(toggleLang, () => langRef.current))
   const [tibetanIMEExt] = useState(() => createTibetanIMEExtension(() => langRef.current, toggleLang))
 
-  // Sync typing language and window title when menu language changes
-  const menuLangInitRef = useRef(true)
+  // Update window title when toolbar language changes (typing language stays independent)
   useEffect(() => {
-    // Skip on initial mount
-    if (menuLangInitRef.current) { menuLangInitRef.current = false; return }
-    // Switch typing language to match menu language
-    if (menuLang === 'bo' && langRef.current === 'en') toggleLang()
-    if (menuLang === 'en' && langRef.current === 'bo') toggleLang()
-    // Update native window title
     import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
       getCurrentWindow().setTitle(
         menuLang === 'bo'
@@ -141,7 +134,7 @@ export default function App() {
           : 'TermaType — Beautiful bilingual writing'
       ).catch(() => {})
     }).catch(() => {})
-  }, [menuLang, toggleLang])
+  }, [menuLang])
 
   const editor = useEditor({
     immediatelyRender: false,
