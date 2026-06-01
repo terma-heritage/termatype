@@ -19,6 +19,7 @@ interface FontEntry {
 
 // Bundled with TermaType — always available
 const TERMATYPE_FONTS: FontEntry[] = [
+  { label: "DDC Uchen", value: "DDC Uchen, Noto Serif Tibetan, serif", preview: "DDC Uchen, serif" },
   { label: "Jomolhari", value: "Jomolhari, Noto Serif Tibetan, serif", preview: "Jomolhari, serif" },
   { label: "Noto Serif Tibetan", value: "Noto Serif Tibetan, serif", preview: "Noto Serif Tibetan, serif" },
   { label: "Monlam Bodyig", value: "Monlam Bodyig, Noto Serif Tibetan, serif", preview: "Monlam Bodyig, serif" },

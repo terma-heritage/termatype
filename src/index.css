@@ -2,6 +2,14 @@
 @import './styles/_keyframe-animations.scss';
 
 @font-face {
+  font-family: 'DDC Uchen';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ddc-uchen.woff2') format('woff2');
+}
+
+@font-face {
   font-family: 'Noto Serif Tibetan';
   font-style: normal;
   font-weight: 400;
@@ -1303,7 +1311,7 @@ html, body {
    ============================================ */
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
-  font-family: "Source Serif 4", "Noto Serif Tibetan", "Source Serif Pro", Georgia, serif;
+  font-family: "Source Serif 4", "DDC Uchen", "Noto Serif Tibetan", "Source Serif Pro", Georgia, serif;
 }
 
 .simple-editor-content.lang-bo .tiptap.ProseMirror.simple-editor .is-empty::before {
