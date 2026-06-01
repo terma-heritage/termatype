@@ -46,13 +46,13 @@
 
 ## Phase 4: Calm Writing Surface
 
-- [ ] Visual polish — aim for iA Writer / Bear serenity meets pecha dignity
-- [ ] Refine light mode (paper-light, warm)
-- [ ] Refine dark mode (soft, not harsh)
-- [ ] Polish focus mode (fade everything but current paragraph)
-- [ ] Typography-forward design — Tibetan front and center
-- [ ] Minimize chrome — fewer buttons, cleaner toolbar
-- [ ] First-run experience: no setup, no login, just a blank page ready to write
+- [x] Visual polish — aim for iA Writer / Bear serenity meets pecha dignity
+- [x] Refine light mode (paper-light, warm)
+- [x] Refine dark mode (soft, not harsh)
+- [x] Polish focus mode (fade everything but current paragraph)
+- [x] Typography-forward design — Tibetan front and center
+- [x] Minimize chrome — fewer buttons, cleaner toolbar
+- [x] First-run experience: no setup, no login, just a blank page ready to write
 
 ---
 

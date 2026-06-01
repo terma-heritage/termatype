@@ -53,6 +53,7 @@ button:focus-visible,
 
 body {
   font-family: var(--tt-font-ui);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 html, body {
@@ -2227,8 +2228,8 @@ html, body {
 .focus-mode .menubar,
 .focus-mode .tiptap-toolbar,
 .focus-mode .termatype-status-bar {
-  opacity: 0.15;
-  transition: opacity 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.4s ease;
   pointer-events: auto;
 }
 
@@ -2238,13 +2239,23 @@ html, body {
   opacity: 1;
 }
 
+.focus-mode .tab-bar {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.focus-mode .tab-bar:hover {
+  opacity: 1;
+}
+
 .focus-mode .tiptap.ProseMirror > *:not(.has-focus) {
-  opacity: 0.25;
-  transition: opacity 0.2s ease;
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
 }
 
 .focus-mode .tiptap.ProseMirror > *.has-focus {
   opacity: 1;
+  transition: opacity 0.4s ease;
 }
 
 .focus-mode .tiptap.ProseMirror:not(:focus-within) > * {

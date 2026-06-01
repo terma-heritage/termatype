@@ -253,11 +253,10 @@ export default function App() {
     setActiveView(v => v === tabId ? 'document' : v)
   }, [])
 
-  // Show About page on first launch only
+  // First launch — just a blank page, ready to write
   useEffect(() => {
     if (!localStorage.getItem(FIRST_LAUNCH_KEY)) {
       localStorage.setItem(FIRST_LAUNCH_KEY, '1')
-      openHelpTab('about')
     }
   }, [openHelpTab])
 
