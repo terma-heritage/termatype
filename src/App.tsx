@@ -16,6 +16,7 @@ import { Focus } from '@tiptap/extension-focus'
 import { FontSize } from '@/extensions/font-size'
 import { Indent } from '@/extensions/indent'
 import { LineHeight } from '@/extensions/line-height'
+import { TibetanTypography } from '@/extensions/tibetan-typography'
 import { FontFamily } from '@tiptap/extension-font-family'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Table } from '@tiptap/extension-table'
@@ -201,6 +202,7 @@ export default function App() {
       tibetanIMEExt,
       FindReplaceExtension,
       SlashCommands,
+      TibetanTypography, // terma.js integration — remove this line to disable
       ImageUploadNode.configure({
         accept: 'image/*',
         maxSize: MAX_FILE_SIZE,
