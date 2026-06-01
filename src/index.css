@@ -246,6 +246,18 @@ html, body {
   }
 }
 
+.menubar-lang-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--tt-gray-light-400);
+  font-family: var(--tt-font-ui);
+  user-select: none;
+
+  .dark & {
+    color: var(--tt-gray-dark-400);
+  }
+}
+
 .menubar-lang-switch {
   position: relative;
   display: flex;

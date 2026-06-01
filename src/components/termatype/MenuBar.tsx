@@ -559,11 +559,12 @@ export function MenuBar({
       </div>
       <div className="menubar-right">
         <div className="menubar-title">{fileName}</div>
+        <span className="menubar-lang-label">{menuLang === 'bo' ? 'སྐད་ཡིག' : 'UI'}</span>
         <button
           type="button"
           className={`menubar-lang-switch${menuLang === 'bo' ? ' active' : ''}`}
           onClick={onToggleMenuLang}
-          title={menuLang === 'en' ? 'Toolbar Language / ལག་ཆའི་སྐད་ཡིག' : 'ལག་ཆའི་སྐད་ཡིག / Toolbar Language'}
+          title="UI Language"
           role="switch"
           aria-checked={menuLang === 'bo'}
         >
