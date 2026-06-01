@@ -197,7 +197,7 @@ export function AboutPage({ menuLang = 'en' }: { menuLang?: 'en' | 'bo' }) {
           <p>
             {bo ? (
               <>
-                <strong>གཏེར་མ་ཤུལ་བཞག་རིག་གཞུང་མཐུན་ཚོགས།</strong> ཀྱིས་བཟོས།<br />
+                <strong>གཏེར་མ་ཕ་ནོར་ཐེབས་རྩ།</strong> ཀྱིས་བཟོས།<br />
                 འགན་འཛིན་གཙོ་བོ། <strong>ལྕགས་རི་ཤར་ཐུབ་བསྟན་ཉི་མ།</strong>
               </>
             ) : (
