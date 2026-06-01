@@ -10,31 +10,22 @@ const DEBOUNCE_MS = 150
 export function DictionaryPopup({ editor, onOpenSidebar, menuLang = 'en' }: { editor: Editor; onOpenSidebar?: () => void; menuLang?: 'en' | 'bo' }) {
   const [results, setResults] = useState<DictResult[]>([])
   const [query, setQuery] = useState('')
-  const [searching, setSearching] = useState(false)
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>()
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const lastQueryRef = useRef('')
   const mountedRef = useRef(true)
   useEffect(() => () => { mountedRef.current = false }, [])
 
   const search = useCallback(async (term: string) => {
     if (!term.trim() || term.length > 200) {
-      if (mountedRef.current) {
-        setResults([])
-        setSearching(false)
-      }
+      if (mountedRef.current) setResults([])
       return
     }
-    setSearching(true)
     try {
       const entries = await invoke<DictResult[]>('lookup_dictionary', { query: term.trim() })
-      if (!mountedRef.current) return
-      setResults(entries.slice(0, MAX_RESULTS))
+      if (mountedRef.current) setResults(entries.slice(0, MAX_RESULTS))
     } catch {
-      if (!mountedRef.current) return
-      setResults([])
+      if (mountedRef.current) setResults([])
     }
-    if (!mountedRef.current) return
-    setSearching(false)
   }, [])
 
   useEffect(() => {

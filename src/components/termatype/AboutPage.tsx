@@ -1,5 +1,3 @@
-import { TIBETAN_LABELS } from './MenuBar'
-
 function AboutEN() {
   return (
     <>
@@ -245,7 +243,7 @@ export function AboutPage({ menuLang = 'en' }: { menuLang?: 'en' | 'bo' }) {
               </>
             )}
           </p>
-          <p className="about-page-version">TermaType v1.0.3</p>
+          <p className="about-page-version">TermaType v2.0.0</p>
         </div>
       </div>
     </div>

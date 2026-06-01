@@ -1,6 +1,6 @@
 [package]
 name = "termatype"
-version = "1.0.3"
+version = "2.0.0"
 description = "Beautiful bilingual writing. Free forever."
 authors = ["TermaType Contributors"]
 license = "MIT"

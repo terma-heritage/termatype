@@ -12,13 +12,13 @@ const HIDE_DELAY = 200
  */
 function getTibetanWordAt(textContent: string, offset: number): string | null {
   if (offset < 0 || offset >= textContent.length) return null
-  const ch = textContent[offset]
+  const ch = textContent[offset] ?? ''
   if (!isTibetan(ch)) return null
 
   // Walk left to find start (stop at tsheg ་ or non-Tibetan)
   let start = offset
   while (start > 0) {
-    const prev = textContent[start - 1]
+    const prev = textContent[start - 1] ?? ''
     if (prev === '་' || prev === ' ' || prev === '།' || !isTibetan(prev)) break
     start--
   }
@@ -26,7 +26,7 @@ function getTibetanWordAt(textContent: string, offset: number): string | null {
   // Walk right to find end
   let end = offset
   while (end < textContent.length) {
-    const next = textContent[end]
+    const next = textContent[end] ?? ''
     if (next === '་' || next === ' ' || next === '།' || !isTibetan(next)) break
     end++
   }
@@ -40,8 +40,8 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null)
   const [visible, setVisible] = useState(false)
   const visibleRef = useRef(false)
-  const hoverTimerRef = useRef<ReturnType<typeof setTimeout>>()
-  const hideTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const lastWordRef = useRef('')
   const tooltipRef = useRef<HTMLDivElement>(null)
 
@@ -49,7 +49,7 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
     try {
       const entries = await invoke<DictResult[]>('lookup_dictionary', { query: word })
       if (entries.length > 0 && lastWordRef.current === word) {
-        setResult(entries[0])
+        setResult(entries[0] ?? null)
         setVisible(true)
       }
     } catch {
