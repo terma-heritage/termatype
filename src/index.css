@@ -783,6 +783,10 @@ html, body {
    Bubble Menu (floating toolbar on selection)
    ============================================ */
 
+[data-tippy-root] {
+  z-index: 100 !important;
+}
+
 .bubble-menu {
   display: flex;
   align-items: center;
