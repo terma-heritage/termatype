@@ -64,7 +64,7 @@ pub fn lookup_dictionary(
     let mut db = db.lock().map_err(|e| format!("DB lock failed: {}", e))?;
     ensure_connection(&app, &mut db)?;
 
-    let conn = db.conn.as_ref().unwrap();
+    let conn = db.conn.as_ref().ok_or_else(|| "Database connection lost".to_string())?;
     let query_trimmed = query.trim();
 
     if query_trimmed.is_empty() {
@@ -199,7 +199,7 @@ pub fn spellcheck_tibetan(
     let mut db = db.lock().map_err(|e| format!("DB lock failed: {}", e))?;
     ensure_connection(&app, &mut db)?;
 
-    let conn = db.conn.as_ref().unwrap();
+    let conn = db.conn.as_ref().ok_or_else(|| "Database connection lost".to_string())?;
     let mut stmt = conn
         .prepare_cached("SELECT EXISTS(SELECT 1 FROM entries WHERE headword = ?1)")
         .map_err(|e| format!("Prepare failed: {}", e))?;
@@ -229,7 +229,7 @@ pub fn get_dictionary_sources(
     let mut db = db.lock().map_err(|e| format!("DB lock failed: {}", e))?;
     ensure_connection(&app, &mut db)?;
 
-    let conn = db.conn.as_ref().unwrap();
+    let conn = db.conn.as_ref().ok_or_else(|| "Database connection lost".to_string())?;
     let mut stmt = conn
         .prepare("SELECT code, name, description, entry_count FROM sources")
         .map_err(|e| format!("Prepare failed: {}", e))?;

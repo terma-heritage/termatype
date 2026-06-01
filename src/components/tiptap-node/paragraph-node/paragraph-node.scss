@@ -1,21 +1,14 @@
 .tiptap.ProseMirror {
-  --tt-collaboration-carets-label: var(--tt-gray-light-900);
   --link-text-color: var(--tt-brand-color-500);
   --thread-text: var(--tt-gray-light-900);
   --placeholder-color: var(--tt-gray-light-a-400);
   --thread-bg-color: var(--tt-color-yellow-inc-2);
 
-  // ai
-  --tiptap-ai-insertion-color: var(--tt-brand-color-600);
-
   .dark & {
-    --tt-collaboration-carets-label: var(--tt-gray-dark-100);
     --link-text-color: var(--tt-brand-color-400);
     --thread-text: var(--tt-gray-dark-900);
     --placeholder-color: var(--tt-gray-dark-a-400);
     --thread-bg-color: var(--tt-color-yellow-dec-2);
-
-    --tiptap-ai-insertion-color: var(--tt-brand-color-400);
   }
 }
 
@@ -94,41 +87,6 @@
     text-decoration: underline;
   }
 
-  .tiptap-ai-insertion {
-    color: var(--tiptap-ai-insertion-color);
-  }
-}
-
-/* =====================
-     COLLABORATION
-     ===================== */
-.tiptap.ProseMirror {
-  .collaboration-carets {
-    &__caret {
-      border-right: 1px solid transparent;
-      border-left: 1px solid transparent;
-      pointer-events: none;
-      margin-left: -1px;
-      margin-right: -1px;
-      position: relative;
-      word-break: normal;
-    }
-
-    &__label {
-      color: var(--tt-collaboration-carets-label);
-      border-radius: 0.25rem;
-      border-bottom-left-radius: 0;
-      font-size: 0.75rem;
-      font-weight: 600;
-      left: -1px;
-      line-height: 1;
-      padding: 0.125rem 0.375rem;
-      position: absolute;
-      top: -1.3em;
-      user-select: none;
-      white-space: nowrap;
-    }
-  }
 }
 
 /* =====================

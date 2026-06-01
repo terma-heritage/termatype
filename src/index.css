@@ -743,8 +743,8 @@ html, body {
 }
 
 .dark .status-stats-popup {
-  background: #2a2a2a;
-  border-color: #444;
+  background: var(--tt-card-bg-color);
+  border-color: var(--tt-border-color);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -752,17 +752,17 @@ html, body {
   display: flex;
   justify-content: space-between;
   padding: 3px 0;
-  color: #555;
+  color: var(--tt-gray-light-600);
 }
 
 .dark .status-stats-row {
-  color: #bbb;
+  color: var(--tt-gray-dark-600);
 }
 
 .status-stats-row span:last-child {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #222;
+  color: var(--tt-gray-light-900);
 }
 
 .status-stats-tibetan {
@@ -776,7 +776,7 @@ html, body {
 }
 
 .dark .status-stats-row span:last-child {
-  color: #e0e0e0;
+  color: var(--tt-gray-dark-900);
 }
 
 /* ============================================
@@ -1313,6 +1313,7 @@ html, body {
   font-family: "Noto Serif Tibetan", "Source Serif 4", "Source Serif Pro", Georgia, serif;
   line-height: 2.0;
   padding-block: 0.15em;
+  letter-spacing: 0;
 }
 
 /* OpenType features for proper Tibetan stacking and ligatures */
@@ -1326,6 +1327,19 @@ html, body {
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
+
+/* Tibetan headings — use Tibetan font, not Inter */
+.simple-editor-content.lang-bo .tiptap.ProseMirror h1,
+.simple-editor-content.lang-bo .tiptap.ProseMirror h2,
+.simple-editor-content.lang-bo .tiptap.ProseMirror h3,
+.simple-editor-content.lang-bo .tiptap.ProseMirror h4 {
+  font-family: var(--tt-font-tibetan);
+  letter-spacing: 0;
+}
+.simple-editor-content.lang-bo .tiptap.ProseMirror h1 { line-height: 1.8; }
+.simple-editor-content.lang-bo .tiptap.ProseMirror h2 { line-height: 1.7; }
+.simple-editor-content.lang-bo .tiptap.ProseMirror h3,
+.simple-editor-content.lang-bo .tiptap.ProseMirror h4 { line-height: 1.6; }
 
 /* Tibetan justification — ZWS after tsheg gives browsers justification points */
 .simple-editor-content .tiptap.ProseMirror.simple-editor p[style*="text-align: justify"],
@@ -2431,51 +2445,6 @@ html, body {
   color: var(--tt-gray-dark-700);
 }
 
-/* Document Outline */
-.document-outline {
-  padding: 8px;
-  overflow-y: auto;
-}
-
-.outline-item {
-  all: unset;
-  display: block;
-  width: 100%;
-  padding: 4px 8px;
-  font-size: 13px;
-  cursor: pointer;
-  border-radius: 4px;
-  color: #444;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-sizing: border-box;
-}
-
-.outline-item:hover {
-  background: var(--tt-hover-bg, #e8e8e8);
-}
-
-.dark .outline-item {
-  color: #ccc;
-}
-
-.dark .outline-item:hover {
-  background: #3a3a3a;
-}
-
-.outline-h1 { padding-left: 8px; font-weight: 700; font-size: 14px; }
-.outline-h2 { padding-left: 20px; font-weight: 600; }
-.outline-h3 { padding-left: 32px; font-weight: 500; font-size: 12px; }
-.outline-h4 { padding-left: 44px; font-weight: 400; font-size: 12px; opacity: 0.85; }
-
-.outline-empty {
-  padding: 16px;
-  font-size: 13px;
-  color: #888;
-  text-align: center;
-}
-
 /* Wylie Reference */
 .wylie-reference {
   display: flex;
@@ -3052,7 +3021,7 @@ html, body {
 }
 
 .save-dialog {
-  background: #fff;
+  background: var(--tt-card-bg-color);
   border-radius: 8px;
   padding: 1.5rem;
   min-width: 360px;
@@ -3066,7 +3035,7 @@ html, body {
 }
 
 .save-dialog-hint {
-  color: #888;
+  color: var(--tt-gray-light-500);
   font-size: 0.82rem !important;
   margin-bottom: 1.25rem !important;
 }
@@ -3086,13 +3055,13 @@ html, body {
   border-radius: 5px;
   font-size: 0.85rem;
   cursor: pointer;
-  border: 1px solid #ddd;
+  border: 1px solid var(--tt-border-color);
   background: transparent;
   color: inherit;
 }
 
 .save-dialog-btn:hover {
-  background: #f0f0f0;
+  background: var(--tt-gray-light-a-100);
 }
 
 .save-dialog-btn-primary {
@@ -3106,16 +3075,16 @@ html, body {
 }
 
 .dark .save-dialog {
-  background: #1e1e1e;
+  background: var(--tt-card-bg-color);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 .dark .save-dialog-btn {
-  border-color: #444;
+  border-color: var(--tt-border-color);
 }
 
 .dark .save-dialog-btn:hover {
-  background: #333;
+  background: var(--tt-gray-dark-a-100);
 }
 
 .dark .save-dialog-btn-primary {
