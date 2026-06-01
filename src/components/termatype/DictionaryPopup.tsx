@@ -3,16 +3,7 @@ import { type Editor } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
 import { invoke } from '@/lib/safe-invoke'
 import { TIBETAN_LABELS } from './MenuBar'
-
-interface DictResult {
-  headword: string
-  headword_wylie: string | null
-  definition: string
-  source: string
-  source_name: string
-}
-
-const isTibetan = (text: string) => /[ༀ-࿿]/.test(text)
+import { type DictResult, isTibetan } from '@/lib/dictionary-types'
 const MAX_RESULTS = 3
 const DEBOUNCE_MS = 150
 
@@ -22,20 +13,27 @@ export function DictionaryPopup({ editor, onOpenSidebar, menuLang = 'en' }: { ed
   const [searching, setSearching] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>()
   const lastQueryRef = useRef('')
+  const mountedRef = useRef(true)
+  useEffect(() => () => { mountedRef.current = false }, [])
 
   const search = useCallback(async (term: string) => {
     if (!term.trim() || term.length > 200) {
-      setResults([])
-      setSearching(false)
+      if (mountedRef.current) {
+        setResults([])
+        setSearching(false)
+      }
       return
     }
     setSearching(true)
     try {
       const entries = await invoke<DictResult[]>('lookup_dictionary', { query: term.trim() })
+      if (!mountedRef.current) return
       setResults(entries.slice(0, MAX_RESULTS))
     } catch {
+      if (!mountedRef.current) return
       setResults([])
     }
+    if (!mountedRef.current) return
     setSearching(false)
   }, [])
 

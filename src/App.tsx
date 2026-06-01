@@ -258,7 +258,7 @@ export default function App() {
     if (!localStorage.getItem(FIRST_LAUNCH_KEY)) {
       localStorage.setItem(FIRST_LAUNCH_KEY, '1')
     }
-  }, [openHelpTab])
+  }, [])
 
   // Listen for app updates
   useEffect(() => {

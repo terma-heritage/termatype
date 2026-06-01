@@ -235,23 +235,24 @@ export function FindReplace({
   }, [searchTerm, matchCase, wylieMode, updateSearch])
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
+    const handler = (e: Event) => {
+      const ke = e as KeyboardEvent
+      if (ke.key === 'Escape') {
+        ke.preventDefault()
         handleClose()
       }
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault()
+      if (ke.key === 'Enter' && !ke.shiftKey) {
+        ke.preventDefault()
         goToNext()
       }
-      if (e.key === 'Enter' && e.shiftKey) {
-        e.preventDefault()
+      if (ke.key === 'Enter' && ke.shiftKey) {
+        ke.preventDefault()
         goToPrev()
       }
     }
     const el = searchRef.current?.closest('.find-replace-panel')
-    el?.addEventListener('keydown', handler as EventListener)
-    return () => el?.removeEventListener('keydown', handler as EventListener)
+    el?.addEventListener('keydown', handler)
+    return () => el?.removeEventListener('keydown', handler)
   }, [handleClose, goToNext, goToPrev])
 
   const state = getState()

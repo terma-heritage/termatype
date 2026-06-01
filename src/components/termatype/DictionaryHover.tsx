@@ -1,16 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { type Editor } from '@tiptap/react'
 import { invoke } from '@/lib/safe-invoke'
-
-interface DictResult {
-  headword: string
-  headword_wylie: string | null
-  definition: string
-  source: string
-  source_name: string
-}
-
-const isTibetan = (text: string) => /[ༀ-࿿]/.test(text)
+import { type DictResult, isTibetan } from '@/lib/dictionary-types'
 const TIBETAN_WORD_RE = /[ༀ-࿿]+/
 const HOVER_DELAY = 300
 const HIDE_DELAY = 200
@@ -48,6 +39,7 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
   const [result, setResult] = useState<DictResult | null>(null)
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null)
   const [visible, setVisible] = useState(false)
+  const visibleRef = useRef(false)
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout>>()
   const hideTimerRef = useRef<ReturnType<typeof setTimeout>>()
   const lastWordRef = useRef('')
@@ -67,9 +59,12 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
 
   const hide = useCallback(() => {
     setVisible(false)
+    visibleRef.current = false
     setResult(null)
     lastWordRef.current = ''
   }, [])
+
+  useEffect(() => { visibleRef.current = visible }, [visible])
 
   useEffect(() => {
     if (!editor) return
@@ -126,7 +121,7 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
       }
 
       // Same word, keep showing
-      if (word === lastWordRef.current && visible) return
+      if (word === lastWordRef.current && visibleRef.current) return
 
       lastWordRef.current = word
       setPosition({ x: e.clientX, y: e.clientY })
@@ -150,7 +145,7 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
       editorEl.removeEventListener('mousemove', handleMouseMove)
       editorEl.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [editor, visible, lookup, hide])
+  }, [editor, lookup, hide])
 
   // Hide when user starts selecting
   useEffect(() => {
@@ -165,11 +160,15 @@ export function DictionaryHover({ editor }: { editor: Editor }) {
 
   if (!visible || !result || !position) return null
 
-  // Position the tooltip below and slightly right of the cursor
+  // Position the tooltip near cursor, clamped to viewport
+  const tooltipWidth = 280 // max-width from CSS
+  const tooltipHeight = 100 // approximate
   const style: React.CSSProperties = {
     position: 'fixed',
-    left: position.x,
-    top: position.y + 20,
+    left: Math.min(position.x, window.innerWidth - tooltipWidth - 16),
+    top: position.y + 20 + tooltipHeight > window.innerHeight
+      ? position.y - tooltipHeight - 8  // show above cursor
+      : position.y + 20,               // show below cursor
     zIndex: 9999,
   }
 

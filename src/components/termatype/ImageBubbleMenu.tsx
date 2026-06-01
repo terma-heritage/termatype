@@ -115,8 +115,8 @@ export function ImageBubbleMenu({ editor }: { editor: Editor }) {
       options={{ placement: 'top', offset: 8 }}
       shouldShow={({ state }) => {
         const { selection } = state
-        const node = (selection as any).node
-        return node?.type.name === 'image'
+        if (!(selection instanceof NodeSelection)) return false
+        return selection.node?.type.name === 'image'
       }}
     >
       <div className="bubble-menu img-bubble-menu">

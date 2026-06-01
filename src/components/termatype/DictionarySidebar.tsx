@@ -2,16 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { invoke } from '@/lib/safe-invoke'
 import { TIBETAN_LABELS } from './MenuBar'
 import type { Editor } from '@tiptap/react'
-
-interface DictResult {
-  headword: string
-  headword_wylie: string | null
-  definition: string
-  source: string
-  source_name: string
-}
-
-const isTibetan = (text: string) => /[ༀ-࿿]/.test(text)
+import { type DictResult, isTibetan } from '@/lib/dictionary-types'
 
 export function DictionarySidebar({
   editor,

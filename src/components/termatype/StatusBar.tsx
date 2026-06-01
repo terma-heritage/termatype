@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Editor } from '@tiptap/react'
 import { countWords } from '@/lib/word-count'
 import { TIBETAN_LABELS } from './MenuBar'
@@ -39,6 +39,25 @@ export function StatusBar({
   }
 
   const [showStats, setShowStats] = useState(false)
+  const statsPopupRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showStats) return
+    const handleClick = (e: MouseEvent) => {
+      if (statsPopupRef.current && !statsPopupRef.current.contains(e.target as Node)) {
+        setShowStats(false)
+      }
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowStats(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [showStats])
   const [docStats, setDocStats] = useState({ words: 0, chars: 0, charsNoSpaces: 0, sentences: 0, paragraphs: 0, tibetanSyllables: 0 })
   useEffect(() => {
     if (!editor) return
@@ -78,7 +97,7 @@ export function StatusBar({
         {words.toLocaleString()} {t('words')} | {chars.toLocaleString()} {t('chars')} | ~{readingTime} {t('min')} | {pageCount} {t('pg')}
       </button>
       {showStats && (
-        <div className={`status-stats-popup${menuLang === 'bo' ? ' status-stats-tibetan' : ''}`}>
+        <div ref={statsPopupRef} className={`status-stats-popup${menuLang === 'bo' ? ' status-stats-tibetan' : ''}`} role="dialog" aria-label="Document statistics">
           <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཚིག' : 'Words'}</span><span>{words.toLocaleString()}</span></div>
           <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཡིག་འབྲུ' : 'Characters'}</span><span>{chars.toLocaleString()}</span></div>
           <div className="status-stats-row"><span>{menuLang === 'bo' ? 'ཡིག་འབྲུ (བར་སྟོང་མེད)' : 'Characters (no spaces)'}</span><span>{charsNoSpaces.toLocaleString()}</span></div>
