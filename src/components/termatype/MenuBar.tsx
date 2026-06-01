@@ -242,7 +242,6 @@ export function MenuBar({
   typewriterMode,
   readingMode,
   onReadingMode,
-  fileName,
   menuLang,
   onToggleMenuLang,
 }: {
@@ -271,7 +270,6 @@ export function MenuBar({
   typewriterMode: boolean
   readingMode: boolean
   onReadingMode: () => void
-  fileName: string
   menuLang: 'en' | 'bo'
   onToggleMenuLang: () => void
 }) {

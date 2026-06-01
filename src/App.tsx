@@ -393,10 +393,6 @@ export default function App() {
           onAbout={() => openHelpTab('about')}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-          fileName={(() => {
-            const name = activeDocTab?.fileName ?? 'Untitled'
-            return name === 'Untitled' && menuLang === 'bo' ? 'མིང་མེད།' : name
-          })()}
           menuLang={menuLang}
           onToggleMenuLang={toggleMenuLang}
         />
