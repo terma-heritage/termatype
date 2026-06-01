@@ -52,12 +52,14 @@
 
 ## Why TermaType?
 
-Most word processors treat Tibetan as an afterthought. TermaType was built from the ground up for bilingual writing — with proper Tibetan input and an offline dictionary.
+Most word processors treat Tibetan as an afterthought. TermaType was built from the ground up for bilingual writing — Tibetan first, not Tibetan as a plugin.
 
 - **Just type Wylie, get Tibetan.** Full EWTS input with real-time conversion. Toggle with `Ctrl+Space`.
-- **Look up any word instantly.** Tibetan-English dictionary built in.
-- **Export anywhere.** Save as DOCX, PDF, or EPUB. Print-ready with footnotes and page breaks.
-- **100% local.** No cloud. No accounts. No tracking.
+- **Dictionary woven into the page.** Hover or select any word for instant definitions. Click to insert Tibetan translations.
+- **Truly bilingual UI.** Toggle the entire interface between English and Tibetan — menus, tabs, status bar, help pages, everything.
+- **Beautiful Tibetan typography.** Tsheg-based line breaking, proper shay placement, OpenType stacking features, generous line height for vowel marks.
+- **Export anywhere.** Save as DOCX, PDF, or EPUB with proper Tibetan margins and typography.
+- **100% local.** No cloud. No accounts. No tracking. 14 MB download.
 
 ---
 
@@ -71,9 +73,21 @@ Type English normally. Hit `Ctrl+Space` and type Wylie — it converts to Tibeta
 
 Everything you'd expect: headings, lists, tables, images with alignment and resizing, code blocks, footnotes, format painter, find & replace. Multiple document tabs with auto-save. Dark mode. Focus mode that fades everything but your current paragraph.
 
-### Dictionary at your fingertips
+### Dictionary woven into the page
 
-Select any Tibetan word and look it up instantly in the sidebar. Works offline — no internet needed.
+Hover any Tibetan word for a quick definition. Select text for a richer popup with multiple results. Search English to find Tibetan equivalents and click to insert. A sidebar is available for deeper browsing. 165,000+ entries bundled — works offline, always.
+
+### Tibetan-first interface
+
+Toggle the EN/བོད switch and the entire app speaks Tibetan — every menu, every label, every help page. The window title, status bar, and document tabs all switch. When you toggle to Tibetan, the editor starts in Tibetan input mode automatically.
+
+### Beautiful typography
+
+Powered by [terma.js](https://github.com/vajradog/TermaFoundry) — proper tsheg-based line breaking so text wraps at syllable boundaries, not randomly. Shay marks never split to the next line. OpenType features enabled for correct consonant stacking. Five curated Tibetan fonts bundled, plus access to all system fonts.
+
+### Calm writing surface
+
+Warm paper-like background, terracotta caret, gentle selection highlight. Focus mode hides everything — menus, tabs, sidebar — leaving only your words. Smooth transitions throughout. First launch: no setup, no login, just a blank page ready to write.
 
 ---
 
