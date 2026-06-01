@@ -75,15 +75,15 @@ Everything you'd expect: headings, lists, tables, images with alignment and resi
 
 ### Dictionary woven into the page
 
-Hover any Tibetan word for a quick definition. Select text for a richer popup with multiple results. Search English to find Tibetan equivalents and click to insert. A sidebar is available for deeper browsing. 165,000+ entries bundled — works offline, always.
+Hover any Tibetan word for a quick definition. Select text for a richer popup with multiple results. Search English to find Tibetan equivalents and click to insert. A sidebar is available for deeper browsing. Bundled dictionary — works offline, always.
 
 ### Tibetan-first interface
 
-Toggle the EN/བོད switch and the entire app speaks Tibetan — every menu, every label, every help page. The window title, status bar, and document tabs all switch. When you toggle to Tibetan, the editor starts in Tibetan input mode automatically.
+Toggle the UI language switch and the entire app speaks Tibetan — every menu, every label, every help page. The window title, status bar, and document tabs all switch. Typing language stays independent — use `Ctrl+Space` to switch between English and Tibetan input.
 
 ### Beautiful typography
 
-Powered by [terma.js](https://github.com/vajradog/TermaFoundry) — proper tsheg-based line breaking so text wraps at syllable boundaries, not randomly. Shay marks never split to the next line. OpenType features enabled for correct consonant stacking. Five curated Tibetan fonts bundled, plus access to all system fonts.
+Proper line breaking so Tibetan text wraps at syllable boundaries, not randomly. OpenType features enabled for correct consonant stacking. Six curated Tibetan fonts bundled (including DDC Uchen for ornamental marks), plus access to all system fonts.
 
 ### Calm writing surface
 
