@@ -96,14 +96,6 @@ export function printDocument() {
     container.appendChild(clonedContent.firstChild)
   }
 
-  // Apply terma.js line-breaking fixes to the print clone only
-  // (never to the live editor — it conflicts with ProseMirror)
-  try {
-    import('@/lib/terma.esm.js').then(({ default: terma }) => {
-      terma.prepare(container!)
-    }).catch(() => {})
-  } catch {}
-
   const cleanup = () => {
     container?.remove()
     styleEl?.remove()
