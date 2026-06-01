@@ -558,7 +558,6 @@ export function MenuBar({
         ))}
       </div>
       <div className="menubar-right">
-        <div className="menubar-title">{fileName}</div>
         <span className="menubar-lang-label">{menuLang === 'bo' ? 'སྐད་ཡིག' : 'UI'}</span>
         <button
           type="button"
