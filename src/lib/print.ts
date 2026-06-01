@@ -60,7 +60,13 @@ export function printDocument() {
     #termatype-print-container hr { border: none; border-top: 1px solid #ddd; margin: 12pt 0; }
     #termatype-print-container div[data-type="pageBreak"] { visibility: hidden; height: 0; margin: 0; border: none; page-break-after: always; }
     #termatype-print-container a { color: #B85C3F; text-decoration: underline; }
-    #termatype-print-container.lang-bo { line-height: 1.8; }
+    #termatype-print-container.lang-bo {
+      line-height: 2.0;
+      padding-block: 0.15em;
+      font-feature-settings: "kern" 1, "liga" 1, "blws" 1, "abvs" 1, "pres" 1;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
     #termatype-print-container table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
     #termatype-print-container th,
     #termatype-print-container td { border: 1px solid #ddd; padding: 6pt 8pt; text-align: left; }

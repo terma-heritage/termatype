@@ -1305,6 +1305,33 @@ html, body {
   font-family: "Noto Serif Tibetan", "Source Serif 4", serif;
 }
 
+/* ── Tibetan Typography ── */
+
+/* Taller line height for Tibetan — vowel marks & subscripts need room */
+.simple-editor-content.lang-bo .tiptap.ProseMirror.simple-editor {
+  font-family: "Noto Serif Tibetan", "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  line-height: 2.0;
+  padding-block: 0.15em;
+}
+
+/* OpenType features for proper Tibetan stacking and ligatures */
+.simple-editor-content.lang-bo .tiptap.ProseMirror.simple-editor,
+.simple-editor-content .tiptap.ProseMirror.simple-editor [lang="bo"] {
+  font-feature-settings: "kern" 1, "liga" 1, "blws" 1, "abvs" 1, "pres" 1;
+}
+
+/* Prevent mid-syllable breaks, allow break at ZWS (terma.js inserts after tsheg) */
+.simple-editor-content.lang-bo .tiptap.ProseMirror.simple-editor {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* Tibetan justification — ZWS after tsheg gives browsers justification points */
+.simple-editor-content .tiptap.ProseMirror.simple-editor p[style*="text-align: justify"],
+.simple-editor-content .tiptap.ProseMirror.simple-editor [style*="text-align: justify"] {
+  text-justify: inter-word;
+}
+
 .termatype-status-bar .status-lang {
   font-weight: 600;
   padding: 1px 6px;

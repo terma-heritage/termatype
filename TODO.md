@@ -35,11 +35,11 @@
 
 ## Phase 3: Beautiful Tibetan Typography
 
-- [ ] Tsheg-based line breaking (break at tsheg, not space)
-- [ ] Proper Tibetan justification
-- [ ] Curate and bundle 3-5 beautiful Tibetan fonts
-- [ ] Correct baselines so Tibetan and English sit well together
-- [ ] Ensure proper shay placement
+- [x] Tsheg-based line breaking (break at tsheg, not space)
+- [x] Proper Tibetan justification
+- [x] Curate and bundle 3-5 beautiful Tibetan fonts
+- [x] Correct baselines so Tibetan and English sit well together
+- [x] Ensure proper shay placement
 - [ ] Test with real Tibetan documents for typographic correctness
 
 ---
