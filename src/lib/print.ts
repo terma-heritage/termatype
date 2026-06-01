@@ -6,7 +6,7 @@ export function printDocument() {
 
   const printStyles = `
     @page {
-      margin: 0;
+      margin: 0.75in 1in;
       size: A4;
     }
     @media print {
@@ -18,7 +18,7 @@ export function printDocument() {
         left: 0;
         top: 0;
         width: 100%;
-        padding: 0.75in 1in;
+        padding: 0;
         box-sizing: border-box;
       }
     }
