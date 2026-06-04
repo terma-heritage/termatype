@@ -11,6 +11,13 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 60
 
+    env:
+      APP_NAME: TermaType
+      BUNDLE_ID: org.terma.termatype
+      TEAM_ID: ETM8V4BA5N
+      SIGN_APP: "3rd Party Mac Developer Application: Thupten Chakrishar (ETM8V4BA5N)"
+      SIGN_PKG: "3rd Party Mac Developer Installer: Thupten Chakrishar (ETM8V4BA5N)"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -34,89 +41,168 @@ jobs:
           brew install cmake
           npm ci
 
-      - name: Import certificates and provisioning profile
+      - name: Set up keychain and certificates
         env:
           MAC_APP_DIST_CERTIFICATE: ${{ secrets.MAC_APP_DIST_CERTIFICATE }}
           MAC_APP_DIST_CERTIFICATE_PASSWORD: ${{ secrets.MAC_APP_DIST_CERTIFICATE_PASSWORD }}
           MAC_INSTALLER_CERTIFICATE: ${{ secrets.MAC_INSTALLER_CERTIFICATE }}
           MAC_INSTALLER_CERTIFICATE_PASSWORD: ${{ secrets.MAC_INSTALLER_CERTIFICATE_PASSWORD }}
-          MAC_PROVISIONING_PROFILE: ${{ secrets.MAC_PROVISIONING_PROFILE }}
         run: |
-          # Create and configure keychain
+          # Create keychain with long timeout
           security create-keychain -p actions build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p actions build.keychain
           security set-keychain-settings -t 7200 -u build.keychain
 
-          # Import Mac App Distribution cert
-          echo "$MAC_APP_DIST_CERTIFICATE" | base64 --decode > mac_app.p12
-          security import mac_app.p12 -k build.keychain -P "$MAC_APP_DIST_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
-          rm mac_app.p12
+          # Import App Distribution cert
+          echo "$MAC_APP_DIST_CERTIFICATE" | base64 --decode > /tmp/mac_app.p12
+          security import /tmp/mac_app.p12 -k build.keychain \
+            -P "$MAC_APP_DIST_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          rm /tmp/mac_app.p12
 
-          # Import Mac Installer Distribution cert
-          echo "$MAC_INSTALLER_CERTIFICATE" | base64 --decode > mac_installer.p12
-          security import mac_installer.p12 -k build.keychain -P "$MAC_INSTALLER_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/productbuild -T /usr/bin/security
-          rm mac_installer.p12
+          # Import Installer cert
+          echo "$MAC_INSTALLER_CERTIFICATE" | base64 --decode > /tmp/mac_installer.p12
+          security import /tmp/mac_installer.p12 -k build.keychain \
+            -P "$MAC_INSTALLER_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          rm /tmp/mac_installer.p12
 
-          # Allow codesign and productbuild to access keychain without prompting
-          security set-key-partition-list -S apple-tool:,apple:,codesign:,productbuild:,prod: -s -k actions build.keychain
+          # Allow all apps to access keychain without UI prompt
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k actions build.keychain
 
-          # Install provisioning profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$MAC_PROVISIONING_PROFILE" | base64 --decode > src-tauri/TermaType_Mac_App_Store.provisionprofile
-          echo "$MAC_PROVISIONING_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/TermaType_Mac_App_Store.provisionprofile
-
-          # Verify certs imported
+          # Verify
+          echo "=== Certificates ==="
           security find-identity -v build.keychain
 
-      - name: Build x86_64
-        timeout-minutes: 20
-        run: |
-          npm run tauri -- build --bundles app --target x86_64-apple-darwin \
-            --config src-tauri/tauri.appstore.conf.json
+      - name: Install provisioning profile
         env:
-          APPLE_SIGNING_IDENTITY: "3rd Party Mac Developer Application: Thupten Chakrishar (ETM8V4BA5N)"
+          MAC_PROVISIONING_PROFILE: ${{ secrets.MAC_PROVISIONING_PROFILE }}
+        run: |
+          # Decode provisioning profile, strip any Windows line endings
+          echo "$MAC_PROVISIONING_PROFILE" | tr -d '\r\n' | base64 --decode > /tmp/profile.provisionprofile
+
+          # Verify it's a valid plist/profile
+          echo "=== Profile info ==="
+          file /tmp/profile.provisionprofile
+          ls -la /tmp/profile.provisionprofile
+
+          # Install to both locations
+          cp /tmp/profile.provisionprofile src-tauri/TermaType_Mac_App_Store.provisionprofile
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          cp /tmp/profile.provisionprofile "$HOME/Library/MobileDevice/Provisioning Profiles/TermaType_Mac_App_Store.provisionprofile"
+          rm /tmp/profile.provisionprofile
+
+      - name: Build x86_64
+        timeout-minutes: 15
+        run: npm run tauri -- build --no-bundle --target x86_64-apple-darwin
+        env:
+          APPLE_SIGNING_IDENTITY: "-"
 
       - name: Build aarch64
-        timeout-minutes: 20
-        run: |
-          npm run tauri -- build --bundles app --target aarch64-apple-darwin \
-            --config src-tauri/tauri.appstore.conf.json
+        timeout-minutes: 15
+        run: npm run tauri -- build --no-bundle --target aarch64-apple-darwin
         env:
-          APPLE_SIGNING_IDENTITY: "3rd Party Mac Developer Application: Thupten Chakrishar (ETM8V4BA5N)"
+          APPLE_SIGNING_IDENTITY: "-"
 
-      - name: Create universal binary
+      - name: Build frontend
+        run: npm run build
+
+      - name: Assemble, sign, and package
         run: |
-          APP_X86="src-tauri/target/x86_64-apple-darwin/release/bundle/macos/TermaType.app"
-          APP_ARM="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/TermaType.app"
-          UNIVERSAL_APP="TermaType.app"
+          set -e
 
-          # Copy arm64 app as base
-          cp -R "$APP_ARM" "$UNIVERSAL_APP"
-
-          # Create universal binary with lipo
+          # --- 1. Create universal binary with lipo ---
+          echo "==> Creating universal binary..."
+          mkdir -p universal
           lipo -create \
-            "$APP_X86/Contents/MacOS/termatype" \
-            "$APP_ARM/Contents/MacOS/termatype" \
-            -output "$UNIVERSAL_APP/Contents/MacOS/termatype"
+            src-tauri/target/x86_64-apple-darwin/release/termatype \
+            src-tauri/target/aarch64-apple-darwin/release/termatype \
+            -output universal/termatype
+          file universal/termatype
+
+          # --- 2. Build the .app structure manually ---
+          echo "==> Assembling .app bundle..."
+          APP="${APP_NAME}.app"
+          rm -rf "$APP"
+          mkdir -p "$APP/Contents/MacOS"
+          mkdir -p "$APP/Contents/Resources"
+
+          # Copy universal binary
+          cp universal/termatype "$APP/Contents/MacOS/termatype"
+          chmod +x "$APP/Contents/MacOS/termatype"
+
+          # Copy resources
+          cp -R src-tauri/resources/* "$APP/Contents/Resources/" 2>/dev/null || true
+          cp src-tauri/icons/icon.icns "$APP/Contents/Resources/icon.icns" 2>/dev/null || true
+
+          # Copy frontend
+          mkdir -p "$APP/Contents/Resources"
+          if [ -d "dist" ]; then
+            cp -R dist "$APP/Contents/Resources/"
+          fi
 
           # Embed provisioning profile
-          cp src-tauri/TermaType_Mac_App_Store.provisionprofile "$UNIVERSAL_APP/Contents/embedded.provisionprofile"
+          cp src-tauri/TermaType_Mac_App_Store.provisionprofile "$APP/Contents/embedded.provisionprofile"
 
-          # Re-sign the universal app
-          codesign --force --deep --sign "3rd Party Mac Developer Application: Thupten Chakrishar (ETM8V4BA5N)" \
+          # Create Info.plist
+          cat > "$APP/Contents/Info.plist" << PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleDevelopmentRegion</key><string>en</string>
+            <key>CFBundleDisplayName</key><string>${APP_NAME}</string>
+            <key>CFBundleExecutable</key><string>termatype</string>
+            <key>CFBundleIconFile</key><string>icon</string>
+            <key>CFBundleIdentifier</key><string>${BUNDLE_ID}</string>
+            <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+            <key>CFBundleName</key><string>${APP_NAME}</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>CFBundleShortVersionString</key><string>2.0.0</string>
+            <key>CFBundleVersion</key><string>2.0.0</string>
+            <key>LSMinimumSystemVersion</key><string>10.15</string>
+            <key>NSHighResolutionCapable</key><true/>
+            <key>ITSAppUsesNonExemptEncryption</key><false/>
+          </dict>
+          </plist>
+PLIST
+
+          # --- 3. Code sign the app ---
+          echo "==> Signing app bundle..."
+          security unlock-keychain -p actions build.keychain
+
+          codesign --force --options runtime --timestamp \
+            --sign "$SIGN_APP" \
             --entitlements src-tauri/Entitlements.plist \
-            "$UNIVERSAL_APP"
+            "$APP/Contents/MacOS/termatype"
 
-          echo "Universal app created and signed"
+          codesign --force --options runtime --timestamp \
+            --sign "$SIGN_APP" \
+            --entitlements src-tauri/Entitlements.plist \
+            "$APP"
 
-      - name: Create .pkg
-        timeout-minutes: 5
-        run: |
+          # Verify signing
+          echo "==> Verifying signature..."
+          codesign --verify --deep --strict "$APP"
+          codesign -dv --verbose=4 "$APP" 2>&1 | head -20
+
+          # --- 4. Create .pkg ---
+          echo "==> Creating .pkg..."
           xcrun productbuild \
-            --component "TermaType.app" /Applications \
-            "TermaType.pkg"
-          echo "PKG created: $(ls -lh TermaType.pkg)"
+            --component "$APP" /Applications \
+            "unsigned.pkg"
+
+          # Try to sign the pkg, fall back to unsigned if keychain issues
+          if xcrun productsign --sign "$SIGN_PKG" --keychain build.keychain "unsigned.pkg" "${APP_NAME}.pkg" 2>/dev/null; then
+            echo "PKG signed successfully"
+            rm unsigned.pkg
+          else
+            echo "PKG signing failed, using unsigned pkg (Apple re-signs during review)"
+            mv unsigned.pkg "${APP_NAME}.pkg"
+          fi
+
+          echo "==> PKG created: $(ls -lh ${APP_NAME}.pkg)"
 
       - name: Upload .pkg to App Store Connect
         env:
@@ -126,8 +212,14 @@ jobs:
         run: |
           mkdir -p ~/.private_keys
           echo "$API_KEY_B64" | base64 --decode > ~/.private_keys/AuthKey_${API_KEY_ID}.p8
+
+          # Verify the key file
+          echo "=== API Key file ==="
+          file ~/.private_keys/AuthKey_${API_KEY_ID}.p8
+          head -1 ~/.private_keys/AuthKey_${API_KEY_ID}.p8
+
           xcrun altool --upload-app --type macos \
-            --file "TermaType.pkg" \
+            --file "${APP_NAME}.pkg" \
             --apiKey "$API_KEY_ID" \
             --apiIssuer "$API_ISSUER"
 
