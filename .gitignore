@@ -29,3 +29,13 @@ src-tauri/.tauri_private_key.pub
 src-tauri/termatype.key
 src-tauri/termatype.pub
 *.key
+
+# MSIX packaging
+msix-dist
+*.msix
+*.pfx
+
+# Mac App Store packaging
+*.pkg
+*.provisionprofile
+*.p8

@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "pack:msix": "powershell -ExecutionPolicy Bypass -File scripts/pack-msix.ps1",
+    "pack:appstore": "bash scripts/pack-appstore.sh"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
