@@ -114,11 +114,20 @@ jobs:
         timeout-minutes: 5
         run: |
           security unlock-keychain -p actions build.keychain
+
+          # Build unsigned pkg first
           xcrun productbuild \
-            --sign "3rd Party Mac Developer Installer: Thupten Chakrishar (ETM8V4BA5N)" \
             --component "TermaType.app" /Applications \
-            "TermaType.pkg"
-          echo "PKG created: $(ls -lh TermaType.pkg)"
+            "unsigned.pkg"
+          echo "Unsigned PKG created: $(ls -lh unsigned.pkg)"
+
+          # Sign it with productsign
+          xcrun productsign \
+            --sign "3rd Party Mac Developer Installer: Thupten Chakrishar (ETM8V4BA5N)" \
+            --keychain build.keychain \
+            "unsigned.pkg" "TermaType.pkg"
+          rm unsigned.pkg
+          echo "Signed PKG created: $(ls -lh TermaType.pkg)"
 
       - name: Upload .pkg to App Store Connect
         env:
