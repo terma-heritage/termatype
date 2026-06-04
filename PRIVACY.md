@@ -19,6 +19,6 @@ All documents and settings are stored locally on your device. Nothing is sent to
 
 ## Contact
 
-If you have questions about this privacy policy, contact us at info@termafoundation.org
+If you have questions about this privacy policy, contact us at info@termafoundation.org.
 
 **Last updated:** June 4, 2026
