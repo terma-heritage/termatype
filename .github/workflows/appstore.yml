@@ -58,8 +58,8 @@ jobs:
           security import mac_installer.p12 -k build.keychain -P "$MAC_INSTALLER_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/productbuild -T /usr/bin/security
           rm mac_installer.p12
 
-          # Allow codesign to access keychain without prompting
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k actions build.keychain
+          # Allow codesign and productbuild to access keychain without prompting
+          security set-key-partition-list -S apple-tool:,apple:,codesign:,productbuild:,prod: -s -k actions build.keychain
 
           # Install provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
@@ -111,7 +111,9 @@ jobs:
           echo "Universal app created and signed"
 
       - name: Create signed .pkg
+        timeout-minutes: 5
         run: |
+          security unlock-keychain -p actions build.keychain
           xcrun productbuild \
             --sign "3rd Party Mac Developer Installer: Thupten Chakrishar (ETM8V4BA5N)" \
             --component "TermaType.app" /Applications \
