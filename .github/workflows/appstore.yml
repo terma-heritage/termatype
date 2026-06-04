@@ -175,16 +175,11 @@ jobs:
             "unsigned.pkg"
           echo "Unsigned PKG: $(ls -lh unsigned.pkg)"
 
-          # Sign with timeout — productsign can hang in CI
-          if timeout 120 xcrun productsign \
+          # Sign the pkg
+          xcrun productsign \
             --sign "$SIGN_PKG" \
-            "unsigned.pkg" "${APP_NAME}.pkg"; then
-            echo "PKG signed successfully"
-            rm unsigned.pkg
-          else
-            echo "ERROR: PKG signing failed or timed out"
-            exit 1
-          fi
+            "unsigned.pkg" "${APP_NAME}.pkg"
+          rm unsigned.pkg
 
           echo "==> Signed PKG: $(ls -lh ${APP_NAME}.pkg)"
 
