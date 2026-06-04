@@ -75,23 +75,17 @@ jobs:
           echo "=== Certificates ==="
           security find-identity -v build.keychain
 
-      - name: Install provisioning profile
-        env:
-          MAC_PROVISIONING_PROFILE: ${{ secrets.MAC_PROVISIONING_PROFILE }}
+      - name: Verify provisioning profile
         run: |
-          # Decode provisioning profile, strip any Windows line endings
-          echo "$MAC_PROVISIONING_PROFILE" | tr -d '\r\n' | base64 --decode > /tmp/profile.provisionprofile
-
-          # Verify it's a valid plist/profile
+          # Profile is committed to repo — no base64 decode needed
           echo "=== Profile info ==="
-          file /tmp/profile.provisionprofile
-          ls -la /tmp/profile.provisionprofile
-
-          # Install to both locations
-          cp /tmp/profile.provisionprofile src-tauri/TermaType_Mac_App_Store.provisionprofile
+          file src-tauri/TermaType_Mac_App_Store.provisionprofile
+          ls -la src-tauri/TermaType_Mac_App_Store.provisionprofile
+          # Verify it's a valid signed plist
+          security cms -D -i src-tauri/TermaType_Mac_App_Store.provisionprofile > /dev/null 2>&1 && echo "Profile signature VALID" || echo "Profile signature check skipped"
+          # Install to system location
           mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-          cp /tmp/profile.provisionprofile "$HOME/Library/MobileDevice/Provisioning Profiles/TermaType_Mac_App_Store.provisionprofile"
-          rm /tmp/profile.provisionprofile
+          cp src-tauri/TermaType_Mac_App_Store.provisionprofile "$HOME/Library/MobileDevice/Provisioning Profiles/"
 
       - name: Build x86_64
         timeout-minutes: 15

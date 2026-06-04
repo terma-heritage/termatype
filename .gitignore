@@ -37,5 +37,6 @@ msix-dist
 
 # Mac App Store packaging
 *.pkg
-*.provisionprofile
+# Provisioning profiles are NOT secret — safe to commit
+# *.provisionprofile
 *.p8
