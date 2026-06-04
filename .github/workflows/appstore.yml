@@ -1,0 +1,98 @@
+name: Mac App Store
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-upload:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install dependencies
+        run: |
+          brew install cmake
+          npm ci
+
+      - name: Import Mac App Distribution certificate
+        env:
+          MAC_APP_DIST_CERTIFICATE: ${{ secrets.MAC_APP_DIST_CERTIFICATE }}
+          MAC_APP_DIST_CERTIFICATE_PASSWORD: ${{ secrets.MAC_APP_DIST_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$MAC_APP_DIST_CERTIFICATE" | base64 --decode > mac_app.p12
+          security create-keychain -p actions build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p actions build.keychain
+          security import mac_app.p12 -k build.keychain -P "$MAC_APP_DIST_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k actions build.keychain
+          rm mac_app.p12
+
+      - name: Import Mac Installer Distribution certificate
+        env:
+          MAC_INSTALLER_CERTIFICATE: ${{ secrets.MAC_INSTALLER_CERTIFICATE }}
+          MAC_INSTALLER_CERTIFICATE_PASSWORD: ${{ secrets.MAC_INSTALLER_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$MAC_INSTALLER_CERTIFICATE" | base64 --decode > mac_installer.p12
+          security import mac_installer.p12 -k build.keychain -P "$MAC_INSTALLER_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/productbuild
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k actions build.keychain
+          rm mac_installer.p12
+
+      - name: Install provisioning profile
+        env:
+          MAC_PROVISIONING_PROFILE: ${{ secrets.MAC_PROVISIONING_PROFILE }}
+        run: |
+          echo "$MAC_PROVISIONING_PROFILE" | base64 --decode > src-tauri/TermaType_Mac_App_Store.provisionprofile
+
+      - name: Build universal binary for App Store
+        run: |
+          npm run tauri -- build --bundles app --target universal-apple-darwin \
+            --config src-tauri/tauri.appstore.conf.json
+        env:
+          APPLE_SIGNING_IDENTITY: "3rd Party Mac Developer Application: Thupten Chakrishar (ETM8V4BA5N)"
+
+      - name: Create signed .pkg
+        run: |
+          xcrun productbuild \
+            --sign "3rd Party Mac Developer Installer: Thupten Chakrishar (ETM8V4BA5N)" \
+            --component "src-tauri/target/universal-apple-darwin/release/bundle/macos/TermaType.app" \
+            /Applications \
+            "TermaType.pkg"
+
+      - name: Upload .pkg to App Store Connect
+        env:
+          API_KEY: ${{ secrets.APP_STORE_API_KEY }}
+          API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }}
+          API_ISSUER: ${{ secrets.APP_STORE_API_ISSUER }}
+        run: |
+          mkdir -p ~/.private_keys
+          echo "$API_KEY" > ~/.private_keys/AuthKey_${API_KEY_ID}.p8
+          xcrun altool --upload-app --type macos \
+            --file "TermaType.pkg" \
+            --apiKey "$API_KEY_ID" \
+            --apiIssuer "$API_ISSUER"
+
+      - name: Upload .pkg as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TermaType-AppStore-pkg
+          path: TermaType.pkg
