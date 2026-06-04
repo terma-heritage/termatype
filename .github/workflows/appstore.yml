@@ -177,16 +177,7 @@ jobs:
           echo "==> Creating .pkg..."
           xcrun productbuild \
             --component "$APP" /Applications \
-            "unsigned.pkg"
-
-          # Try to sign the pkg, fall back to unsigned if keychain issues
-          if xcrun productsign --sign "$SIGN_PKG" --keychain build.keychain "unsigned.pkg" "${APP_NAME}.pkg" 2>/dev/null; then
-            echo "PKG signed successfully"
-            rm unsigned.pkg
-          else
-            echo "PKG signing failed, using unsigned pkg (Apple re-signs during review)"
-            mv unsigned.pkg "${APP_NAME}.pkg"
-          fi
+            "${APP_NAME}.pkg"
 
           echo "==> PKG created: $(ls -lh ${APP_NAME}.pkg)"
 
