@@ -17,8 +17,8 @@
 
 <!-- UPDATE THESE LINKS WHEN RELEASING A NEW VERSION -->
 <p align="center">
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_x64-setup.exe">
-    <img src="https://img.shields.io/badge/Download_for_Windows-v2.0.0-E8784A?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" />
+  <a href="https://apps.microsoft.com/detail/9nldclht1sz4">
+    <img src="https://get.microsoft.com/images/en-us%20dark.svg" height="42" alt="Get TermaType on the Microsoft Store" />
   </a>
   &nbsp;
   <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_aarch64.dmg">
@@ -96,11 +96,17 @@ Warm paper-like background, terracotta caret, gentle selection highlight. Focus 
 
 ### Windows
 
-**[Download TermaType for Windows](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_x64-setup.exe)**
+**[Get TermaType on the Microsoft Store](https://apps.microsoft.com/detail/9nldclht1sz4)** — recommended
+
+Installing from the Microsoft Store gives you automatic updates and no security warnings.
 
 Requires Windows 10 or later.
 
-> **Windows SmartScreen:** Because TermaType is new and not yet code-signed, Windows may show a SmartScreen warning when you run the installer. Click **"More info"** → **"Run anyway"**. The app is fully open source — you can inspect every line of code in this repository.
+#### Direct download (alternative)
+
+Prefer a standalone installer? **[Download the installer (.exe)](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_x64-setup.exe)**
+
+> **Windows SmartScreen:** The direct installer is new and not yet code-signed, so Windows may show a SmartScreen warning when you run it. Click **"More info"** → **"Run anyway"**. The app is fully open source — you can inspect every line of code in this repository. (Installing from the Microsoft Store avoids this warning.)
 
 ### macOS
 
