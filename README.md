@@ -18,7 +18,7 @@
 <!-- UPDATE THESE LINKS WHEN RELEASING A NEW VERSION -->
 <p align="center">
   <a href="https://apps.microsoft.com/detail/9nldclht1sz4">
-    <img src="https://get.microsoft.com/images/en-us%20dark.svg" height="48" alt="Get TermaType on the Microsoft Store" />
+    <img src="assets/badge-microsoft.svg" height="48" alt="Get TermaType on the Microsoft Store" />
   </a>
   &nbsp;
   <a href="https://apps.apple.com/us/app/termatype/id6776637186?mt=12">
@@ -26,7 +26,7 @@
   </a>
   &nbsp;
   <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.AppImage">
-    <img src="https://img.shields.io/badge/Download_for_Linux-000000?style=for-the-badge&logo=linux&logoColor=white" height="48" alt="Download TermaType for Linux (AppImage)" />
+    <img src="assets/badge-linux.svg" height="48" alt="Download TermaType for Linux (AppImage)" />
   </a>
 </p>
 
