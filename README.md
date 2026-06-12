@@ -21,12 +21,12 @@
     <img src="https://get.microsoft.com/images/en-us%20dark.svg" height="42" alt="Get TermaType on the Microsoft Store" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_aarch64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v2.0.0-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_aarch64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v2.0.1-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_x64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v2.0.0-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64.dmg">
+    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v2.0.1-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
   </a>
 </p>
 
@@ -104,15 +104,15 @@ Requires Windows 10 or later.
 
 #### Direct download (alternative)
 
-Prefer a standalone installer? **[Download the installer (.exe)](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_x64-setup.exe)**
+Prefer a standalone installer? **[Download the installer (.exe)](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64-setup.exe)**
 
 > **Windows SmartScreen:** The direct installer is new and not yet code-signed, so Windows may show a SmartScreen warning when you run it. Click **"More info"** → **"Run anyway"**. The app is fully open source — you can inspect every line of code in this repository. (Installing from the Microsoft Store avoids this warning.)
 
 ### macOS
 
-**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_aarch64.dmg)** — for newer Macs (2020+)
+**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_aarch64.dmg)** — for newer Macs (2020+)
 
-**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_x64.dmg)** — for older Macs
+**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64.dmg)** — for older Macs
 
 Requires macOS 10.15 (Catalina) or later.
 
@@ -120,18 +120,18 @@ Requires macOS 10.15 (Catalina) or later.
 
 ### Linux
 
-**[Download AppImage](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_amd64.AppImage)** — runs on most distributions, no installation needed
+**[Download AppImage](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.AppImage)** — runs on most distributions, no installation needed
 
 After downloading, make it executable and run:
 
 ```sh
-chmod +x TermaType_2.0.0_amd64.AppImage
-./TermaType_2.0.0_amd64.AppImage
+chmod +x TermaType_2.0.1_amd64.AppImage
+./TermaType_2.0.1_amd64.AppImage
 ```
 
 #### Package installs
 
-- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_amd64.deb)**, then `sudo apt install ./TermaType_2.0.0_amd64.deb`
+- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.deb)**, then `sudo apt install ./TermaType_2.0.1_amd64.deb`
 - **Fedora / RHEL:** grab the `.rpm` from the **[releases page](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo dnf install ./TermaType-*.rpm`
 
 > Built and tested on x86_64. The AppImage bundles its own dependencies; the `.deb` and `.rpm` pull in WebKitGTK (`libwebkit2gtk-4.1`) and GTK 3 from your distro.
