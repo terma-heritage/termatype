@@ -21,12 +21,12 @@
     <img src="https://get.microsoft.com/images/en-us%20dark.svg" height="42" alt="Get TermaType on the Microsoft Store" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_aarch64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Apple_Silicon)-v2.0.1-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Apple Silicon)" />
+  <a href="https://apps.apple.com/us/app/termatype/id6776637186?mt=12">
+    <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-mac-app-store/black/en-us" height="42" alt="Download TermaType on the Mac App Store" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64.dmg">
-    <img src="https://img.shields.io/badge/Download_for_Mac_(Intel)-v2.0.1-E8784A?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac (Intel)" />
+  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.AppImage">
+    <img src="https://img.shields.io/badge/Download_for_Linux-v2.0.1-E8784A?style=for-the-badge&logo=linux&logoColor=white" alt="Download for Linux (AppImage)" />
   </a>
 </p>
 
@@ -110,11 +110,19 @@ Prefer a standalone installer? **[Download the installer (.exe)](https://github.
 
 ### macOS
 
-**[Download for Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_aarch64.dmg)** — for newer Macs (2020+)
+**[Get TermaType on the Mac App Store](https://apps.apple.com/us/app/termatype/id6776637186?mt=12)** — recommended
 
-**[Download for Intel](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64.dmg)** — for older Macs
+Installing from the Mac App Store gives you automatic updates and the simplest setup.
 
 Requires macOS 10.15 (Catalina) or later.
+
+#### Direct download (alternative)
+
+Prefer a standalone app? Download the `.dmg` directly:
+
+**[Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_aarch64.dmg)** — for newer Macs (2020+)
+
+**[Intel](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64.dmg)** — for older Macs
 
 > TermaType is code-signed and notarized by Apple. Just open the `.dmg`, drag TermaType to your Applications folder, and launch it — no security warnings.
 
