@@ -35,7 +35,7 @@
   <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/v/release/terma-heritage/termatype?style=flat-square&color=E8784A" alt="Release" /></a>
   <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/downloads/terma-heritage/termatype/total?style=flat-square&color=E8784A" alt="Downloads" /></a>
   <a href="https://github.com/terma-heritage/termatype/commits/main"><img src="https://img.shields.io/github/last-commit/terma-heritage/termatype?style=flat-square" alt="Last Commit" /></a>
-  <img src="https://img.shields.io/badge/platform-Windows%20|%20macOS-blue?style=flat-square" alt="Platform" />
+  <img src="https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-blue?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/offline-100%25-green?style=flat-square" alt="Offline" />
 </p>
 
@@ -117,6 +117,24 @@ Prefer a standalone installer? **[Download the installer (.exe)](https://github.
 Requires macOS 10.15 (Catalina) or later.
 
 > TermaType is code-signed and notarized by Apple. Just open the `.dmg`, drag TermaType to your Applications folder, and launch it — no security warnings.
+
+### Linux
+
+**[Download AppImage](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_amd64.AppImage)** — runs on most distributions, no installation needed
+
+After downloading, make it executable and run:
+
+```sh
+chmod +x TermaType_2.0.0_amd64.AppImage
+./TermaType_2.0.0_amd64.AppImage
+```
+
+#### Package installs
+
+- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/download/v2.0.0/TermaType_2.0.0_amd64.deb)**, then `sudo apt install ./TermaType_2.0.0_amd64.deb`
+- **Fedora / RHEL:** grab the `.rpm` from the **[releases page](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo dnf install ./TermaType-*.rpm`
+
+> Built and tested on x86_64. The AppImage bundles its own dependencies; the `.deb` and `.rpm` pull in WebKitGTK (`libwebkit2gtk-4.1`) and GTK 3 from your distro.
 
 ---
 
