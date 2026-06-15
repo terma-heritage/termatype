@@ -50,6 +50,7 @@ import { createLanguageToggleExtension, type Lang } from '@/components/termatype
 import { createTibetanIMEExtension } from '@/components/termatype/tibetan-ime/tibetan-ime-extension'
 import type { TibetanInputMethod } from '@/components/termatype/tibetan-ime'
 import { getInputMethod, setInputMethod } from '@/lib/ime-prefs'
+import { WelcomeScreen } from '@/components/termatype/WelcomeScreen'
 import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindReplace'
 import { SlashCommands } from '@/components/termatype/SlashCommands'
 import { onUpdateAvailable, installUpdate, dismissUpdate, type UpdateInfo } from '@/lib/updater'
@@ -66,10 +67,12 @@ const WyliePractice = lazy(() => import('@/components/termatype/WyliePractice').
 const KeyboardShortcutsPage = lazy(() => import('@/components/termatype/KeyboardShortcutsPage').then(m => ({ default: m.KeyboardShortcutsPage })))
 const AboutPage = lazy(() => import('@/components/termatype/AboutPage').then(m => ({ default: m.AboutPage })))
 const SettingsPage = lazy(() => import('@/components/termatype/SettingsPage').then(m => ({ default: m.SettingsPage })))
+const HelpPage = lazy(() => import('@/components/termatype/HelpPage').then(m => ({ default: m.HelpPage })))
 
 type HelpTab = { id: string; label: string; labelBo: string }
 const HELP_TABS: Record<string, HelpTab> = {
   'settings': { id: 'settings', label: 'Settings', labelBo: 'སྒྲིག་འགོད།' },
+  'help': { id: 'help', label: 'Help & FAQ', labelBo: 'རོགས་རམ་དང་དྲི་བ།' },
   'wylie-practice': { id: 'wylie-practice', label: 'Typing Tibetan', labelBo: 'བོད་ཡིག་སྦྱོང་བརྡར།' },
   'wylie-reference': { id: 'wylie-reference', label: 'Wylie Reference', labelBo: 'ཝ་ལིའི་གཞུང་།' },
   'tcrc-reference': { id: 'tcrc-reference', label: 'TCRC Reference', labelBo: 'TCRC མཐེབ་གཞོང་།' },
@@ -264,11 +267,13 @@ export default function App() {
     setActiveView(v => v === tabId ? 'document' : v)
   }, [])
 
-  // First launch — just a blank page, ready to write
-  useEffect(() => {
-    if (!localStorage.getItem(FIRST_LAUNCH_KEY)) {
-      localStorage.setItem(FIRST_LAUNCH_KEY, '1')
-    }
+  // First launch — show the welcome screen until they start writing.
+  const [showWelcome, setShowWelcome] = useState(() => {
+    try { return !localStorage.getItem(FIRST_LAUNCH_KEY) } catch { return false }
+  })
+  const dismissWelcome = useCallback(() => {
+    try { localStorage.setItem(FIRST_LAUNCH_KEY, '1') } catch { /* ignore */ }
+    setShowWelcome(false)
   }, [])
 
   // Listen for app updates
@@ -403,14 +408,11 @@ export default function App() {
           onZoomReset={() => setZoom(100)}
           onDictionary={() => setDictionaryOpen(o => !o)}
           onOutline={() => setOutlineOpen(o => !o)}
-          onWylieReference={() => openHelpTab('wylie-reference')}
-          onTcrcReference={() => openHelpTab('tcrc-reference')}
           onFocusMode={() => setFocusMode((v) => !v)}
           onTypewriterMode={() => setTypewriterMode((v) => !v)}
           onReadingMode={() => setReadingMode((v) => !v)}
           readingMode={readingMode}
-          onShortcuts={() => openHelpTab('shortcuts')}
-          onWyliePractice={() => openHelpTab('wylie-practice')}
+          onHelp={() => openHelpTab('help')}
           onAbout={() => openHelpTab('about')}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
@@ -542,6 +544,15 @@ export default function App() {
                 onToggleInputMethod={toggleInputMethod}
               />
             )}
+            {activeView === 'help' && (
+              <HelpPage
+                menuLang={menuLang}
+                onPractice={() => openHelpTab('wylie-practice')}
+                onWylieReference={() => openHelpTab('wylie-reference')}
+                onTcrcReference={() => openHelpTab('tcrc-reference')}
+                onShortcuts={() => openHelpTab('shortcuts')}
+              />
+            )}
             {activeView === 'wylie-practice' && <WyliePractice menuLang={menuLang} />}
             {activeView === 'wylie-reference' && <WylieReference menuLang={menuLang} />}
             {activeView === 'tcrc-reference' && <TcrcReference menuLang={menuLang} />}
@@ -561,6 +572,16 @@ export default function App() {
         >
           {lang === 'bo' ? 'བོད་ཡིག' : 'English'}
         </div>
+      )}
+
+      {showWelcome && (
+        <WelcomeScreen
+          menuLang={menuLang}
+          onToggleMenuLang={toggleMenuLang}
+          inputMethod={inputMethod}
+          onToggleInputMethod={toggleInputMethod}
+          onDismiss={dismissWelcome}
+        />
       )}
 
       <StatusBar

@@ -80,6 +80,7 @@ export const TIBETAN_LABELS: Record<string, string> = {
   // View menu
   'Settings': 'སྒྲིག་འགོད།',
   // Help menu
+  'Help & FAQ': 'རོགས་རམ་དང་དྲི་བ།',
   'Typing Tibetan (Practice)': 'བོད་ཡིག་སྦྱོང་བརྡར།',
   'Wylie Reference': 'ཝ་ལིའི་གཞུང་།',
   'TCRC Reference': 'TCRC མཐེབ་གཞོང་།',

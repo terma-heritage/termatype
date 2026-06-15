@@ -133,12 +133,9 @@ export function MenuBar({
   onZoomReset,
   onDictionary,
   onOutline,
-  onWylieReference,
   onFocusMode,
   onTypewriterMode,
-  onShortcuts,
-  onWyliePractice,
-  onTcrcReference,
+  onHelp,
   onAbout,
   focusMode,
   typewriterMode,
@@ -162,12 +159,9 @@ export function MenuBar({
   onZoomReset: () => void
   onDictionary: () => void
   onOutline: () => void
-  onWylieReference: () => void
   onFocusMode: () => void
   onTypewriterMode: () => void
-  onShortcuts: () => void
-  onWyliePractice: () => void
-  onTcrcReference: () => void
+  onHelp: () => void
   onAbout: () => void
   focusMode: boolean
   typewriterMode: boolean
@@ -442,10 +436,7 @@ export function MenuBar({
     {
       label: t('Help'),
       items: [
-        { label: t('Typing Tibetan (Practice)'), action: onWyliePractice },
-        { label: t('Wylie Reference'), action: onWylieReference },
-        { label: t('TCRC Reference'), action: onTcrcReference },
-        { label: t('Keyboard Shortcuts'), shortcut: 'Ctrl+/', action: onShortcuts },
+        { label: t('Help & FAQ'), action: onHelp },
         { separator: true },
         { label: t('About TermaType'), action: onAbout },
       ],
@@ -453,7 +444,7 @@ export function MenuBar({
   ], [t, editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
       onNew, onOpen, onOpenRecent, onSave, onSaveAs, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
-      onDictionary, onOutline, onWylieReference, onTcrcReference, onShortcuts, onWyliePractice, onAbout])
+      onDictionary, onOutline, onHelp, onAbout])
 
   return (
     <div className={`menubar${menuLang === 'bo' ? ' menubar-tibetan' : ''}`}>
