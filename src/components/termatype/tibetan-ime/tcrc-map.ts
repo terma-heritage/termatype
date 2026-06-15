@@ -64,8 +64,8 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
   s: { out: 'ས', kind: 'consonant', label: 'sa' },
   h: { out: 'ཧ', kind: 'consonant', label: 'ha' },
   y: { out: 'ཡ', kind: 'consonant', label: 'ya' },
-  q: { out: 'ཊ', kind: 'consonant', label: 'Ta (retroflex)', verify: true },
-  v: { out: 'ཌ', kind: 'consonant', label: 'Da (retroflex)', verify: true },
+  q: { out: 'ཊ', kind: 'consonant', label: 'Ta (retroflex)' },
+  v: { out: 'ཌ', kind: 'consonant', label: 'Da (retroflex)' },
 
   // ── Consonants (shifted / Sanskrit) ────────────────────────────────────
   K: { out: 'ཁ', kind: 'consonant', label: 'kha' },
@@ -78,25 +78,27 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
   Z: { out: 'ཞ', kind: 'consonant', label: 'zha' },
   S: { out: 'ཤ', kind: 'consonant', label: 'sha' },
   A: { out: 'ཨ', kind: 'consonant', label: 'a (achen)' },
-  Q: { out: 'ཋ', kind: 'consonant', label: 'Tha (retroflex)', verify: true },
-  V: { out: 'ཎ', kind: 'consonant', label: 'Na (retroflex)', verify: true },
-  M: { out: 'ཥ', kind: 'consonant', label: 'Sha (retroflex)', verify: true },
-  G: { out: 'གྷ', kind: 'consonant', label: 'gha', verify: true },
-  B: { out: 'བྷ', kind: 'consonant', label: 'bha', verify: true },
-  F: { out: 'དྷ', kind: 'consonant', label: 'dha', verify: true },
-  J: { out: 'ཛྷ', kind: 'consonant', label: 'dzha', verify: true },
-  H: { out: 'ྷ', kind: 'subjoined', label: 'Link-ha (subjoined ha)', verify: true },
-  W: { out: 'ྺ', kind: 'subjoined', label: 'Wasur (subjoined wa)', verify: true },
+  Q: { out: 'ཋ', kind: 'consonant', label: 'Tha (retroflex)' },
+  V: { out: 'ཎ', kind: 'consonant', label: 'Na (retroflex)' },
+  M: { out: 'ཥ', kind: 'consonant', label: 'Sha (retroflex)' },
+  // Sanskrit aspirates: precomposed letters (U+0F43/0F52/0F5C/0F57), matching
+  // the TCRC reference implementation rather than base+subjoined-ha digraphs.
+  G: { out: 'གྷ', kind: 'consonant', label: 'gha' },
+  B: { out: 'བྷ', kind: 'consonant', label: 'bha' },
+  F: { out: 'དྷ', kind: 'consonant', label: 'dha' },
+  J: { out: 'ཛྷ', kind: 'consonant', label: 'dzha' },
+  H: { out: 'ྷ', kind: 'subjoined', label: 'Link-ha (subjoined ha)' },
+  W: { out: 'ྭ', kind: 'subjoined', label: 'Wasur (subjoined wa)' },
 
   // ── Vowels ─────────────────────────────────────────────────────────────
   i: { out: 'ི', kind: 'vowel', label: 'i' },
   u: { out: 'ུ', kind: 'vowel', label: 'u' },
   e: { out: 'ེ', kind: 'vowel', label: 'e' },
   o: { out: 'ོ', kind: 'vowel', label: 'o' },
-  I: { out: 'ྀ', kind: 'vowel', label: 'reverse i (I)', verify: true },
-  U: { out: 'ཱུ', kind: 'vowel', label: 'long u (U)', verify: true },
-  E: { out: 'ཻ', kind: 'vowel', label: 'ai (E)', verify: true },
-  O: { out: 'ཽ', kind: 'vowel', label: 'au (O)', verify: true },
+  I: { out: 'ྀ', kind: 'vowel', label: 'reverse i (I)' },
+  U: { out: 'ཱུ', kind: 'vowel', label: 'long u (U)' },
+  E: { out: 'ཻ', kind: 'vowel', label: 'ai (E)' },
+  O: { out: 'ཽ', kind: 'vowel', label: 'au (O)' },
 
   // ── Stacking helpers ───────────────────────────────────────────────────
   a: { out: '', kind: 'halant', label: 'Link (halant — subjoins next)' },
@@ -110,7 +112,7 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
 
   // ── a-chung / long-a (per chart example: b k ' = བཀའ) ───────────────────
   "'": { out: 'འ', kind: 'consonant', label: 'a-chung (achung)' },
-  '"': { out: 'ཱ', kind: 'vowel', label: 'aa (long a)', verify: true },
+  '"': { out: 'ཱ', kind: 'vowel', label: 'aa (long a)' },
 
   // ── Digits ─────────────────────────────────────────────────────────────
   '1': { out: '༡', kind: 'digit', label: '1' },
@@ -126,8 +128,9 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
 
   // ── Punctuation & marks (VERIFY — rarer chart reads) ───────────────────
   '/': { out: '།', kind: 'mark', label: 'shad' },
-  '`': { out: '༌', kind: 'mark', label: 'Tsheg-2 (non-breaking)', verify: true },
-  '!': { out: '༑', kind: 'mark', label: 'Pung-shad', verify: true },
+  '`': { out: '༌', kind: 'mark', label: 'Tsheg-2 (non-breaking)' },
+  '~': { out: '༸', kind: 'mark', label: 'Chengo (che mgo / honorific)' },
+  '!': { out: '༑', kind: 'mark', label: 'Pung-shad' },
   '@': { out: '༄', kind: 'mark', label: 'Yiggo (yig mgo)', verify: true },
   '#': { out: '༄༅', kind: 'mark', label: 'Yigo full', verify: true },
   '^': { out: '྾', kind: 'mark', label: 'kur-tag', verify: true },
@@ -135,7 +138,7 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
   '*': { out: '༽', kind: 'mark', label: 'R-brace' },
   '+': { out: 'ཾ', kind: 'mark', label: 'anusvara', verify: true },
   '=': { out: 'ྂ', kind: 'mark', label: 'C-bindu (candrabindu)', verify: true },
-  '\\': { out: '༔', kind: 'mark', label: 'Namshad', verify: true },
+  '\\': { out: '༔', kind: 'mark', label: 'Namshad (gter tsheg)' },
   '|': { out: '༈', kind: 'mark', label: 'drul-shad', verify: true },
-  ';': { out: 'ཌྷ', kind: 'consonant', label: 'Dha (retroflex)', verify: true },
+  ';': { out: 'ཌྷ', kind: 'consonant', label: 'Dha (retroflex DDHA)' },
 }
