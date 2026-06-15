@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { type Editor } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
 import { invoke } from '@/lib/safe-invoke'
-import { TIBETAN_LABELS } from './MenuBar'
+import { TIBETAN_LABELS } from './tibetan-labels'
 import { type DictResult, isTibetan } from '@/lib/dictionary-types'
 const MAX_RESULTS = 3
 const DEBOUNCE_MS = 150

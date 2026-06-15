@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Editor } from '@tiptap/react'
 import { countWords } from '@/lib/word-count'
-import { TIBETAN_LABELS } from './MenuBar'
+import { TIBETAN_LABELS } from './tibetan-labels'
 
 export function StatusBar({
   editor,
@@ -21,11 +21,20 @@ export function StatusBar({
   menuLang?: 'en' | 'bo'
 }) {
   const t = useCallback((label: string) => menuLang === 'bo' ? (TIBETAN_LABELS[label] || label) : label, [menuLang])
+
+  // Current time as state (kept out of render to stay pure), refreshed on a slow
+  // tick so "saved Ns ago" stays roughly current.
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 15000)
+    return () => window.clearInterval(id)
+  }, [])
+
   const getSaveStatus = () => {
     if (autoSaveError) return menuLang === 'bo' ? 'ཉར་ཚགས་མི་ཐུབ།' : 'Save failed'
     if (isDirty) return t('Modified')
     if (lastSaved) {
-      const seconds = Math.floor((Date.now() - lastSaved.getTime()) / 1000)
+      const seconds = Math.floor((now - lastSaved.getTime()) / 1000)
       if (seconds < 5) return menuLang === 'bo' ? 'ད་ལྟ་ཉར་ཚགས།' : 'Saved just now'
       if (seconds < 60) return menuLang === 'bo' ? `${seconds} སྐར་ཆ་སྔོན་ཉར།` : `Saved ${seconds}s ago`
       return menuLang === 'bo' ? `${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ལ་ཉར།` : `Saved at ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`

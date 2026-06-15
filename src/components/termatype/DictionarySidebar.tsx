@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { invoke } from '@/lib/safe-invoke'
-import { TIBETAN_LABELS } from './MenuBar'
+import { TIBETAN_LABELS } from './tibetan-labels'
 import type { Editor } from '@tiptap/react'
 import { type DictResult, isTibetan } from '@/lib/dictionary-types'
 

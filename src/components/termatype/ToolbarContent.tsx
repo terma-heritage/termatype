@@ -1,9 +1,17 @@
+import { useState } from 'react'
 import {
   ToolbarGroup,
   ToolbarSeparator,
 } from '@/components/tiptap-ui-primitive/toolbar'
 import { Button } from '@/components/tiptap-ui-primitive/button'
 import { Spacer } from '@/components/tiptap-ui-primitive/spacer'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuGroup,
+} from '@/components/tiptap-ui-primitive/dropdown-menu'
 
 import { HeadingDropdownMenu } from '@/components/tiptap-ui/heading-dropdown-menu'
 import { ImageUploadButton } from '@/components/tiptap-ui/image-upload-button'
@@ -32,6 +40,30 @@ import { LinkIcon } from '@/components/tiptap-icons/link-icon'
 
 import { ThemeToggle } from '@/components/tiptap-templates/simple/theme-toggle'
 import { FormatPainterButton } from '@/components/termatype/FormatPainter'
+
+function MoreFormatDropdown() {
+  const [open, setOpen] = useState(false)
+  return (
+    <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button type="button" variant="ghost" aria-label="More formatting" tooltip="More">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="2" />
+            <circle cx="12" cy="12" r="2" />
+            <circle cx="19" cy="12" r="2" />
+          </svg>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" usePortal={false}>
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild><MarkButton type="strike" /></DropdownMenuItem>
+          <DropdownMenuItem asChild><MarkButton type="code" /></DropdownMenuItem>
+          <DropdownMenuItem asChild><FormatPainterButton /></DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
 
 export function MainToolbarContent({
   onHighlighterClick,
@@ -67,8 +99,6 @@ export function MainToolbarContent({
       <ToolbarGroup>
         <MarkButton type="bold" />
         <MarkButton type="italic" />
-        <MarkButton type="strike" />
-        <MarkButton type="code" />
         <MarkButton type="underline" />
         {!isMobile ? (
           <ColorHighlightPopover />
@@ -77,7 +107,7 @@ export function MainToolbarContent({
         )}
         <TextColorPopover />
         {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
-        <FormatPainterButton />
+        <MoreFormatDropdown />
       </ToolbarGroup>
 
       <ToolbarSeparator />
