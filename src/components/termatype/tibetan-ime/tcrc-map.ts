@@ -105,10 +105,10 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
   ',': { out: 'ྱ', kind: 'subjoined', label: 'Yatag (subjoined ya)' },
   '.': { out: 'ྲ', kind: 'subjoined', label: 'Ratag (subjoined ra)' },
   '<': { out: 'ླ', kind: 'subjoined', label: 'Latag (subjoined la)' },
-  R: { out: 'ར', kind: 'super', label: 'Rago (ra head)', verify: true },
-  L: { out: 'ལ', kind: 'super', label: 'Lago (la head)', verify: true },
-  '>': { out: 'ར', kind: 'super', label: 'Rago (ra head)', verify: true },
-  '?': { out: 'ས', kind: 'super', label: 'Sago (sa head)', verify: true },
+  R: { out: 'ར', kind: 'super', label: 'Rago (ra head)' },
+  L: { out: 'ལ', kind: 'super', label: 'Lago (la head)' },
+  '>': { out: 'ར', kind: 'super', label: 'Rago (ra head)' },
+  '?': { out: 'ས', kind: 'super', label: 'Sago (sa head)' },
 
   // ── a-chung / long-a (per chart example: b k ' = བཀའ) ───────────────────
   "'": { out: 'འ', kind: 'consonant', label: 'a-chung (achung)' },
@@ -126,19 +126,19 @@ export const TCRC_KEYMAP: Record<string, TcrcKey> = {
   '9': { out: '༩', kind: 'digit', label: '9' },
   '0': { out: '༠', kind: 'digit', label: '0' },
 
-  // ── Punctuation & marks (VERIFY — rarer chart reads) ───────────────────
+  // ── Punctuation & marks (confirmed against the official TCRC chart) ─────
   '/': { out: '།', kind: 'mark', label: 'shad' },
   '`': { out: '༌', kind: 'mark', label: 'Tsheg-2 (non-breaking)' },
   '~': { out: '༸', kind: 'mark', label: 'Chengo (che mgo / honorific)' },
   '!': { out: '༑', kind: 'mark', label: 'Pung-shad' },
-  '@': { out: '༄', kind: 'mark', label: 'Yiggo (yig mgo)', verify: true },
-  '#': { out: '༄༅', kind: 'mark', label: 'Yigo full', verify: true },
-  '^': { out: '྾', kind: 'mark', label: 'kur-tag', verify: true },
+  '@': { out: '༄', kind: 'mark', label: 'Yiggo (yig mgo)' },
+  '#': { out: '༄༅', kind: 'mark', label: 'Yigo full' },
+  '^': { out: '྾', kind: 'mark', label: 'kur-tag' },
   '&': { out: '༼', kind: 'mark', label: 'L-brace' },
   '*': { out: '༽', kind: 'mark', label: 'R-brace' },
-  '+': { out: 'ཾ', kind: 'mark', label: 'anusvara', verify: true },
-  '=': { out: 'ྂ', kind: 'mark', label: 'C-bindu (candrabindu)', verify: true },
+  '+': { out: 'ཾ', kind: 'mark', label: 'anusvara' },
+  '=': { out: 'ྂ', kind: 'mark', label: 'C-bindu (candrabindu)' },
   '\\': { out: '༔', kind: 'mark', label: 'Namshad (gter tsheg)' },
-  '|': { out: '༈', kind: 'mark', label: 'drul-shad', verify: true },
+  '|': { out: '༈', kind: 'mark', label: 'drul-shad' },
   ';': { out: 'ཌྷ', kind: 'consonant', label: 'Dha (retroflex DDHA)' },
 }
