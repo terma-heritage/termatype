@@ -21,12 +21,11 @@ jobs:
           - platform: windows-latest
             args: ""
             target: ""
+          # One universal binary (Apple Silicon + Intel) — runs natively on both,
+          # no Rosetta and no "Intel app support ending" warning.
           - platform: macos-latest
-            args: "--target aarch64-apple-darwin"
-            target: "aarch64-apple-darwin"
-          - platform: macos-latest
-            args: "--target x86_64-apple-darwin"
-            target: "x86_64-apple-darwin"
+            args: "--target universal-apple-darwin"
+            target: "aarch64-apple-darwin,x86_64-apple-darwin"
           # ubuntu-22.04 (not -latest) for a lower glibc baseline, so the
           # AppImage runs on older distros, not just the newest Ubuntu.
           - platform: ubuntu-22.04
