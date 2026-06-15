@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-Write-Host "Building Tauri app (no bundle — MSIX is packaged separately)..." -ForegroundColor Cyan
+Write-Host "Building Tauri app (no bundle, MSIX packaged separately)..." -ForegroundColor Cyan
 npm run tauri -- build --no-bundle
 
 $releaseDir = "src-tauri\target\release"
@@ -26,7 +26,7 @@ if (Test-Path ".\devcert.pfx") {
     Write-Host "No devcert.pfx found. For local testing, generate one with:" -ForegroundColor Yellow
     Write-Host "  winapp cert generate --if-exists skip" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "For Microsoft Store submission, no signing needed — just run:" -ForegroundColor Yellow
+    Write-Host "For Microsoft Store submission, no signing needed - just run:" -ForegroundColor Yellow
     Write-Host "  winapp pack $distDir" -ForegroundColor Yellow
     winapp pack $distDir
 }

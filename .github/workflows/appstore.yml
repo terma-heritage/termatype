@@ -131,6 +131,10 @@ jobs:
 
           cp src-tauri/TermaType_Mac_App_Store.provisionprofile "$APP/Contents/embedded.provisionprofile"
 
+          # Version from package.json (single source of truth) so it never goes stale.
+          VERSION=$(node -p "require('./package.json').version")
+          echo "App Store build version: $VERSION"
+
           # Info.plist with LSApplicationCategoryType
           /usr/libexec/PlistBuddy -c "Add :CFBundleDevelopmentRegion string en" "$APP/Contents/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string ${APP_NAME}" "$APP/Contents/Info.plist"
@@ -140,8 +144,8 @@ jobs:
           /usr/libexec/PlistBuddy -c "Add :CFBundleInfoDictionaryVersion string 6.0" "$APP/Contents/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :CFBundleName string ${APP_NAME}" "$APP/Contents/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :CFBundlePackageType string APPL" "$APP/Contents/Info.plist"
-          /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 2.0.0" "$APP/Contents/Info.plist"
-          /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string 2.0.0" "$APP/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string $VERSION" "$APP/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $VERSION" "$APP/Contents/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string 10.15" "$APP/Contents/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :LSApplicationCategoryType string public.app-category.productivity" "$APP/Contents/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :NSHighResolutionCapable bool true" "$APP/Contents/Info.plist"
