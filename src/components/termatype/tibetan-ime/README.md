@@ -1,13 +1,25 @@
-# Tibetan Wylie IME
+# Tibetan IME (Wylie + TCRC)
 
-Wylie / EWTS input for the TermaType editor. Self-contained and portable — the
-conversion core has no framework dependencies, so this folder can be copied into
-other projects with minimal changes.
+Tibetan input for the TermaType editor, with **two interchangeable methods** the
+user toggles between:
+
+- **Wylie / EWTS** — transliteration; preferred by Western scholars.
+- **TCRC (Bodyig)** — the positional keyboard standard used by the CTA / Tibetan
+  exile community.
+
+Self-contained and portable — the engines have no framework dependencies (only
+the TipTap binding does), so this folder can be copied into other projects.
 
 ## What it does
 
-Lets the user type Tibetan with a normal keyboard using the **Extended Wylie
-Transliteration Scheme (EWTS)** — e.g. `bskyod` → `བསྐྱོད`, `hU~M` → `ཧཱུྃ`.
+- **Wylie:** type with a normal keyboard using the **Extended Wylie
+  Transliteration Scheme (EWTS)** — e.g. `bskyod` → `བསྐྱོད`, `hU~M` → `ཧཱུྃ`.
+- **TCRC:** a fixed key→glyph layout (e.g. `k`→ཀ, `f`→ང) with a halant dead-key
+  (`a`) that subjoins the next consonant — e.g. `b s a k a y o d` → `བསྐྱོད`.
+
+Both engines implement the same `InputEngine` contract
+(`feed/flush/reset/backspace → {committed, buffer, consumed}`), so the editor
+binding swaps between them via a `getInputMethod()` getter.
 
 ## Library
 
@@ -24,12 +36,26 @@ the reference library fixes whole classes of input at once.
 
 | File | Role | Framework-coupled? |
 |------|------|--------------------|
-| `ewts.ts` | Shared converter singleton + `wylieToUnicode()`. The single source of truth. | No |
-| `wylie-engine.ts` | `WylieEngine` — stateful per-keystroke adapter (buffer + commit timing). | No |
-| `tibetan-marks.ts` | Data for the special-character palette (honorific / terma / auspicious marks EWTS can't type). | No |
-| `tibetan-ime-extension.ts` | TipTap/ProseMirror plugin that wires the engine into the editor. | **Yes (TipTap)** |
-| `tibetan-ewts-converter.d.ts` | Type shim for the untyped package. | No |
+| `input-engine.ts` | The shared `InputEngine` contract + `TibetanInputMethod` type. | No |
+| `ewts.ts` | Shared Wylie converter singleton + `wylieToUnicode()`. | No |
+| `wylie-engine.ts` | `WylieEngine` — Wylie IME adapter (buffer + commit timing). | No |
+| `tcrc-map.ts` | The TCRC Bodyig keymap (key→glyph), transcribed from the official chart. | No |
+| `tcrc-engine.ts` | `TcrcEngine` — positional engine (halant dead-key, tsheg/shad rules). | No |
+| `tibetan-marks.ts` | Data for the special-character palette (honorific / terma / auspicious marks). | No |
+| `tibetan-ime-extension.ts` | TipTap/ProseMirror plugin; picks the engine via `getInputMethod()`. | **Yes (TipTap)** |
+| `tibetan-ewts-converter.d.ts` | Type shim for the untyped Wylie package. | No |
 | `index.ts` | Public barrel export. | — |
+
+## TCRC keymap status
+
+`tcrc-map.ts` is transcribed from TCRC's official chart. The core (consonants,
+vowels, halant, yatag/ratag, tsheg, shad, digits) is verified against the
+chart's worked examples (`kya`, `bka'`, `bskyod`). Entries flagged `verify: true`
+(some Sanskrit aspirates and rarer marks) are best-effort reads that should be
+confirmed on a real TCRC keyboard — each is a one-line data fix.
+
+Phase 2 (not yet built): a TCRC on-screen keyboard view, and the polished
+method-switching UX. Today the on-screen keyboard always shows the Wylie layout.
 
 ## Public API
 

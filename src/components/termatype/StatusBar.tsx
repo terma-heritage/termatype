@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Editor } from '@tiptap/react'
 import { countWords } from '@/lib/word-count'
 import { TIBETAN_LABELS } from './MenuBar'
-import type { Lang } from '@/components/termatype/LanguageToggle'
 
 export function StatusBar({
   editor,
@@ -11,8 +10,6 @@ export function StatusBar({
   lastSaved,
   autoSaveError,
   zoom,
-  lang,
-  onToggleLang,
   menuLang = 'en',
 }: {
   editor: Editor | null
@@ -21,8 +18,6 @@ export function StatusBar({
   lastSaved: Date | null
   autoSaveError: string | null
   zoom: number
-  lang: Lang
-  onToggleLang: () => void
   menuLang?: 'en' | 'bo'
 }) {
   const t = useCallback((label: string) => menuLang === 'bo' ? (TIBETAN_LABELS[label] || label) : label, [menuLang])
@@ -112,8 +107,6 @@ export function StatusBar({
       )}
       <span className="status-separator">|</span>
       <span className="status-count">{zoom}%</span>
-      <span className="status-separator">|</span>
-      <button className="status-lang" onClick={onToggleLang} title="Click to switch language">{lang === 'bo' ? 'བོད' : 'EN'}</button>
       <span className="status-separator">|</span>
       <span className="status-privacy" title="100% private — all processing happens on your device">🔒 {t('Local')}</span>
     </div>

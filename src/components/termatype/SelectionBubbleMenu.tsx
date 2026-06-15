@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { type Editor } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
 import { MarkButton } from '@/components/tiptap-ui/mark-button'
@@ -9,56 +8,7 @@ import { TextColorPopover } from '@/components/tiptap-ui/text-color-popover'
 import {
   LinkPopover,
 } from '@/components/tiptap-ui/link-popover'
-import {
-  TextAlignButton,
-  type TextAlign,
-  textAlignIcons,
-  isTextAlignActive,
-} from '@/components/tiptap-ui/text-align-button'
-import { ChevronDownIcon } from '@/components/tiptap-icons/chevron-down-icon'
-import { Button } from '@/components/tiptap-ui-primitive/button'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuGroup,
-} from '@/components/tiptap-ui-primitive/dropdown-menu'
-
-const ALIGNS: TextAlign[] = ['left', 'center', 'right', 'justify']
-
-function AlignDropdown({ editor }: { editor: Editor }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const active = ALIGNS.find((a) => isTextAlignActive(editor, a)) || 'left'
-  const Icon = textAlignIcons[active]
-
-  return (
-    <DropdownMenu modal={false} open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          role="button"
-          tabIndex={-1}
-          aria-label="Text alignment"
-          tooltip="Alignment"
-        >
-          <Icon className="tiptap-button-icon" />
-          <ChevronDownIcon className="tiptap-button-dropdown-small" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" usePortal={false}>
-        <DropdownMenuGroup>
-          {ALIGNS.map((align) => (
-            <DropdownMenuItem key={align} asChild>
-              <TextAlignButton align={align} editor={editor} />
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+import { TextAlignDropdown } from '@/components/termatype/TextAlignDropdown'
 
 export function SelectionBubbleMenu({ editor }: { editor: Editor }) {
   return (
@@ -98,7 +48,7 @@ export function SelectionBubbleMenu({ editor }: { editor: Editor }) {
         <ColorHighlightPopover usePortal={false} />
         <LinkPopover usePortal={false} />
         <span className="bubble-sep" />
-        <AlignDropdown editor={editor} />
+        <TextAlignDropdown editor={editor} />
       </div>
     </BubbleMenu>
   )

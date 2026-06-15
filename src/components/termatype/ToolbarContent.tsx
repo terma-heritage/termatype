@@ -20,7 +20,7 @@ import {
   LinkButton,
 } from '@/components/tiptap-ui/link-popover'
 import { MarkButton } from '@/components/tiptap-ui/mark-button'
-import { TextAlignButton } from '@/components/tiptap-ui/text-align-button'
+import { TextAlignDropdown } from '@/components/termatype/TextAlignDropdown'
 import { UndoRedoButton } from '@/components/tiptap-ui/undo-redo-button'
 import { FontSizeDropdown } from '@/components/tiptap-ui/font-size-dropdown'
 import { FontFamilyDropdown } from '@/components/tiptap-ui/font-family-dropdown'
@@ -83,10 +83,7 @@ export function MainToolbarContent({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <TextAlignButton align="left" />
-        <TextAlignButton align="center" />
-        <TextAlignButton align="right" />
-        <TextAlignButton align="justify" />
+        <TextAlignDropdown />
       </ToolbarGroup>
 
       <ToolbarSeparator />

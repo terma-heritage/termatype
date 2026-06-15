@@ -46,9 +46,10 @@ import { MenuBar } from '@/components/termatype/MenuBar'
 import { SelectionBubbleMenu } from '@/components/termatype/SelectionBubbleMenu'
 import { TableBubbleMenu, TableContextMenu } from '@/components/termatype/TableBubbleMenu'
 import { ImageBubbleMenu } from '@/components/termatype/ImageBubbleMenu'
-import { EwtsKeyboard } from '@/components/termatype/EwtsKeyboard'
 import { createLanguageToggleExtension, type Lang } from '@/components/termatype/LanguageToggle'
 import { createTibetanIMEExtension } from '@/components/termatype/tibetan-ime/tibetan-ime-extension'
+import type { TibetanInputMethod } from '@/components/termatype/tibetan-ime'
+import { getInputMethod, setInputMethod } from '@/lib/ime-prefs'
 import { FindReplace, FindReplaceExtension } from '@/components/termatype/FindReplace'
 import { SlashCommands } from '@/components/termatype/SlashCommands'
 import { onUpdateAvailable, installUpdate, dismissUpdate, type UpdateInfo } from '@/lib/updater'
@@ -59,15 +60,19 @@ import { MainToolbarContent, MobileToolbarContent } from '@/components/termatype
 
 const DictionarySidebar = lazy(() => import('@/components/termatype/DictionarySidebar').then(m => ({ default: m.DictionarySidebar })))
 const WylieReference = lazy(() => import('@/components/termatype/WylieReference').then(m => ({ default: m.WylieReference })))
+const TcrcReference = lazy(() => import('@/components/termatype/TcrcReference').then(m => ({ default: m.TcrcReference })))
 const DocumentOutline = lazy(() => import('@/components/termatype/DocumentOutline').then(m => ({ default: m.DocumentOutline })))
 const WyliePractice = lazy(() => import('@/components/termatype/WyliePractice').then(m => ({ default: m.WyliePractice })))
 const KeyboardShortcutsPage = lazy(() => import('@/components/termatype/KeyboardShortcutsPage').then(m => ({ default: m.KeyboardShortcutsPage })))
 const AboutPage = lazy(() => import('@/components/termatype/AboutPage').then(m => ({ default: m.AboutPage })))
+const SettingsPage = lazy(() => import('@/components/termatype/SettingsPage').then(m => ({ default: m.SettingsPage })))
 
 type HelpTab = { id: string; label: string; labelBo: string }
 const HELP_TABS: Record<string, HelpTab> = {
+  'settings': { id: 'settings', label: 'Settings', labelBo: 'སྒྲིག་འགོད།' },
   'wylie-practice': { id: 'wylie-practice', label: 'Typing Tibetan', labelBo: 'བོད་ཡིག་སྦྱོང་བརྡར།' },
   'wylie-reference': { id: 'wylie-reference', label: 'Wylie Reference', labelBo: 'ཝ་ལིའི་གཞུང་།' },
+  'tcrc-reference': { id: 'tcrc-reference', label: 'TCRC Reference', labelBo: 'TCRC མཐེབ་གཞོང་།' },
   'shortcuts': { id: 'shortcuts', label: 'Keyboard Shortcuts', labelBo: 'མཐེབ་གནོན།' },
   'about': { id: 'about', label: 'About TermaType', labelBo: 'གཏེར་མ་ཡིག་སྦྱོར་སྐོར།' },
 }
@@ -102,7 +107,6 @@ export default function App() {
   const [outlineOpen, setOutlineOpen] = useState(false)
   const [zoom, setZoom] = useState(100)
   const [lang, setLang] = useState<Lang>('en')
-  const [showKeyboard, setShowKeyboard] = useState(true)
   const [focusMode, setFocusMode] = useState(false)
   const [typewriterMode, setTypewriterMode] = useState(false)
   const [readingMode, setReadingMode] = useState(false)
@@ -116,14 +120,30 @@ export default function App() {
 
   const langRef = useRef(lang)
   langRef.current = lang
+  // Brief HUD shown when the typing language switches (keyed to restart the anim).
+  const [langHud, setLangHud] = useState<{ id: number } | null>(null)
+  const langHudId = useRef(0)
   const toggleLang = useCallback(() => {
     const next = langRef.current === 'en' ? 'bo' : 'en'
     langRef.current = next
     setLang(next)
-    if (next === 'bo') setShowKeyboard(true)
+    langHudId.current += 1
+    setLangHud({ id: langHudId.current })
   }, [])
+
+  // Tibetan input method (Wylie vs TCRC), remembered across sessions.
+  const [inputMethod, setInputMethodState] = useState<TibetanInputMethod>(() => getInputMethod())
+  const inputMethodRef = useRef(inputMethod)
+  inputMethodRef.current = inputMethod
+  const toggleInputMethod = useCallback(() => {
+    const next: TibetanInputMethod = inputMethodRef.current === 'wylie' ? 'tcrc' : 'wylie'
+    inputMethodRef.current = next
+    setInputMethodState(next)
+    setInputMethod(next)
+  }, [])
+
   const [languageToggleExt] = useState(() => createLanguageToggleExtension(toggleLang, () => langRef.current))
-  const [tibetanIMEExt] = useState(() => createTibetanIMEExtension(() => langRef.current, toggleLang))
+  const [tibetanIMEExt] = useState(() => createTibetanIMEExtension(() => langRef.current, () => inputMethodRef.current))
 
   // Update window title when toolbar language changes (typing language stays independent)
   useEffect(() => {
@@ -182,8 +202,8 @@ export default function App() {
         placeholder: ({ node }) => {
           if (node.type.name === 'heading') return `Heading ${node.attrs.level}`
           return langRef.current === 'bo'
-            ? "བོད་ཡིག འབྲི། Ctrl+Space ལ་བརྡ་དེ་དབྱིན་ཡིག"
-            : "Type here, Ctrl+Space for བོད་ཡིག..."
+            ? "བོད་ཡིག་འབྲི། Ctrl+Space ལ་དབྱིན་བོད་བརྗེ། ཝ་ལི/TCRC ནི་སྒྲིག་འགོད་ ⚙ (གཡས་སྟེང་) ནས་བརྗེ།"
+            : "Type here · Ctrl+Space for བོད་ཡིག · choose Wylie or TCRC in Settings ⚙ (top-right)"
         },
       }),
       Table.configure({ resizable: true, handleWidth: 5, cellMinWidth: 50 }),
@@ -384,6 +404,7 @@ export default function App() {
           onDictionary={() => setDictionaryOpen(o => !o)}
           onOutline={() => setOutlineOpen(o => !o)}
           onWylieReference={() => openHelpTab('wylie-reference')}
+          onTcrcReference={() => openHelpTab('tcrc-reference')}
           onFocusMode={() => setFocusMode((v) => !v)}
           onTypewriterMode={() => setTypewriterMode((v) => !v)}
           onReadingMode={() => setReadingMode((v) => !v)}
@@ -394,7 +415,7 @@ export default function App() {
           focusMode={focusMode}
           typewriterMode={typewriterMode}
           menuLang={menuLang}
-          onToggleMenuLang={toggleMenuLang}
+          onOpenSettings={() => openHelpTab('settings')}
         />
         </nav>
 
@@ -448,6 +469,22 @@ export default function App() {
             </aside>
           )}
           <div className="simple-editor-wrapper" style={{ position: 'relative' }}>
+            <button
+              type="button"
+              className={`typing-mode-chip ${lang === 'bo' ? 'is-bo' : 'is-en'}`}
+              onClick={toggleLang}
+              title="Typing language — click or press Ctrl+Space to switch"
+            >
+              <span className="typing-mode-dot" />
+              {lang === 'bo' ? (
+                <>
+                  བོད་ཡིག
+                  <span className="typing-mode-method">· {inputMethod === 'tcrc' ? 'TCRC' : 'Wylie'}</span>
+                </>
+              ) : (
+                'English'
+              )}
+            </button>
             {showFindReplace && editor && (
               <FindReplace editor={editor} onClose={() => setShowFindReplace(false)} />
             )}
@@ -497,8 +534,17 @@ export default function App() {
       {activeView !== 'document' && (
         <div className="help-tab-content">
           <Suspense fallback={<div style={{ padding: '2rem', opacity: 0.5 }}>Loading...</div>}>
+            {activeView === 'settings' && (
+              <SettingsPage
+                menuLang={menuLang}
+                onToggleMenuLang={toggleMenuLang}
+                inputMethod={inputMethod}
+                onToggleInputMethod={toggleInputMethod}
+              />
+            )}
             {activeView === 'wylie-practice' && <WyliePractice menuLang={menuLang} />}
             {activeView === 'wylie-reference' && <WylieReference menuLang={menuLang} />}
+            {activeView === 'tcrc-reference' && <TcrcReference menuLang={menuLang} />}
             {activeView === 'shortcuts' && <KeyboardShortcutsPage menuLang={menuLang} />}
             {activeView === 'about' && <AboutPage menuLang={menuLang} />}
           </Suspense>
@@ -507,27 +553,14 @@ export default function App() {
 
       </EditorContext.Provider>
 
-      {!outlineOpen && (
-        <button type="button" className="outline-fab" onClick={() => setOutlineOpen(true)} aria-label="Open document outline" title="Document Outline">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="15" y2="12" />
-            <line x1="3" y1="18" x2="18" y2="18" />
-          </svg>
-        </button>
-      )}
-
-      {!dictionaryOpen && (
-        <button type="button" className="side-panel-fab" onClick={() => setDictionaryOpen(true)} aria-label="Open dictionary" title="Dictionary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-          </svg>
-        </button>
-      )}
-
-      {lang === 'bo' && showKeyboard && (
-        <EwtsKeyboard editor={editor} onClose={() => setShowKeyboard(false)} />
+      {langHud && (
+        <div
+          key={langHud.id}
+          className="lang-hud"
+          onAnimationEnd={() => setLangHud(null)}
+        >
+          {lang === 'bo' ? 'བོད་ཡིག' : 'English'}
+        </div>
       )}
 
       <StatusBar
@@ -540,8 +573,6 @@ export default function App() {
         lastSaved={activeDocTab?.lastSaved ?? null}
         autoSaveError={activeDocTab?.autoSaveError ?? null}
         zoom={zoom}
-        lang={lang}
-        onToggleLang={toggleLang}
         menuLang={menuLang}
       />
 

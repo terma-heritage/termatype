@@ -8,7 +8,14 @@
 // See README.md for the design and how to reuse this in other projects.
 
 export { wylieToUnicode } from './ewts'
-export { WylieEngine, type EngineResult } from './wylie-engine'
+export { WylieEngine } from './wylie-engine'
+export { TcrcEngine } from './tcrc-engine'
+export { TCRC_KEYMAP, type TcrcKey, type TcrcKind } from './tcrc-map'
+export {
+  type EngineResult,
+  type InputEngine,
+  type TibetanInputMethod,
+} from './input-engine'
 export { createTibetanIMEExtension } from './tibetan-ime-extension'
 export {
   TIBETAN_MARK_GROUPS,

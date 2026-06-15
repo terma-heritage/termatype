@@ -80,9 +80,12 @@ export const TIBETAN_LABELS: Record<string, string> = {
   'Merge Cells': 'ཁང་མིག་སྡེབ།',
   'Split Cell': 'ཁང་མིག་གཏོར།',
   'Delete Table': 'རེའུ་མིག་སུབ།',
+  // View menu
+  'Settings': 'སྒྲིག་འགོད།',
   // Help menu
   'Typing Tibetan (Practice)': 'བོད་ཡིག་སྦྱོང་བརྡར།',
   'Wylie Reference': 'ཝ་ལིའི་གཞུང་།',
+  'TCRC Reference': 'TCRC མཐེབ་གཞོང་།',
   'Keyboard Shortcuts': 'མཐེབ་གནོན།',
   'About TermaType': 'གཏེར་མ་ཡིག་སྦྱོར་སྐོར།',
   // Dictionary sidebar
@@ -238,13 +241,14 @@ export function MenuBar({
   onTypewriterMode,
   onShortcuts,
   onWyliePractice,
+  onTcrcReference,
   onAbout,
   focusMode,
   typewriterMode,
   readingMode,
   onReadingMode,
   menuLang,
-  onToggleMenuLang,
+  onOpenSettings,
 }: {
   editor: Editor | null
   onNew: () => void
@@ -266,13 +270,14 @@ export function MenuBar({
   onTypewriterMode: () => void
   onShortcuts: () => void
   onWyliePractice: () => void
+  onTcrcReference: () => void
   onAbout: () => void
   focusMode: boolean
   typewriterMode: boolean
   readingMode: boolean
   onReadingMode: () => void
   menuLang: 'en' | 'bo'
-  onToggleMenuLang: () => void
+  onOpenSettings: () => void
 }) {
   const [openMenu, setOpenMenu] = useState<number | null>(null)
   const anyOpen = openMenu !== null
@@ -542,6 +547,7 @@ export function MenuBar({
       items: [
         { label: t('Typing Tibetan (Practice)'), action: onWyliePractice },
         { label: t('Wylie Reference'), action: onWylieReference },
+        { label: t('TCRC Reference'), action: onTcrcReference },
         { label: t('Keyboard Shortcuts'), shortcut: 'Ctrl+/', action: onShortcuts },
         { separator: true },
         { label: t('About TermaType'), action: onAbout },
@@ -550,7 +556,7 @@ export function MenuBar({
   ], [t, editor, focusMode, typewriterMode, readingMode, close, handleCut, handleCopy, handlePaste,
       onNew, onOpen, onOpenRecent, onSave, onSaveAs, onPrint, onExportPDF, onExportEPUB, onFind,
       onZoomIn, onZoomOut, onZoomReset, onFocusMode, onTypewriterMode, onReadingMode,
-      onDictionary, onOutline, onWylieReference, onShortcuts, onWyliePractice, onAbout])
+      onDictionary, onOutline, onWylieReference, onTcrcReference, onShortcuts, onWyliePractice, onAbout])
 
   return (
     <div className={`menubar${menuLang === 'bo' ? ' menubar-tibetan' : ''}`}>
@@ -569,18 +575,17 @@ export function MenuBar({
         ))}
       </div>
       <div className="menubar-right">
-        <span className="menubar-lang-label">{menuLang === 'bo' ? 'སྐད་ཡིག' : 'UI'}</span>
         <button
           type="button"
-          className={`menubar-lang-switch${menuLang === 'bo' ? ' active' : ''}`}
-          onClick={onToggleMenuLang}
-          title="UI Language"
-          role="switch"
-          aria-checked={menuLang === 'bo'}
+          className="menubar-settings-btn"
+          onClick={onOpenSettings}
+          title={menuLang === 'bo' ? 'སྒྲིག་འགོད།' : 'Settings'}
+          aria-label="Settings"
         >
-          <span className="menubar-lang-switch-label menubar-lang-en">EN</span>
-          <span className="menubar-lang-switch-thumb" />
-          <span className="menubar-lang-switch-label menubar-lang-bo">བོད</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
         </button>
       </div>
     </div>

@@ -3,6 +3,8 @@ import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import type { EditorView } from '@tiptap/pm/view'
 import { WylieEngine } from './wylie-engine'
+import { TcrcEngine } from './tcrc-engine'
+import type { InputEngine, TibetanInputMethod } from './input-engine'
 import type { Lang } from '../LanguageToggle'
 
 const imePluginKey = new PluginKey('tibetanIME')
@@ -13,16 +15,29 @@ interface IMEState {
 
 export function createTibetanIMEExtension(
   getLang: () => Lang,
-  _onToggle: () => void
+  getInputMethod: () => TibetanInputMethod = () => 'wylie'
 ) {
   return Extension.create({
     name: 'tibetanIME',
     addProseMirrorPlugins() {
-      const engine = new WylieEngine()
+      const wylie = new WylieEngine()
+      const tcrc = new TcrcEngine()
+      let activeMethod = getInputMethod()
 
-      // Commit any pending preedit into the document at the cursor.
+      // Return the engine for the current input method, resetting both on a
+      // switch so no preedit leaks across methods.
+      const engine = (): InputEngine => {
+        const method = getInputMethod()
+        if (method !== activeMethod) {
+          wylie.reset()
+          tcrc.reset()
+          activeMethod = method
+        }
+        return method === 'tcrc' ? tcrc : wylie
+      }
+
       const commitPending = (view: EditorView) => {
-        const result = engine.flush()
+        const result = engine().flush()
         if (result.committed) {
           const tr = view.state.tr.insertText(
             result.committed,
@@ -51,7 +66,7 @@ export function createTibetanIMEExtension(
           props: {
             handleKeyDown(view, event) {
               if (getLang() !== 'bo') {
-                engine.reset()
+                engine().reset()
                 return false
               }
 
@@ -69,7 +84,7 @@ export function createTibetanIMEExtension(
 
               // Backspace edits the preedit one character at a time.
               if (event.key === 'Backspace') {
-                const result = engine.backspace()
+                const result = engine().backspace()
                 if (result.consumed) {
                   view.dispatch(
                     view.state.tr.setMeta(imePluginKey, { buffer: result.buffer })
@@ -97,7 +112,7 @@ export function createTibetanIMEExtension(
               if (getLang() !== 'bo') return false
               if (text.length !== 1) return false
 
-              const result = engine.feed(text)
+              const result = engine().feed(text)
               if (!result.consumed) return false
 
               const tr = view.state.tr

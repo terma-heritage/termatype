@@ -1,13 +1,7 @@
 import { wylieToUnicode } from './ewts'
+import type { EngineResult, InputEngine } from './input-engine'
 
-export interface EngineResult {
-  /** Tibetan text to insert into the document. */
-  committed: string
-  /** Raw Wylie still being composed, shown as the preedit buffer. */
-  buffer: string
-  /** Whether the keystroke was handled by the IME. */
-  consumed: boolean
-}
+export type { EngineResult }
 
 /**
  * Stateful per-keystroke adapter around the EWTS batch converter.
@@ -25,7 +19,7 @@ export interface EngineResult {
  * The `feed/flush/reset` contract is unchanged from the previous hand-rolled
  * engine, so the TipTap extension and other consumers need no changes.
  */
-export class WylieEngine {
+export class WylieEngine implements InputEngine {
   private raw = ''
 
   /** Feed a single typed character. */
