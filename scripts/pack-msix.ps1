@@ -14,6 +14,10 @@ New-Item -ItemType Directory -Path "$distDir\resources" | Out-Null
 Copy-Item "$releaseDir\termatype.exe" "$distDir\"
 Copy-Item "src-tauri\resources\terma-dictionary.db" "$distDir\resources\"
 
+# Copy the Store tile/logo images referenced by Package.appxmanifest
+# (Assets\StoreLogo.png, MedTile.png, AppList.png, WideTile.png).
+Copy-Item "src-tauri\Assets" "$distDir\Assets" -Recurse
+
 # Copy WebView2Loader if present
 if (Test-Path "$releaseDir\WebView2Loader.dll") {
     Copy-Item "$releaseDir\WebView2Loader.dll" "$distDir\"
