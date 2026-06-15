@@ -112,7 +112,9 @@ export function ImageBubbleMenu({ editor }: { editor: Editor }) {
   return (
     <BubbleMenu
       editor={editor}
-      options={{ placement: 'top', offset: 8 }}
+      className="bubble-menu-wrapper"
+      appendTo={() => document.body}
+      options={{ placement: 'top', offset: 8, strategy: 'fixed' }}
       shouldShow={({ state }) => {
         const { selection } = state
         if (!(selection instanceof NodeSelection)) return false

@@ -1,6 +1,7 @@
 import { Extension } from '@tiptap/react'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
+import type { EditorView } from '@tiptap/pm/view'
 import { WylieEngine } from './wylie-engine'
 import type { Lang } from '../LanguageToggle'
 
@@ -18,6 +19,21 @@ export function createTibetanIMEExtension(
     name: 'tibetanIME',
     addProseMirrorPlugins() {
       const engine = new WylieEngine()
+
+      // Commit any pending preedit into the document at the cursor.
+      const commitPending = (view: EditorView) => {
+        const result = engine.flush()
+        if (result.committed) {
+          const tr = view.state.tr.insertText(
+            result.committed,
+            view.state.selection.from
+          )
+          tr.setMeta(imePluginKey, { buffer: '' })
+          view.dispatch(tr)
+        } else if ((imePluginKey.getState(view.state) as IMEState).buffer) {
+          view.dispatch(view.state.tr.setMeta(imePluginKey, { buffer: '' }))
+        }
+      }
 
       return [
         new Plugin({
@@ -39,77 +55,38 @@ export function createTibetanIMEExtension(
                 return false
               }
 
-              // Ctrl+Space is the language toggle — flush buffer but don't consume
+              // Ctrl+Space is the language toggle — flush but don't consume.
               if (event.key === ' ' && event.ctrlKey) {
-                const result = engine.flush()
-                if (result.committed) {
-                  const { state, dispatch } = view
-                  const tr = state.tr.insertText(
-                    result.committed,
-                    state.selection.from
-                  )
-                  tr.setMeta(imePluginKey, { buffer: '' })
-                  dispatch(tr)
-                }
+                commitPending(view)
                 return false
               }
 
+              // Any modifier combo ends composition and passes through.
               if (event.ctrlKey || event.metaKey || event.altKey) {
-                const result = engine.flush()
-                if (result.committed) {
-                  const { state, dispatch } = view
-                  const tr = state.tr.insertText(
-                    result.committed,
-                    state.selection.from
-                  )
-                  tr.setMeta(imePluginKey, { buffer: '' })
-                  dispatch(tr)
-                }
+                commitPending(view)
                 return false
               }
 
+              // Backspace edits the preedit one character at a time.
               if (event.key === 'Backspace') {
-                const imeState = imePluginKey.getState(
-                  view.state
-                ) as IMEState
-                if (imeState.buffer) {
-                  engine.reset()
-                  const tr = view.state.tr.setMeta(imePluginKey, {
-                    buffer: '',
-                  })
-                  view.dispatch(tr)
+                const result = engine.backspace()
+                if (result.consumed) {
+                  view.dispatch(
+                    view.state.tr.setMeta(imePluginKey, { buffer: result.buffer })
+                  )
                   return true
                 }
                 return false
               }
 
-              if (event.key === 'Escape') {
-                const result = engine.flush()
-                if (result.committed) {
-                  const tr = view.state.tr.insertText(
-                    result.committed,
-                    view.state.selection.from
-                  )
-                  tr.setMeta(imePluginKey, { buffer: '' })
-                  view.dispatch(tr)
-                }
-                return false
-              }
-
+              // Keys that move the cursor or end the line commit first.
               if (
+                event.key === 'Escape' ||
                 event.key === 'Enter' ||
                 event.key === 'Tab' ||
                 event.key.startsWith('Arrow')
               ) {
-                const result = engine.flush()
-                if (result.committed) {
-                  const tr = view.state.tr.insertText(
-                    result.committed,
-                    view.state.selection.from
-                  )
-                  tr.setMeta(imePluginKey, { buffer: '' })
-                  view.dispatch(tr)
-                }
+                commitPending(view)
                 return false
               }
 
@@ -121,22 +98,17 @@ export function createTibetanIMEExtension(
               if (text.length !== 1) return false
 
               const result = engine.feed(text)
-
               if (!result.consumed) return false
 
-              const { state, dispatch } = view
-              const tr = state.tr
-
+              const tr = view.state.tr
               if (result.committed) {
                 tr.insertText(result.committed, from, to)
-              } else {
-                if (from !== to) {
-                  tr.delete(from, to)
-                }
+              } else if (from !== to) {
+                tr.delete(from, to)
               }
 
               tr.setMeta(imePluginKey, { buffer: result.buffer })
-              dispatch(tr)
+              view.dispatch(tr)
               return true
             },
 

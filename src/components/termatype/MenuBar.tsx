@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { Fragment, useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import type { Editor } from '@tiptap/react'
 import { TableGridPicker } from './TableGridPicker'
+import { TIBETAN_MARK_GROUPS } from './tibetan-ime/tibetan-marks'
 import { getRecentFiles, clearRecentFiles } from '@/lib/recent-files'
 
 export const TIBETAN_LABELS: Record<string, string> = {
@@ -411,16 +412,6 @@ export function MenuBar({
                 { char: '†', label: 'Dagger' },
                 { char: '‡', label: 'Double dagger' },
                 { char: '⁂', label: 'Asterism' },
-                { char: '༄', label: 'Tibetan initial mark' },
-                { char: '༅', label: 'Tibetan closing mark' },
-                { char: '༆', label: 'Tibetan caret' },
-                { char: 'ༀ', label: 'Tibetan Om' },
-                { char: '༔', label: 'Tibetan gter tsheg' },
-                { char: '༑', label: 'Tibetan rin chen spungs shad' },
-                { char: '༒', label: 'Tibetan nyis tsheg' },
-                { char: '༗', label: 'Tibetan ku ru kha' },
-                { char: '༼', label: 'Tibetan left brace' },
-                { char: '༽', label: 'Tibetan right brace' },
               ].map((item) => (
                 <button
                   key={item.char}
@@ -433,6 +424,28 @@ export function MenuBar({
                 >
                   {item.char}
                 </button>
+              ))}
+              {TIBETAN_MARK_GROUPS.map((group) => (
+                <Fragment key={group.category}>
+                  <div className="menubar-char-heading">{group.category}</div>
+                  {group.marks.map((mark) => (
+                    <button
+                      key={mark.codepoint}
+                      className="menubar-char-btn"
+                      title={
+                        mark.wylie
+                          ? `${mark.label} — Wylie: ${mark.wylie}`
+                          : `${mark.label} (${mark.codepoint})`
+                      }
+                      onClick={() => {
+                        editor?.chain().focus().insertContent(mark.char).run()
+                        close()
+                      }}
+                    >
+                      {mark.char}
+                    </button>
+                  ))}
+                </Fragment>
               ))}
             </div>
           ),

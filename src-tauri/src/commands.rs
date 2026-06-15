@@ -162,6 +162,17 @@ pub fn write_file(path: String, content: serde_json::Value) -> Result<(), String
     }
 }
 
+/// Write raw bytes to a path. Used for binary exports (PDF, EPUB) so they go
+/// through the same native filesystem path as DOCX, instead of the JS fs
+/// plugin whose capability scope can silently reject user-chosen folders on
+/// macOS. The save dialog grants the sandbox the right to write the chosen
+/// file, and this native write uses that grant directly.
+#[tauri::command]
+pub fn write_binary_file(path: String, contents: Vec<u8>) -> Result<(), String> {
+    let path_buf = validate_write_path(&path)?;
+    fs::write(&path_buf, contents).map_err(|e| format!("Failed to write file: {}", e))
+}
+
 #[cfg(debug_assertions)]
 #[tauri::command]
 pub fn debug_docx(path: String) -> Result<String, String> {

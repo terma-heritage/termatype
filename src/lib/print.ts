@@ -1,3 +1,18 @@
+import { invoke } from '@/lib/safe-invoke'
+
+function isTauri(): boolean {
+  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+}
+
+/**
+ * Write binary export bytes to the user-chosen path through the native Rust
+ * command (full disk access, same path DOCX uses). Avoids the JS fs plugin
+ * whose capability scope silently rejects some user folders on macOS.
+ */
+async function writeBinaryFile(path: string, bytes: Uint8Array): Promise<void> {
+  await invoke('write_binary_file', { path, contents: Array.from(bytes) })
+}
+
 export function printDocument() {
   const editorEl = document.querySelector('.tiptap.ProseMirror.simple-editor')
   if (!editorEl) return
@@ -137,22 +152,26 @@ export async function exportPDF(fileName: string) {
     })
     .from(clone)
 
-  try {
-    const { save } = await import('@tauri-apps/plugin-dialog')
-    const { writeFile } = await import('@tauri-apps/plugin-fs')
-
-    const savePath = await save({
-      filters: [{ name: 'PDF Document', extensions: ['pdf'] }],
-      defaultPath: `${pdfName}.pdf`,
-    })
-
-    if (!savePath) return
-
-    const blob: Blob = await instance.outputPdf('blob')
-    const buffer = await blob.arrayBuffer()
-    await writeFile(savePath, new Uint8Array(buffer))
-  } catch {
+  // Web build (no Tauri): let html2pdf trigger a normal browser download.
+  if (!isTauri()) {
     await instance.save()
+    return
+  }
+
+  const { save } = await import('@tauri-apps/plugin-dialog')
+  const savePath = await save({
+    filters: [{ name: 'PDF Document', extensions: ['pdf'] }],
+    defaultPath: `${pdfName}.pdf`,
+  })
+
+  if (!savePath) return
+
+  try {
+    const buffer = await instance.outputPdf('arraybuffer')
+    await writeBinaryFile(savePath, new Uint8Array(buffer))
+  } catch (err) {
+    console.error('PDF export failed:', err)
+    alert(`PDF export failed: ${err instanceof Error ? err.message : String(err)}`)
   }
 }
 
@@ -242,30 +261,29 @@ export async function exportEPUB(fileName: string) {
       }))
     )
 
-    const blob = new Blob([new Uint8Array(epubBuffer)], { type: 'application/epub+zip' })
+    const bytes = new Uint8Array(epubBuffer)
 
-    try {
-      const { save } = await import('@tauri-apps/plugin-dialog')
-      const { writeFile } = await import('@tauri-apps/plugin-fs')
-
-      const savePath = await save({
-        filters: [{ name: 'EPUB Document', extensions: ['epub'] }],
-        defaultPath: `${epubName}.epub`,
-      })
-
-      if (!savePath) return
-
-      const buffer = await blob.arrayBuffer()
-      await writeFile(savePath, new Uint8Array(buffer))
-    } catch {
-      // Fallback: download via browser
+    // Web build (no Tauri): download via browser.
+    if (!isTauri()) {
+      const blob = new Blob([bytes], { type: 'application/epub+zip' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
       a.download = `${epubName}.epub`
       a.click()
       URL.revokeObjectURL(url)
+      return
     }
+
+    const { save } = await import('@tauri-apps/plugin-dialog')
+    const savePath = await save({
+      filters: [{ name: 'EPUB Document', extensions: ['epub'] }],
+      defaultPath: `${epubName}.epub`,
+    })
+
+    if (!savePath) return
+
+    await writeBinaryFile(savePath, bytes)
   } catch (err) {
     console.error('EPUB export failed:', err)
     alert(`EPUB export failed: ${err instanceof Error ? err.message : String(err)}`)

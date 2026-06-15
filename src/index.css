@@ -603,6 +603,23 @@ html, body {
   gap: 2px;
   padding: 6px;
   width: 200px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.menubar-char-heading {
+  grid-column: 1 / -1;
+  padding: 6px 4px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tt-gray-text, #888);
+  opacity: 0.7;
+}
+
+.dark .menubar-char-heading {
+  color: var(--tt-gray-dark-700);
 }
 
 .menubar-char-btn {
@@ -803,8 +820,9 @@ html, body {
    Bubble Menu (floating toolbar on selection)
    ============================================ */
 
-[data-tippy-root] {
-  z-index: 100 !important;
+/* Floating wrapper Tiptap positions on the body (Floating UI). */
+.bubble-menu-wrapper {
+  z-index: 100;
 }
 
 .bubble-menu {
@@ -1467,11 +1485,62 @@ html, body {
   padding: 8px 10px 6px;
 }
 
+.ewts-keyboard__tabs {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.ewts-keyboard__tab {
+  border: none;
+  background: var(--tt-gray-light-a-100);
+  color: var(--tt-gray-light-600);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  .dark & {
+    background: var(--tt-gray-dark-a-100);
+    color: var(--tt-gray-dark-600);
+  }
+}
+
+.ewts-keyboard__tab--active {
+  background: var(--tt-brand-color, #2563eb);
+  color: #fff;
+
+  .dark & {
+    background: var(--tt-brand-color, #2563eb);
+    color: #fff;
+  }
+}
+
+.ewts-keyboard__symbols {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.ewts-keyboard__group {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tt-gray-light-400);
+  margin: 8px 0 4px;
+  text-align: center;
+}
+
 .ewts-keyboard__row {
   display: flex;
   gap: 4px;
   justify-content: center;
   margin-bottom: 4px;
+}
+
+.ewts-keyboard__row--wrap {
+  flex-wrap: wrap;
 }
 
 .ewts-keyboard__key {

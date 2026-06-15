@@ -4,21 +4,9 @@ import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import type { Node as PmNode } from '@tiptap/pm/model'
-import { WylieEngine } from '@/components/termatype/tibetan-ime/wylie-engine'
+import { wylieToUnicode } from '@/components/termatype/tibetan-ime'
 
 const findReplacePluginKey = new PluginKey('findReplace')
-
-function wylieToUnicode(wylie: string): string {
-  const engine = new WylieEngine()
-  let result = ''
-  for (const char of wylie) {
-    const { committed } = engine.feed(char)
-    result += committed
-  }
-  const { committed: flushed } = engine.flush()
-  result += flushed
-  return result
-}
 
 interface FindState {
   searchTerm: string

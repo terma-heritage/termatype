@@ -64,9 +64,15 @@ export function SelectionBubbleMenu({ editor }: { editor: Editor }) {
   return (
     <BubbleMenu
       editor={editor}
+      className="bubble-menu-wrapper"
+      // Append outside the editor (which uses CSS `zoom`) and position with a
+      // fixed strategy, so Floating UI anchors to the selection instead of
+      // dropping to the top-left of the zoomed container.
+      appendTo={() => document.body}
       options={{
         placement: 'top',
         offset: 8,
+        strategy: 'fixed',
       }}
       shouldShow={({ state, from, to }) => {
         const { doc, selection } = state

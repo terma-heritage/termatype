@@ -1,5 +1,5 @@
-import { useState, useRef, useCallback } from 'react'
-import { WylieEngine } from './tibetan-ime/wylie-engine'
+import { useState, useCallback } from 'react'
+import { wylieToUnicode } from './tibetan-ime'
 
 const PRACTICE_LINES = [
   { wylie: "gangs ri rwa bas bskor ba'i zhing khams su/", tibetan: 'གངས་རི་རྭ་བས་བསྐོར་བའི་ཞིང་ཁམས་སུ།' },
@@ -8,34 +8,15 @@ const PRACTICE_LINES = [
   { wylie: "zhabs pad bskal brgya'i bar du brtan gyur cig/", tibetan: 'ཞབས་པད་བསྐལ་བརྒྱའི་བར་དུ་བརྟན་གྱུར་ཅིག།' },
 ]
 
-function wylieToTibetan(wylie: string): string {
-  const engine = new WylieEngine()
-  let result = ''
-  for (const ch of wylie) {
-    if (ch === ' ') {
-      const flushed = engine.flush()
-      result += flushed.committed + '་'
-      continue
-    }
-    const out = engine.feed(ch)
-    result += out.committed
-  }
-  const final = engine.flush()
-  result += final.committed
-  return result
-}
-
 export function WyliePractice({ menuLang = 'en' }: { menuLang?: 'en' | 'bo' }) {
   const [input, setInput] = useState('')
   const [tibetanOutput, setTibetanOutput] = useState('')
-  const engineRef = useRef(new WylieEngine())
   const bo = menuLang === 'bo'
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const raw = e.target.value
     setInput(raw)
-    engineRef.current.reset()
-    setTibetanOutput(wylieToTibetan(raw))
+    setTibetanOutput(wylieToUnicode(raw))
   }, [])
 
   return (
