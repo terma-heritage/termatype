@@ -25,7 +25,7 @@
     <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-mac-app-store/black/en-us" height="48" alt="Download TermaType on the Mac App Store" />
   </a>
   &nbsp;
-  <a href="https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.AppImage">
+  <a href="https://github.com/terma-heritage/termatype/releases/latest">
     <img src="assets/badge-linux.svg" height="48" alt="Download TermaType for Linux (AppImage)" />
   </a>
 </p>
@@ -105,7 +105,7 @@ Requires Windows 10 or later.
 
 #### Direct download (alternative)
 
-Prefer a standalone installer? **[Download the installer (.exe)](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64-setup.exe)**
+Prefer a standalone installer? **[Download the installer (.exe)](https://github.com/terma-heritage/termatype/releases/latest)**
 
 > **Windows SmartScreen:** The direct installer is new and not yet code-signed, so Windows may show a SmartScreen warning when you run it. Click **"More info"** → **"Run anyway"**. The app is fully open source — you can inspect every line of code in this repository. (Installing from the Microsoft Store avoids this warning.)
 
@@ -121,15 +121,15 @@ Requires macOS 10.15 (Catalina) or later.
 
 Prefer a standalone app? Download the `.dmg` directly:
 
-**[Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_aarch64.dmg)** — for newer Macs (2020+)
+**[Apple Silicon (M1/M2/M3/M4)](https://github.com/terma-heritage/termatype/releases/latest)** — for newer Macs (2020+)
 
-**[Intel](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_x64.dmg)** — for older Macs
+**[Intel](https://github.com/terma-heritage/termatype/releases/latest)** — for older Macs
 
 > TermaType is code-signed and notarized by Apple. Just open the `.dmg`, drag TermaType to your Applications folder, and launch it — no security warnings.
 
 ### Linux
 
-**[Download AppImage](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.AppImage)** — runs on most distributions, no installation needed
+**[Download AppImage](https://github.com/terma-heritage/termatype/releases/latest)** — runs on most distributions, no installation needed
 
 After downloading, make it executable and run:
 
@@ -140,7 +140,7 @@ chmod +x TermaType_2.0.1_amd64.AppImage
 
 #### Package installs
 
-- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/download/v2.0.1/TermaType_2.0.1_amd64.deb)**, then `sudo apt install ./TermaType_2.0.1_amd64.deb`
+- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo apt install ./TermaType_2.0.1_amd64.deb`
 - **Fedora / RHEL:** grab the `.rpm` from the **[releases page](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo dnf install ./TermaType-*.rpm`
 
 > Built and tested on x86_64. The AppImage bundles its own dependencies; the `.deb` and `.rpm` pull in WebKitGTK (`libwebkit2gtk-4.1`) and GTK 3 from your distro.
