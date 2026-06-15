@@ -851,6 +851,46 @@ html, body {
   background: var(--tt-gray-dark-a-100);
 }
 
+/* Dictionary quick-access pill — the main feature, kept on the canvas. */
+.side-panel-fab {
+  position: fixed;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--tt-border-color);
+  background: var(--white, #fff);
+  color: var(--tt-gray-light-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.side-panel-fab:hover {
+  background: var(--tt-gray-light-a-100);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+.dark .side-panel-fab {
+  background: var(--tt-gray-dark-100);
+  border-color: var(--tt-gray-dark-a-200);
+  color: var(--tt-gray-dark-700);
+}
+.dark .side-panel-fab:hover {
+  background: var(--tt-gray-dark-200);
+}
+.focus-mode .side-panel-fab {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.reading-mode .side-panel-fab {
+  display: none;
+}
+
 @media screen and (max-width: 800px) {
   .termatype-app .simple-editor-content .tiptap.ProseMirror.simple-editor {
     padding: 2rem 1.5rem 4rem;
