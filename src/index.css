@@ -1509,11 +1509,11 @@ html, body {
 
 /* ── Tibetan Typography ── */
 
-/* Taller line height for Tibetan — vowel marks & subscripts need room */
+/* Tibetan uses the same line-height as English (1.9, set on the base editor) so
+   switching input modes doesn't reflow the page; the unified value still gives
+   vowel marks & subscripts enough room. */
 .simple-editor-content.lang-bo .tiptap.ProseMirror.simple-editor {
   font-family: var(--tt-font-tibetan);
-  line-height: 2.0;
-  padding-block: 0.15em;
   letter-spacing: 0;
 }
 

@@ -51,7 +51,9 @@ body,
 .tiptap.ProseMirror {
   font-family: "Source Serif 4", "Source Serif Pro", Georgia, "Iowan Old Style", "Palatino Linotype", serif;
   font-size: 18px;
-  line-height: 1.75;
+  // Unified line-height: tall enough for Tibetan stacks, consistent with the
+  // Tibetan (lang-bo) value so switching input modes doesn't reflow the page.
+  line-height: 1.9;
   font-optical-sizing: auto;
   font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
   letter-spacing: -0.01em;
