@@ -15,8 +15,9 @@ landed on `main`, not necessarily when a store build shipped.
   of a hand-rolled converter — fixes previously untypeable stacks and the HŪṂ
   seed syllable (`hU~M`). The old `wylie-map.ts` was removed.
 - **TCRC engine** transcribed from the official TCRC chart (`tcrc-map.ts`),
-  validated against the chart's own examples (`kya`, `bka'`, `bskyod`). A few
-  Sanskrit/rare keys are flagged for confirmation.
+  validated against the chart's worked examples (`kya`, `bka'`, `bskyod`) and
+  cross-checked against the TCRC Bodyig reference implementation — consonants,
+  vowels, halant stacking, and marks all confirmed.
 
 ### Special characters
 
@@ -34,12 +35,20 @@ landed on `main`, not necessarily when a store build shipped.
 - **Removed the floating on-screen keyboard** (Wylie-only and redundant) and the
   floating outline/dictionary buttons (still in the View menu); **slimmed the
   status bar**.
-- **Alignment** collapsed from four toolbar buttons into one dropdown (shared
-  with the selection bubble menu).
-- **Help:** added **TCRC Reference** next to **Wylie Reference** (generated from
-  the keymap so it can't drift).
+- **Toolbar** trimmed: alignment collapsed from four buttons into one dropdown
+  (shared with the selection bubble menu); Strikethrough/Code/Format-painter
+  collapsed into a "More" (⋯) dropdown.
+- **First-run welcome:** a single screen on first launch sets App language and
+  Wylie/TCRC in place (reusing the Settings toggles).
+- **Help consolidated** into one **Help & FAQ** hub (common questions + links to
+  the Wylie/TCRC references, typing practice, and shortcuts); the Help menu is
+  now just Help & FAQ + About. TCRC Reference added next to Wylie Reference,
+  generated from the keymap so it can't drift.
 
 ### Fixes
+
+- **Editor line spacing** is now a single value (1.9) for both languages, so
+  switching between English and Tibetan no longer reflows the page.
 
 - **PDF/EPUB export on macOS:** write through a native Rust command instead of
   the JS fs plugin, fixing exports that silently produced no file; errors are
