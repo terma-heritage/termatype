@@ -3,7 +3,7 @@
 All notable changes to TermaType are recorded here. Dates are when the work
 landed on `main`, not necessarily when a store build shipped.
 
-## [Unreleased]
+## [2.1.0] — 2026-06-15
 
 ### Tibetan input
 
