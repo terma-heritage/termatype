@@ -40,3 +40,6 @@ msix-dist
 # Provisioning profiles are NOT secret — safe to commit
 # *.provisionprofile
 *.p8
+
+# Development certificate
+devcert.pfx

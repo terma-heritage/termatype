@@ -16,6 +16,7 @@ export function DictionarySidebar({
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<DictResult[]>([])
   const [searching, setSearching] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const t = useCallback((label: string) => menuLang === 'bo' ? (TIBETAN_LABELS[label] || label) : label, [menuLang])
@@ -26,11 +27,13 @@ export function DictionarySidebar({
       return
     }
     setSearching(true)
+    setError(null)
     try {
       const entries = await invoke<DictResult[]>('lookup_dictionary', { query: term.trim() })
       setResults(entries)
-    } catch {
+    } catch (e) {
       setResults([])
+      setError(String(e))
     }
     setSearching(false)
   }, [])
@@ -89,7 +92,10 @@ export function DictionarySidebar({
 
       <div className="dictionary-results">
         {searching && <div className="dictionary-loading">{t('Searching...')}</div>}
-        {!searching && results.length === 0 && query && (
+        {!searching && error && (
+          <div className="dictionary-empty" style={{ whiteSpace: 'pre-wrap', color: '#b00' }}>{error}</div>
+        )}
+        {!searching && !error && results.length === 0 && query && (
           <div className="dictionary-empty">{t('No results found.')}</div>
         )}
         {results.map((entry, i) => (

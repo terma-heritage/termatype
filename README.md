@@ -134,13 +134,13 @@ Prefer a standalone app? Download the `.dmg` directly:
 After downloading, make it executable and run:
 
 ```sh
-chmod +x TermaType_2.0.1_amd64.AppImage
-./TermaType_2.0.1_amd64.AppImage
+chmod +x TermaType_2.1.1_amd64.AppImage
+./TermaType_2.1.1_amd64.AppImage
 ```
 
 #### Package installs
 
-- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo apt install ./TermaType_2.0.1_amd64.deb`
+- **Debian / Ubuntu:** **[Download .deb](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo apt install ./TermaType_2.1.1_amd64.deb`
 - **Fedora / RHEL:** grab the `.rpm` from the **[releases page](https://github.com/terma-heritage/termatype/releases/latest)**, then `sudo dnf install ./TermaType-*.rpm`
 
 > Built and tested on x86_64. The AppImage bundles its own dependencies; the `.deb` and `.rpm` pull in WebKitGTK (`libwebkit2gtk-4.1`) and GTK 3 from your distro.
@@ -168,6 +168,18 @@ Full shortcuts reference available inside the app (`Ctrl+/`).
 - [Tauri 2](https://tauri.app/) — native desktop shell
 - [React 19](https://react.dev/) + [TipTap 3](https://tiptap.dev/) — editor framework
 - [Monlam](https://monlam.ai/) — dictionary data
+- **TCRC Bodyig keyboard layout** — Tibetan input, used with permission (see Acknowledgments)
+
+---
+
+## Acknowledgments
+
+The **TCRC (Bodyig) keyboard layout** in TermaType is based on the official
+keyboard layout of the **Tibetan Computer Resource Center (TCRC)**, Department of
+Finance, Central Tibetan Administration, and is included **with their kind
+permission**. We are grateful to TCRC for supporting open, Tibetan-first software
+and for their work preserving and promoting the Tibetan language through
+technology.
 
 ---
 

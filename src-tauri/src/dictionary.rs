@@ -31,6 +31,12 @@ fn get_dictionary_db_path(app: &AppHandle) -> Result<std::path::PathBuf, String>
 }
 
 fn open_dictionary(db_path: &std::path::PathBuf) -> Result<Connection, String> {
+    // The bundled DB ships in DELETE (rollback) journal mode, NOT WAL — see
+    // build_dictionary.py and the `shipped_db_is_not_wal_mode` test. A clean
+    // DELETE-mode DB opens read-only from a read-only directory with no side
+    // files, so a plain read-only open is all that's needed. (A WAL-mode DB
+    // would fail here because it must create -wal/-shm files; that was the
+    // App Store / MSIX dictionary bug.)
     let conn = Connection::open_with_flags(
         db_path,
         rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
@@ -219,6 +225,87 @@ pub fn spellcheck_tibetan(
     }
 
     Ok(misspelled)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    fn bundled_db() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("resources")
+            .join("terma-dictionary.db")
+    }
+
+    /// The shipped DB must be in DELETE (rollback) journal mode, never WAL.
+    /// A WAL-mode DB cannot be opened read-only from a read-only directory
+    /// (it must create -wal/-shm side files), which breaks store installs.
+    #[test]
+    fn shipped_db_is_not_wal_mode() {
+        let bytes = std::fs::read(bundled_db()).expect("read db header");
+        // SQLite header offsets 18 & 19 are the file-format read/write versions:
+        // 1 = legacy (rollback/DELETE), 2 = WAL.
+        assert_eq!(bytes[18], 1, "DB write-version is WAL (2); must be 1/DELETE");
+        assert_eq!(bytes[19], 1, "DB read-version is WAL (2); must be 1/DELETE");
+    }
+
+    /// Open via the real production path and confirm all three lookup
+    /// strategies return data — proves the WAL→DELETE conversion didn't
+    /// corrupt the database.
+    #[test]
+    fn lookups_work_against_shipped_db() {
+        let conn = open_dictionary(&bundled_db()).expect("open dictionary");
+
+        // Pull a real headword straight from the DB so the test never depends
+        // on hardcoded content that could change when the DB is rebuilt.
+        let sample: String = conn
+            .query_row(
+                "SELECT headword FROM entries WHERE length(headword) >= 6 LIMIT 1",
+                [],
+                |row| row.get(0),
+            )
+            .expect("fetch a sample headword");
+
+        let exact = exact_lookup(&conn, &sample).expect("exact lookup");
+        assert!(!exact.is_empty(), "exact lookup of a real headword returned nothing");
+
+        // Prefix of that same headword must also match (at least the row itself).
+        let prefix_q: String = sample.chars().take(3).collect();
+        let prefix = prefix_lookup(&conn, &prefix_q).expect("prefix lookup");
+        assert!(!prefix.is_empty(), "prefix lookup returned nothing");
+
+        // FTS path: 'buddha' is well-attested in the English-Tibetan source.
+        let fts = fts_lookup(&conn, "buddha").expect("fts lookup");
+        assert!(!fts.is_empty(), "expected FTS matches for 'buddha'");
+    }
+
+    /// The decisive read-only-media test: open the DB from its own directory,
+    /// run queries, and assert SQLite created NO -wal/-shm side files. If no
+    /// side files are needed, the directory never has to be writable — which
+    /// is exactly the App Store / MSIX condition.
+    #[test]
+    fn open_creates_no_side_files() {
+        let dir = std::env::temp_dir().join(format!("termadict-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let db_copy = dir.join("terma-dictionary.db");
+        std::fs::copy(bundled_db(), &db_copy).unwrap();
+
+        {
+            let conn = open_dictionary(&db_copy).expect("open copy");
+            let _ = exact_lookup(&conn, "sangs rgyas").expect("query");
+            let _ = fts_lookup(&conn, "buddha").expect("fts query");
+        }
+
+        let wal = dir.join("terma-dictionary.db-wal");
+        let shm = dir.join("terma-dictionary.db-shm");
+        let made_wal = wal.exists();
+        let made_shm = shm.exists();
+        let _ = std::fs::remove_dir_all(&dir);
+
+        assert!(!made_wal, "a -wal side file was created (needs writable dir)");
+        assert!(!made_shm, "a -shm side file was created (needs writable dir)");
+    }
 }
 
 #[tauri::command]

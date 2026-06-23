@@ -243,7 +243,20 @@ export function AboutPage({ menuLang = 'en' }: { menuLang?: 'en' | 'bo' }) {
               </>
             )}
           </p>
-          <p className="about-page-version">TermaType v2.0.0</p>
+          <p className="about-page-acknowledgment">
+            {bo ? (
+              <em>
+                TCRC (བོད་ཡིག) མཐེབ་གཞོང་ནི་ བོད་མིའི་སྒྲིག་འཛུགས་ཀྱི་ Tibetan Computer
+                Resource Center (TCRC) ནས་དགོངས་པ་གནང་སྟེ་བཀོལ་སྤྱོད་ཞུས་པ་ཡིན། ཐུགས་རྗེ་ཆེ་ཞུ།
+              </em>
+            ) : (
+              <em>
+                The TCRC (Bodyig) keyboard layout is used with the kind permission of the{' '}
+                Tibetan Computer Resource Center (TCRC), Central Tibetan Administration.
+              </em>
+            )}
+          </p>
+          <p className="about-page-version">TermaType v{__APP_VERSION__}</p>
         </div>
       </div>
     </div>

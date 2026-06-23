@@ -1,5 +1,9 @@
 // TCRC (Tibetan Computer Resource Center) "Bodyig" keyboard layout.
 //
+// Included with the kind permission of the Tibetan Computer Resource Center
+// (TCRC), Department of Finance, Central Tibetan Administration. See the
+// Acknowledgments section of the project README.
+//
 // This is a POSITIONAL keymap: each physical key maps to a fixed Tibetan glyph
 // (it is NOT phonetic like Wylie — e.g. `f` is ང, not "f"). Stacks are built
 // with a halant dead-key (`a` / "Link") that subjoins the next consonant, plus

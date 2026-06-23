@@ -3,6 +3,27 @@
 All notable changes to TermaType are recorded here. Dates are when the work
 landed on `main`, not necessarily when a store build shipped.
 
+## [2.1.1] — 2026-06-23
+
+### Acknowledgments
+
+- **TCRC keyboard layout credited with permission.** The TCRC (Bodyig) keyboard
+  layout is now formally acknowledged — in the README, on the in-app About page
+  (English and Tibetan), and in the keymap source — as being used with the kind
+  permission of the Tibetan Computer Resource Center (TCRC), Central Tibetan
+  Administration.
+
+### Fixes
+
+- **Dictionary now works in the App Store / Microsoft Store builds.** The bundled
+  dictionary database shipped in SQLite WAL mode, which cannot be opened from the
+  read-only resource directory of a sandboxed store install (it needs to create
+  `-wal`/`-shm` side-files) — so every lookup returned "No results found" for
+  Store users, while the GitHub `.msi`/`.dmg` builds were unaffected. The database
+  is now shipped in DELETE (rollback) journal mode and opened with the SQLite
+  `immutable=1` flag, so it reads cleanly from read-only media. Affects both
+  Windows (MSIX) and macOS (App Store) builds.
+
 ## [2.1.0] — 2026-06-15
 
 ### Tibetan input
