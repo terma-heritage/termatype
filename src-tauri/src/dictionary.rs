@@ -22,12 +22,22 @@ impl DictionaryDb {
     }
 }
 
-fn get_dictionary_db_path(app: &AppHandle) -> Result<std::path::PathBuf, String> {
+/// Candidate locations for the bundled dictionary, in priority order. Different
+/// bundlers place it differently:
+///  - Tauri MSI/NSIS/dmg + the MSIX packer keep the declared `resources/`
+///    subfolder: `<resource_dir>/resources/terma-dictionary.db`.
+///  - The Mac App Store assembly (appstore.yml) copies it flat into
+///    `Contents/Resources`, i.e. `<resource_dir>/terma-dictionary.db`.
+/// Checking both means the dictionary works no matter which path is used.
+fn dictionary_db_candidates(app: &AppHandle) -> Result<Vec<std::path::PathBuf>, String> {
     let resource_path = app
         .path()
         .resource_dir()
         .map_err(|e| format!("Failed to get resource dir: {}", e))?;
-    Ok(resource_path.join("resources").join("terma-dictionary.db"))
+    Ok(vec![
+        resource_path.join("resources").join("terma-dictionary.db"),
+        resource_path.join("terma-dictionary.db"),
+    ])
 }
 
 fn open_dictionary(db_path: &std::path::PathBuf) -> Result<Connection, String> {
@@ -52,11 +62,12 @@ fn ensure_connection(
     db: &mut DictionaryDb,
 ) -> Result<(), String> {
     if db.conn.is_none() {
-        let db_path = get_dictionary_db_path(app)?;
-        if !db_path.exists() {
-            return Err(format!("Dictionary not found at {:?}", db_path));
-        }
-        db.conn = Some(open_dictionary(&db_path)?);
+        let candidates = dictionary_db_candidates(app)?;
+        let db_path = candidates
+            .iter()
+            .find(|p| p.exists())
+            .ok_or_else(|| format!("Dictionary not found. Checked: {:?}", candidates))?;
+        db.conn = Some(open_dictionary(db_path)?);
     }
     Ok(())
 }

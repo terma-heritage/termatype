@@ -3,6 +3,17 @@
 All notable changes to TermaType are recorded here. Dates are when the work
 landed on `main`, not necessarily when a store build shipped.
 
+## [2.1.2] — 2026-06-24
+
+### Fixes
+
+- **Dictionary now works in the Mac App Store build.** The macOS app bundle
+  placed the dictionary database directly in `Contents/Resources/`, but the app
+  looked for it in a `resources/` subfolder, so every lookup reported
+  "Dictionary not found." The app now checks both locations, and the Mac App
+  Store build packages the database in the expected subfolder. (Windows was
+  already fixed in 2.1.1; this resolves the remaining macOS case.)
+
 ## [2.1.1] — 2026-06-23
 
 ### Acknowledgments

@@ -122,7 +122,11 @@ jobs:
           cp universal/termatype "$APP/Contents/MacOS/termatype"
           chmod +x "$APP/Contents/MacOS/termatype"
 
-          cp -R src-tauri/resources/* "$APP/Contents/Resources/" 2>/dev/null || true
+          # Keep the declared "resources/" subfolder so the path matches what the
+          # app looks for (Contents/Resources/resources/terma-dictionary.db) — a
+          # flat copy here is why the Mac App Store dictionary was "not found".
+          mkdir -p "$APP/Contents/Resources/resources"
+          cp -R src-tauri/resources/. "$APP/Contents/Resources/resources/" 2>/dev/null || true
           cp src-tauri/icons/icon.icns "$APP/Contents/Resources/icon.icns" 2>/dev/null || true
 
           if [ -d "dist" ]; then
