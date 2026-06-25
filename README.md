@@ -36,8 +36,12 @@
 
 <p align="center">
   <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/v/release/terma-heritage/termatype?style=flat-square&color=E8784A" alt="Release" /></a>
-  <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/downloads/terma-heritage/termatype/total?style=flat-square&color=E8784A" alt="Downloads" /></a>
+  <a href="https://github.com/terma-heritage/termatype/releases"><img src="https://img.shields.io/github/downloads/terma-heritage/termatype/total?style=flat-square&color=E8784A&label=GitHub%20Direct%20Downloads" alt="GitHub Direct Downloads" /></a>
   <img src="https://img.shields.io/badge/offline-100%25-green?style=flat-square" alt="Offline" />
+</p>
+
+<p align="center">
+  <sub><em>Counts GitHub direct downloads only — Mac App Store and Microsoft Store installs are not included.</em></sub>
 </p>
 
 ---
