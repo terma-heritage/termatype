@@ -11,7 +11,7 @@
 
 <p align="center">
   <strong>གཏེར་མ་ཡིག་སྦྱོར།</strong><br>
-  The first word processor built for English and Tibetan.<br>
+  The first word processor built for Tibetan and English.<br>
   Free. Open source. 100% offline.
 </p>
 
